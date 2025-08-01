@@ -9,6 +9,8 @@ namespace GUI_Manage // Giữ cùng namespace với file .cs chính
 {
     public partial class DangNhap_DangKy : MaterialForm
     {
+        private HoiVienBUS hoiVienBUS = new HoiVienBUS();
+        public HoiVienDTO LoggedInUser { get; private set; }
         #region Xử lý nghiệp vụ (Business Logic)
 
         /// <summary>

@@ -16,7 +16,7 @@ namespace GUI_Manage
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new DangNhap_DangKy());
+            Application.Run(new Admin());
         }
     }
 }

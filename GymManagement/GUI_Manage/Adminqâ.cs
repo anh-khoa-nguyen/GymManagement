@@ -12,11 +12,11 @@ using DTO_Manage; // Để dùng lớp DTO
 
 namespace GUI_Manage
 {
-    public partial class GoiTap : Form
+    public partial class Adminqâ : Form
     {
         private LoaiGoiTapBUS loaiGoiTapBUS = new LoaiGoiTapBUS();
 
-        public GoiTap()
+        public Adminqâ()
         {
             InitializeComponent();
         }

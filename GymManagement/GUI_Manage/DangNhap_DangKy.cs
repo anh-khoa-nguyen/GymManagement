@@ -16,22 +16,9 @@ namespace GUI_Manage
 {
     public partial class DangNhap_DangKy : MaterialForm
     {
-        private readonly MaterialSkinManager materialSkinManager;
-
-        private HoiVienBUS hoiVienBUS = new HoiVienBUS();
-        public HoiVienDTO LoggedInUser { get; private set; }
-
         public DangNhap_DangKy()
         {
             InitializeComponent();
-            // Thiết lập MaterialSkin cho form
-            //materialSkinManager = MaterialSkinManager.Instance;
-            //materialSkinManager.AddFormToManage(this);
-            ////materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
-            ////materialSkinManager.ColorScheme = new ColorScheme(
-            ////    Primary.Blue400, Primary.Blue500,
-            ////    Primary.Blue500, Accent.LightBlue200,
-            ////    TextShade.WHITE);
         }
 
         #region Xử lý sự kiện (UI Events)
@@ -47,7 +34,5 @@ namespace GUI_Manage
         }
 
         #endregion
-
-      
     }
 }
