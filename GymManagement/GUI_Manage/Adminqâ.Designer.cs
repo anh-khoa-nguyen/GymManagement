@@ -1,6 +1,6 @@
 ﻿namespace GUI_Manage
 {
-    partial class GoiTap
+    partial class Adminqâ
     {
         /// <summary>
         /// Required designer variable.

@@ -24,7 +24,6 @@ G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\GymManagement\GymManagement\GUI_Manage\bin\De
 G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\git\GymManagement\GymManagement\GUI_Manage\obj\Debug\GUI_Manage.csproj.AssemblyReference.cache
 G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\git\GymManagement\GymManagement\GUI_Manage\obj\Debug\GUI_Manage.exe.config
 G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\git\GymManagement\GymManagement\GUI_Manage\obj\Debug\GUI_Manage.DangNhap_DangKy.resources
-G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\git\GymManagement\GymManagement\GUI_Manage\obj\Debug\GUI_Manage.GoiTap.resources
 G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\git\GymManagement\GymManagement\GUI_Manage\obj\Debug\GUI_Manage.Properties.Resources.resources
 G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\git\GymManagement\GymManagement\GUI_Manage\obj\Debug\GUI_Manage.csproj.GenerateResource.cache
 G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\git\GymManagement\GymManagement\GUI_Manage\obj\Debug\GUI_Manage.csproj.CoreCompileInputs.cache
@@ -46,3 +45,5 @@ G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\git\GymManagement\GymManagement\GUI_Manage\bi
 G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\git\GymManagement\GymManagement\GUI_Manage\bin\Debug\DAL_Manage.pdb
 G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\git\GymManagement\GymManagement\GUI_Manage\bin\Debug\DAL_Manage.dll.config
 G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\git\GymManagement\GymManagement\GUI_Manage\obj\Debug\GUI_Manage.csproj.Up2Date
+G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\git\GymManagement\GymManagement\GUI_Manage\obj\Debug\GUI_Manage.Admin.resources
+G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\git\GymManagement\GymManagement\GUI_Manage\obj\Debug\GUI_Manage.Adminqâ.resources
