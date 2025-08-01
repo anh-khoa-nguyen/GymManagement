@@ -37,7 +37,12 @@ namespace DAL_Manage.Models
         public string Email { get; set; }
 
         [StringLength(20)]
+        [Index(IsUnique = true)]
         public string SDT { get; set; }
+
+        [Required]
+        [StringLength(255)]
+        public string PasswordHash { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DangKy> DangKy { get; set; }

@@ -1,22 +1,54 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\GymManagement\\GymManagement\\",
+  "WorkspaceRootPath": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{0B41BB73-D75C-44E5-BC67-6F03BE913538}|DAL_Manage\\DAL_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\gymmanagement\\gymmanagement\\dal_manage\\app.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
-      "RelativeMoniker": "D:0:0:{0B41BB73-D75C-44E5-BC67-6F03BE913538}|DAL_Manage\\DAL_Manage.csproj|solutionrelative:dal_manage\\app.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+      "AbsoluteMoniker": "D:0:0:{0B41BB73-D75C-44E5-BC67-6F03BE913538}|DAL_Manage\\DAL_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\git\\gymmanagement\\gymmanagement\\dal_manage\\migrations\\202508011747463_describeyourchangehere.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0B41BB73-D75C-44E5-BC67-6F03BE913538}|DAL_Manage\\DAL_Manage.csproj|solutionrelative:dal_manage\\migrations\\202508011747463_describeyourchangehere.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0B41BB73-D75C-44E5-BC67-6F03BE913538}|DAL_Manage\\DAL_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\gymmanagement\\gymmanagement\\dal_manage\\models\\hoivien.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{0B41BB73-D75C-44E5-BC67-6F03BE913538}|DAL_Manage\\DAL_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\git\\gymmanagement\\gymmanagement\\dal_manage\\models\\hoivien.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0B41BB73-D75C-44E5-BC67-6F03BE913538}|DAL_Manage\\DAL_Manage.csproj|solutionrelative:dal_manage\\models\\hoivien.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0B41BB73-D75C-44E5-BC67-6F03BE913538}|DAL_Manage\\DAL_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\gymmanagement\\gymmanagement\\dal_manage\\models\\dangky.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0B41BB73-D75C-44E5-BC67-6F03BE913538}|DAL_Manage\\DAL_Manage.csproj|solutionrelative:dal_manage\\models\\dangky.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{0B41BB73-D75C-44E5-BC67-6F03BE913538}|DAL_Manage\\DAL_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\git\\gymmanagement\\gymmanagement\\dal_manage\\models\\phieukiemtra.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0B41BB73-D75C-44E5-BC67-6F03BE913538}|DAL_Manage\\DAL_Manage.csproj|solutionrelative:dal_manage\\models\\phieukiemtra.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0B41BB73-D75C-44E5-BC67-6F03BE913538}|DAL_Manage\\DAL_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\gymmanagement\\gymmanagement\\dal_manage\\dal\\loaigoitapdal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0B41BB73-D75C-44E5-BC67-6F03BE913538}|DAL_Manage\\DAL_Manage.csproj|solutionrelative:dal_manage\\dal\\loaigoitapdal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{0B41BB73-D75C-44E5-BC67-6F03BE913538}|DAL_Manage\\DAL_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\git\\gymmanagement\\gymmanagement\\dal_manage\\models\\thietbi.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0B41BB73-D75C-44E5-BC67-6F03BE913538}|DAL_Manage\\DAL_Manage.csproj|solutionrelative:dal_manage\\models\\thietbi.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0B41BB73-D75C-44E5-BC67-6F03BE913538}|DAL_Manage\\DAL_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\git\\gymmanagement\\gymmanagement\\dal_manage\\models\\tiendotapluyen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0B41BB73-D75C-44E5-BC67-6F03BE913538}|DAL_Manage\\DAL_Manage.csproj|solutionrelative:dal_manage\\models\\tiendotapluyen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0B41BB73-D75C-44E5-BC67-6F03BE913538}|DAL_Manage\\DAL_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\git\\gymmanagement\\gymmanagement\\dal_manage\\migrations\\configuration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0B41BB73-D75C-44E5-BC67-6F03BE913538}|DAL_Manage\\DAL_Manage.csproj|solutionrelative:dal_manage\\migrations\\configuration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F44B8B84-0C8C-4917-B4E6-11E088A5FFCE}|BUS_Manage\\BUS_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\git\\gymmanagement\\gymmanagement\\bus_manage\\hoivienbus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F44B8B84-0C8C-4917-B4E6-11E088A5FFCE}|BUS_Manage\\BUS_Manage.csproj|solutionrelative:bus_manage\\hoivienbus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B788A6EA-0C4C-4999-84A8-4414CD74D949}|DTO_Manage\\DTO_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\git\\gymmanagement\\gymmanagement\\dto_manage\\dangnhapdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B788A6EA-0C4C-4999-84A8-4414CD74D949}|DTO_Manage\\DTO_Manage.csproj|solutionrelative:dto_manage\\dangnhapdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B788A6EA-0C4C-4999-84A8-4414CD74D949}|DTO_Manage\\DTO_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\git\\gymmanagement\\gymmanagement\\dto_manage\\dangkydto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B788A6EA-0C4C-4999-84A8-4414CD74D949}|DTO_Manage\\DTO_Manage.csproj|solutionrelative:dto_manage\\dangkydto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1ABCF774-1040-4FDE-B75F-1C0D74A4FFE2}|GUI_Manage\\GUI_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\git\\gymmanagement\\gymmanagement\\gui_manage\\dangnhap_dangky.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1ABCF774-1040-4FDE-B75F-1C0D74A4FFE2}|GUI_Manage\\GUI_Manage.csproj|solutionrelative:gui_manage\\dangnhap_dangky.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1ABCF774-1040-4FDE-B75F-1C0D74A4FFE2}|GUI_Manage\\GUI_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\git\\gymmanagement\\gymmanagement\\gui_manage\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1ABCF774-1040-4FDE-B75F-1C0D74A4FFE2}|GUI_Manage\\GUI_Manage.csproj|solutionrelative:gui_manage\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1ABCF774-1040-4FDE-B75F-1C0D74A4FFE2}|GUI_Manage\\GUI_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\git\\gymmanagement\\gymmanagement\\gui_manage\\dangnhap_dangky.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{1ABCF774-1040-4FDE-B75F-1C0D74A4FFE2}|GUI_Manage\\GUI_Manage.csproj|solutionrelative:gui_manage\\dangnhap_dangky.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     }
   ],
   "DocumentGroupContainers": [
@@ -31,54 +63,165 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "App.Config",
-              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\GymManagement\\GymManagement\\DAL_Manage\\App.Config",
-              "RelativeDocumentMoniker": "DAL_Manage\\App.Config",
-              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\GymManagement\\GymManagement\\DAL_Manage\\App.Config",
-              "RelativeToolTip": "DAL_Manage\\App.Config",
+              "Title": "202508011747463_DescribeYourChangeHere.cs",
+              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\DAL_Manage\\Migrations\\202508011747463_DescribeYourChangeHere.cs",
+              "RelativeDocumentMoniker": "DAL_Manage\\Migrations\\202508011747463_DescribeYourChangeHere.cs",
+              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\DAL_Manage\\Migrations\\202508011747463_DescribeYourChangeHere.cs",
+              "RelativeToolTip": "DAL_Manage\\Migrations\\202508011747463_DescribeYourChangeHere.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
-              "WhenOpened": "2025-07-31T15:18:59.869Z",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-01T17:47:51.375Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "PhieuKiemTra.cs",
+              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\DAL_Manage\\Models\\PhieuKiemTra.cs",
+              "RelativeDocumentMoniker": "DAL_Manage\\Models\\PhieuKiemTra.cs",
+              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\DAL_Manage\\Models\\PhieuKiemTra.cs",
+              "RelativeToolTip": "DAL_Manage\\Models\\PhieuKiemTra.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-01T17:45:24.515Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "TienDoTapLuyen.cs",
+              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\DAL_Manage\\Models\\TienDoTapLuyen.cs",
+              "RelativeDocumentMoniker": "DAL_Manage\\Models\\TienDoTapLuyen.cs",
+              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\DAL_Manage\\Models\\TienDoTapLuyen.cs",
+              "RelativeToolTip": "DAL_Manage\\Models\\TienDoTapLuyen.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-01T17:45:23.04Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ThietBi.cs",
+              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\DAL_Manage\\Models\\ThietBi.cs",
+              "RelativeDocumentMoniker": "DAL_Manage\\Models\\ThietBi.cs",
+              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\DAL_Manage\\Models\\ThietBi.cs",
+              "RelativeToolTip": "DAL_Manage\\Models\\ThietBi.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-01T17:44:06.203Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Configuration.cs",
+              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\DAL_Manage\\Migrations\\Configuration.cs",
+              "RelativeDocumentMoniker": "DAL_Manage\\Migrations\\Configuration.cs",
+              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\DAL_Manage\\Migrations\\Configuration.cs",
+              "RelativeToolTip": "DAL_Manage\\Migrations\\Configuration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-01T17:40:59.31Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "HoiVien.cs",
-              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\GymManagement\\GymManagement\\DAL_Manage\\Models\\HoiVien.cs",
+              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\DAL_Manage\\Models\\HoiVien.cs",
               "RelativeDocumentMoniker": "DAL_Manage\\Models\\HoiVien.cs",
-              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\GymManagement\\GymManagement\\DAL_Manage\\Models\\HoiVien.cs",
+              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\DAL_Manage\\Models\\HoiVien.cs",
               "RelativeToolTip": "DAL_Manage\\Models\\HoiVien.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABsAAAAAAAAAAAAxwCwAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-31T15:18:58.719Z",
+              "WhenOpened": "2025-08-01T17:39:03.722Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "HoiVienBUS.cs",
+              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\BUS_Manage\\HoiVienBUS.cs",
+              "RelativeDocumentMoniker": "BUS_Manage\\HoiVienBUS.cs",
+              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\BUS_Manage\\HoiVienBUS.cs",
+              "RelativeToolTip": "BUS_Manage\\HoiVienBUS.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAqwCEAAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-01T17:36:46.838Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "DangKy.cs",
-              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\GymManagement\\GymManagement\\DAL_Manage\\Models\\DangKy.cs",
-              "RelativeDocumentMoniker": "DAL_Manage\\Models\\DangKy.cs",
-              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\GymManagement\\GymManagement\\DAL_Manage\\Models\\DangKy.cs",
-              "RelativeToolTip": "DAL_Manage\\Models\\DangKy.cs",
+              "DocumentIndex": 7,
+              "Title": "DangNhapDTO.cs",
+              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\DTO_Manage\\DangNhapDTO.cs",
+              "RelativeDocumentMoniker": "DTO_Manage\\DangNhapDTO.cs",
+              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\DTO_Manage\\DangNhapDTO.cs",
+              "RelativeToolTip": "DTO_Manage\\DangNhapDTO.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-31T15:18:58.167Z",
+              "WhenOpened": "2025-08-01T17:36:19.646Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "LoaiGoiTapDAL.cs",
-              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\GymManagement\\GymManagement\\DAL_Manage\\DAL\\LoaiGoiTapDAL.cs",
-              "RelativeDocumentMoniker": "DAL_Manage\\DAL\\LoaiGoiTapDAL.cs",
-              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\GymManagement\\GymManagement\\DAL_Manage\\DAL\\LoaiGoiTapDAL.cs",
-              "RelativeToolTip": "DAL_Manage\\DAL\\LoaiGoiTapDAL.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAABFAAAAAAAAAA==",
+              "DocumentIndex": 8,
+              "Title": "DangKyDTO.cs",
+              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\DTO_Manage\\DangKyDTO.cs",
+              "RelativeDocumentMoniker": "DTO_Manage\\DangKyDTO.cs",
+              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\DTO_Manage\\DangKyDTO.cs",
+              "RelativeToolTip": "DTO_Manage\\DangKyDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-31T15:18:18.04Z",
+              "WhenOpened": "2025-08-01T17:36:17.997Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "DangNhap_DangKy.cs",
+              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\GUI_Manage\\DangNhap_DangKy.cs",
+              "RelativeDocumentMoniker": "GUI_Manage\\DangNhap_DangKy.cs",
+              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\GUI_Manage\\DangNhap_DangKy.cs",
+              "RelativeToolTip": "GUI_Manage\\DangNhap_DangKy.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAwwDEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-01T17:35:05.58Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Program.cs",
+              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\GUI_Manage\\Program.cs",
+              "RelativeDocumentMoniker": "GUI_Manage\\Program.cs",
+              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\GUI_Manage\\Program.cs",
+              "RelativeToolTip": "GUI_Manage\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-01T17:34:54.427Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "DangNhap_DangKy.cs [Design]",
+              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\GUI_Manage\\DangNhap_DangKy.cs",
+              "RelativeDocumentMoniker": "GUI_Manage\\DangNhap_DangKy.cs",
+              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\GUI_Manage\\DangNhap_DangKy.cs [Design]",
+              "RelativeToolTip": "GUI_Manage\\DangNhap_DangKy.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-01T17:34:50.423Z",
+              "EditorCaption": " [Design]"
             }
           ]
         }

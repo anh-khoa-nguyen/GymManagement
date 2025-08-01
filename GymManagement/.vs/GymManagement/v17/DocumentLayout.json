@@ -1,105 +1,12 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\GymManagement\\GymManagement\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{1ABCF774-1040-4FDE-B75F-1C0D74A4FFE2}|GUI_Manage\\GUI_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\gymmanagement\\gymmanagement\\gui_manage\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1ABCF774-1040-4FDE-B75F-1C0D74A4FFE2}|GUI_Manage\\GUI_Manage.csproj|solutionrelative:gui_manage\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0B41BB73-D75C-44E5-BC67-6F03BE913538}|DAL_Manage\\DAL_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\gymmanagement\\gymmanagement\\dal_manage\\app.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
-      "RelativeMoniker": "D:0:0:{0B41BB73-D75C-44E5-BC67-6F03BE913538}|DAL_Manage\\DAL_Manage.csproj|solutionrelative:dal_manage\\app.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0B41BB73-D75C-44E5-BC67-6F03BE913538}|DAL_Manage\\DAL_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\gymmanagement\\gymmanagement\\dal_manage\\models\\hoivien.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0B41BB73-D75C-44E5-BC67-6F03BE913538}|DAL_Manage\\DAL_Manage.csproj|solutionrelative:dal_manage\\models\\hoivien.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0B41BB73-D75C-44E5-BC67-6F03BE913538}|DAL_Manage\\DAL_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\gymmanagement\\gymmanagement\\dal_manage\\models\\dangky.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0B41BB73-D75C-44E5-BC67-6F03BE913538}|DAL_Manage\\DAL_Manage.csproj|solutionrelative:dal_manage\\models\\dangky.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0B41BB73-D75C-44E5-BC67-6F03BE913538}|DAL_Manage\\DAL_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\gymmanagement\\gymmanagement\\dal_manage\\dal\\loaigoitapdal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0B41BB73-D75C-44E5-BC67-6F03BE913538}|DAL_Manage\\DAL_Manage.csproj|solutionrelative:dal_manage\\dal\\loaigoitapdal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "WorkspaceRootPath": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\",
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": [
-        {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 0,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Program.cs",
-              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\GymManagement\\GymManagement\\GUI_Manage\\Program.cs",
-              "RelativeDocumentMoniker": "GUI_Manage\\Program.cs",
-              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\GymManagement\\GymManagement\\GUI_Manage\\Program.cs",
-              "RelativeToolTip": "GUI_Manage\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-31T15:20:13.514Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "App.Config",
-              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\GymManagement\\GymManagement\\DAL_Manage\\App.Config",
-              "RelativeDocumentMoniker": "DAL_Manage\\App.Config",
-              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\GymManagement\\GymManagement\\DAL_Manage\\App.Config",
-              "RelativeToolTip": "DAL_Manage\\App.Config",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
-              "WhenOpened": "2025-07-31T15:18:59.869Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "HoiVien.cs",
-              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\GymManagement\\GymManagement\\DAL_Manage\\Models\\HoiVien.cs",
-              "RelativeDocumentMoniker": "DAL_Manage\\Models\\HoiVien.cs",
-              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\GymManagement\\GymManagement\\DAL_Manage\\Models\\HoiVien.cs",
-              "RelativeToolTip": "DAL_Manage\\Models\\HoiVien.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-31T15:18:58.719Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "DangKy.cs",
-              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\GymManagement\\GymManagement\\DAL_Manage\\Models\\DangKy.cs",
-              "RelativeDocumentMoniker": "DAL_Manage\\Models\\DangKy.cs",
-              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\GymManagement\\GymManagement\\DAL_Manage\\Models\\DangKy.cs",
-              "RelativeToolTip": "DAL_Manage\\Models\\DangKy.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-31T15:18:58.167Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "LoaiGoiTapDAL.cs",
-              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\GymManagement\\GymManagement\\DAL_Manage\\DAL\\LoaiGoiTapDAL.cs",
-              "RelativeDocumentMoniker": "DAL_Manage\\DAL\\LoaiGoiTapDAL.cs",
-              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\GymManagement\\GymManagement\\DAL_Manage\\DAL\\LoaiGoiTapDAL.cs",
-              "RelativeToolTip": "DAL_Manage\\DAL\\LoaiGoiTapDAL.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAABFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-31T15:18:18.04Z",
-              "EditorCaption": ""
-            }
-          ]
-        }
-      ]
+      "DocumentGroups": []
     }
   ]
 }
