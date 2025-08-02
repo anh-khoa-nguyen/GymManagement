@@ -98,9 +98,6 @@
     <EmbeddedResource Include="Adminqâ.resx">
       <DependentUpon>Adminqâ.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Logic\Phong.Logic.resx">
-      <DependentUpon>Phong.Logic.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

@@ -89,16 +89,5 @@ namespace GUI_Manage
 
         #endregion
 
-        private void InitializeComponent()
-        {
-            this.SuspendLayout();
-            // 
-            // Admin
-            // 
-            this.ClientSize = new System.Drawing.Size(300, 300);
-            this.Name = "Admin";
-            this.ResumeLayout(false);
-
-        }
     }
 }

@@ -22,7 +22,6 @@ G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\GymManagement\GymManagement\GUI_Manage\obj\De
 G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\GymManagement\GymManagement\GUI_Manage\bin\Debug\EntityFramework.SqlServer.dll
 G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\GymManagement\GymManagement\GUI_Manage\bin\Debug\EntityFramework.SqlServer.xml
 G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\git\GymManagement\GymManagement\GUI_Manage\obj\Debug\GUI_Manage.csproj.AssemblyReference.cache
-G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\git\GymManagement\GymManagement\GUI_Manage\obj\Debug\GUI_Manage.exe.config
 G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\git\GymManagement\GymManagement\GUI_Manage\obj\Debug\GUI_Manage.DangNhap_DangKy.resources
 G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\git\GymManagement\GymManagement\GUI_Manage\obj\Debug\GUI_Manage.Properties.Resources.resources
 G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\git\GymManagement\GymManagement\GUI_Manage\obj\Debug\GUI_Manage.csproj.GenerateResource.cache
