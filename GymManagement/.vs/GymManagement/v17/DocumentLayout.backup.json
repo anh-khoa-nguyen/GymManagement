@@ -3,48 +3,12 @@
   "WorkspaceRootPath": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{1ABCF774-1040-4FDE-B75F-1C0D74A4FFE2}|GUI_Manage\\GUI_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\git\\gymmanagement\\gymmanagement\\gui_manage\\logic\\thietbi.logic.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1ABCF774-1040-4FDE-B75F-1C0D74A4FFE2}|GUI_Manage\\GUI_Manage.csproj|solutionrelative:gui_manage\\logic\\thietbi.logic.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1ABCF774-1040-4FDE-B75F-1C0D74A4FFE2}|GUI_Manage\\GUI_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\git\\gymmanagement\\gymmanagement\\gui_manage\\logic\\thietbi.logic.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{1ABCF774-1040-4FDE-B75F-1C0D74A4FFE2}|GUI_Manage\\GUI_Manage.csproj|solutionrelative:gui_manage\\logic\\thietbi.logic.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F44B8B84-0C8C-4917-B4E6-11E088A5FFCE}|BUS_Manage\\BUS_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\git\\gymmanagement\\gymmanagement\\bus_manage\\thietbibus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F44B8B84-0C8C-4917-B4E6-11E088A5FFCE}|BUS_Manage\\BUS_Manage.csproj|solutionrelative:bus_manage\\thietbibus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1ABCF774-1040-4FDE-B75F-1C0D74A4FFE2}|GUI_Manage\\GUI_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\git\\gymmanagement\\gymmanagement\\gui_manage\\admin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{1ABCF774-1040-4FDE-B75F-1C0D74A4FFE2}|GUI_Manage\\GUI_Manage.csproj|solutionrelative:gui_manage\\admin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F44B8B84-0C8C-4917-B4E6-11E088A5FFCE}|BUS_Manage\\BUS_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\git\\gymmanagement\\gymmanagement\\bus_manage\\helper\\enumhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F44B8B84-0C8C-4917-B4E6-11E088A5FFCE}|BUS_Manage\\BUS_Manage.csproj|solutionrelative:bus_manage\\helper\\enumhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1ABCF774-1040-4FDE-B75F-1C0D74A4FFE2}|GUI_Manage\\GUI_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\git\\gymmanagement\\gymmanagement\\gui_manage\\logic\\phong.logic.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1ABCF774-1040-4FDE-B75F-1C0D74A4FFE2}|GUI_Manage\\GUI_Manage.csproj|solutionrelative:gui_manage\\logic\\phong.logic.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{1ABCF774-1040-4FDE-B75F-1C0D74A4FFE2}|GUI_Manage\\GUI_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\git\\gymmanagement\\gymmanagement\\gui_manage\\logic\\phong.logic.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{1ABCF774-1040-4FDE-B75F-1C0D74A4FFE2}|GUI_Manage\\GUI_Manage.csproj|solutionrelative:gui_manage\\logic\\phong.logic.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1ABCF774-1040-4FDE-B75F-1C0D74A4FFE2}|GUI_Manage\\GUI_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\git\\gymmanagement\\gymmanagement\\gui_manage\\logic\\dangnhap_dangky.logic.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{1ABCF774-1040-4FDE-B75F-1C0D74A4FFE2}|GUI_Manage\\GUI_Manage.csproj|solutionrelative:gui_manage\\logic\\dangnhap_dangky.logic.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B788A6EA-0C4C-4999-84A8-4414CD74D949}|DTO_Manage\\DTO_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\git\\gymmanagement\\gymmanagement\\dto_manage\\enums.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B788A6EA-0C4C-4999-84A8-4414CD74D949}|DTO_Manage\\DTO_Manage.csproj|solutionrelative:dto_manage\\enums.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F44B8B84-0C8C-4917-B4E6-11E088A5FFCE}|BUS_Manage\\BUS_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\git\\gymmanagement\\gymmanagement\\bus_manage\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F44B8B84-0C8C-4917-B4E6-11E088A5FFCE}|BUS_Manage\\BUS_Manage.csproj|solutionrelative:bus_manage\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F44B8B84-0C8C-4917-B4E6-11E088A5FFCE}|BUS_Manage\\BUS_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\git\\gymmanagement\\gymmanagement\\bus_manage\\phongbus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F44B8B84-0C8C-4917-B4E6-11E088A5FFCE}|BUS_Manage\\BUS_Manage.csproj|solutionrelative:bus_manage\\phongbus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1ABCF774-1040-4FDE-B75F-1C0D74A4FFE2}|GUI_Manage\\GUI_Manage.csproj|g:\\nam 3\\hk3 - nam3\\lap trinh csdl\\git\\gymmanagement\\gymmanagement\\gui_manage\\adminq\u00E2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{1ABCF774-1040-4FDE-B75F-1C0D74A4FFE2}|GUI_Manage\\GUI_Manage.csproj|solutionrelative:gui_manage\\adminq\u00E2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     }
   ],
   "DocumentGroupContainers": [
@@ -54,148 +18,31 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 9,
+          "SelectedChildIndex": 1,
           "Children": [
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
-            },
-            {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "PhongBUS.cs",
-              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\BUS_Manage\\PhongBUS.cs",
-              "RelativeDocumentMoniker": "BUS_Manage\\PhongBUS.cs",
-              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\BUS_Manage\\PhongBUS.cs",
-              "RelativeToolTip": "BUS_Manage\\PhongBUS.cs",
-              "ViewState": "AgIAAC0AAAAAAAAAAAAmwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-02T05:36:26.177Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "ThietBiBUS.cs",
-              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\BUS_Manage\\ThietBiBUS.cs",
-              "RelativeDocumentMoniker": "BUS_Manage\\ThietBiBUS.cs",
-              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\BUS_Manage\\ThietBiBUS.cs",
-              "RelativeToolTip": "BUS_Manage\\ThietBiBUS.cs",
-              "ViewState": "AgIAADcAAAAAAAAAAAAAwEQAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-02T05:34:33.282Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "MappingProfile.cs",
-              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\BUS_Manage\\MappingProfile.cs",
-              "RelativeDocumentMoniker": "BUS_Manage\\MappingProfile.cs",
-              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\BUS_Manage\\MappingProfile.cs",
-              "RelativeToolTip": "BUS_Manage\\MappingProfile.cs",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAAABQAAAAnAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-02T05:33:17.922Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Enums.cs",
-              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\DTO_Manage\\Enums.cs",
-              "RelativeDocumentMoniker": "DTO_Manage\\Enums.cs",
-              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\DTO_Manage\\Enums.cs",
-              "RelativeToolTip": "DTO_Manage\\Enums.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAswAMAAAAQAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-02T05:32:55.888Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "DangNhap_DangKy.Logic.cs [Design]",
-              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\GUI_Manage\\Logic\\DangNhap_DangKy.Logic.cs",
-              "RelativeDocumentMoniker": "GUI_Manage\\Logic\\DangNhap_DangKy.Logic.cs",
-              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\GUI_Manage\\Logic\\DangNhap_DangKy.Logic.cs [Design]",
-              "RelativeToolTip": "GUI_Manage\\Logic\\DangNhap_DangKy.Logic.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-02T05:32:38.655Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 1,
               "Title": "Phong.Logic.cs [Design]",
               "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\GUI_Manage\\Logic\\Phong.Logic.cs",
               "RelativeDocumentMoniker": "GUI_Manage\\Logic\\Phong.Logic.cs",
               "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\GUI_Manage\\Logic\\Phong.Logic.cs [Design]",
               "RelativeToolTip": "GUI_Manage\\Logic\\Phong.Logic.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-02T05:32:37.467Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "Adminq\u00E2.cs [Design]",
-              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\GUI_Manage\\Adminq\u00E2.cs",
-              "RelativeDocumentMoniker": "GUI_Manage\\Adminq\u00E2.cs",
-              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\GUI_Manage\\Adminq\u00E2.cs [Design]",
-              "RelativeToolTip": "GUI_Manage\\Adminq\u00E2.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-02T05:32:32.96Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Admin.cs [Design]",
-              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\GUI_Manage\\Admin.cs",
-              "RelativeDocumentMoniker": "GUI_Manage\\Admin.cs",
-              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\GUI_Manage\\Admin.cs [Design]",
-              "RelativeToolTip": "GUI_Manage\\Admin.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-02T05:32:26.409Z",
+              "WhenOpened": "2025-08-02T06:21:04.174Z",
               "EditorCaption": " [Design]"
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "ThietBi.Logic.cs",
-              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\GUI_Manage\\Logic\\ThietBi.Logic.cs",
-              "RelativeDocumentMoniker": "GUI_Manage\\Logic\\ThietBi.Logic.cs",
-              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\GUI_Manage\\Logic\\ThietBi.Logic.cs",
-              "RelativeToolTip": "GUI_Manage\\Logic\\ThietBi.Logic.cs",
-              "ViewState": "AgIAABgAAAAAAAAAAAA3wCQAAAAAAAAAAAAAAA==",
+              "Title": "Phong.Logic.cs",
+              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\GUI_Manage\\Logic\\Phong.Logic.cs",
+              "RelativeDocumentMoniker": "GUI_Manage\\Logic\\Phong.Logic.cs",
+              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\GUI_Manage\\Logic\\Phong.Logic.cs",
+              "RelativeToolTip": "GUI_Manage\\Logic\\Phong.Logic.cs",
+              "ViewState": "AgIAAFQAAAAAAAAAAAAQwFoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-02T05:30:02.269Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ThietBi.Logic.cs [Design]",
-              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\GUI_Manage\\Logic\\ThietBi.Logic.cs",
-              "RelativeDocumentMoniker": "GUI_Manage\\Logic\\ThietBi.Logic.cs",
-              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\GUI_Manage\\Logic\\ThietBi.Logic.cs [Design]",
-              "RelativeToolTip": "GUI_Manage\\Logic\\ThietBi.Logic.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-02T05:30:01.024Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "EnumHelper.cs",
-              "DocumentMoniker": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\BUS_Manage\\Helper\\EnumHelper.cs",
-              "RelativeDocumentMoniker": "BUS_Manage\\Helper\\EnumHelper.cs",
-              "ToolTip": "G:\\Nam 3\\HK3 - Nam3\\Lap trinh CSDL\\git\\GymManagement\\GymManagement\\BUS_Manage\\Helper\\EnumHelper.cs",
-              "RelativeToolTip": "BUS_Manage\\Helper\\EnumHelper.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-02T05:28:57.76Z",
+              "WhenOpened": "2025-08-02T06:20:58.038Z",
               "EditorCaption": ""
             }
           ]
