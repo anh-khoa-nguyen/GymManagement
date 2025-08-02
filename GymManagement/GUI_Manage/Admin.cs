@@ -24,10 +24,10 @@ namespace GUI_Manage
         private void Admin_Load(object sender, EventArgs e)
         {
             LoadDataIntoGrid(dgvPhong);
-
+            LoadInitialThietBiData();
         }
 
-        //Phòng tập
+        #region Phòng Tập
         private void btnThemPhong_Click(object sender, EventArgs e)
         {
             string tenPhong = txtTenPhong.Text;
@@ -83,7 +83,52 @@ namespace GUI_Manage
             {
                 DisplayPhongData(selectedPhong);
             }
+        }
+        #endregion
 
+        private void btnThemThietBi_Click(object sender, EventArgs e)
+        {
+            string ten = txtTenThietBi.Text;
+            TinhTrangThietBi tinhTrang = (TinhTrangThietBi)cmbTinhTrang.SelectedValue;
+            int? idPhong = (int?)cmbPhongTapThietBi.SelectedValue;
+
+            HandleAddThietBi(ten, tinhTrang, idPhong);
+            LoadThietBiDataGrid();
+        }
+
+        private void btnSuaThietBi_Click(object sender, EventArgs e)
+        {
+            if (!int.TryParse(txtIDThietBi.Text, out int id))
+            {
+                MessageBox.Show("Vui lòng chọn một thiết bị để sửa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            string ten = txtTenThietBi.Text;
+            TinhTrangThietBi tinhTrang = (TinhTrangThietBi)cmbTinhTrang.SelectedValue;
+            int? idPhong = (int?)cmbPhongTapThietBi.SelectedValue;
+
+            HandleUpdateThietBi(id, ten, tinhTrang, idPhong);
+            LoadThietBiDataGrid();
+        }
+
+        private void btnXoaThietBi_Click(object sender, EventArgs e)
+        {
+            if (!int.TryParse(txtIDThietBi.Text, out int id))
+            {
+                MessageBox.Show("Vui lòng chọn một thiết bị để xóa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            HandleDeleteThietBi(id);
+            LoadThietBiDataGrid();
+        }
+
+        private void dgvThietBi_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            ThietBiDTO selectedThietBi = GetSelectedThietBiFromGrid();
+            if (selectedThietBi != null)
+            {
+                DisplayThietBiData(selectedThietBi);
+            }
         }
     }
 }

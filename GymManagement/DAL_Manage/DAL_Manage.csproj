@@ -56,12 +56,18 @@
     <Compile Include="DAL\HoiVienDAL.cs" />
     <Compile Include="DAL\LoaiGoiTapDAL.cs" />
     <Compile Include="DAL\PhongDAL.cs" />
+    <Compile Include="DAL\ThietBiDAL.cs" />
     <Compile Include="Migrations\202508011747463_DescribeYourChangeHere.cs" />
     <Compile Include="Migrations\202508011747463_DescribeYourChangeHere.Designer.cs">
       <DependentUpon>202508011747463_DescribeYourChangeHere.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202508020456241_TinhTrangTBEnum.cs" />
+    <Compile Include="Migrations\202508020456241_TinhTrangTBEnum.Designer.cs">
+      <DependentUpon>202508020456241_TinhTrangTBEnum.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\DangKy.cs" />
+    <Compile Include="Models\Enums.cs" />
     <Compile Include="Models\GoiTap.cs" />
     <Compile Include="Models\GymModel.cs" />
     <Compile Include="Models\HoaDon.cs" />
@@ -97,6 +103,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202508011747463_DescribeYourChangeHere.resx">
       <DependentUpon>202508011747463_DescribeYourChangeHere.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202508020456241_TinhTrangTBEnum.resx">
+      <DependentUpon>202508020456241_TinhTrangTBEnum.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

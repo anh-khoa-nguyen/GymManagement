@@ -28,3 +28,4 @@ G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\git\GymManagement\GymManagement\DAL_Manage\ob
 G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\git\GymManagement\GymManagement\DAL_Manage\obj\Debug\DAL_Manage.pdb
 G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\git\GymManagement\GymManagement\DAL_Manage\obj\Debug\DAL_Manage.Migrations.DescribeYourChangeHere.resources
 G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\git\GymManagement\GymManagement\DAL_Manage\obj\Debug\DAL_Manage.csproj.GenerateResource.cache
+G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\git\GymManagement\GymManagement\DAL_Manage\obj\Debug\DAL_Manage.Migrations.TinhTrangTBEnum.resources

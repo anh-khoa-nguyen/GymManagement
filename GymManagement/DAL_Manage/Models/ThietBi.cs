@@ -5,6 +5,7 @@ namespace DAL_Manage.Models
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
+    using DTO_Manage;
 
     [Table("ThietBi")]
     public partial class ThietBi
@@ -21,8 +22,7 @@ namespace DAL_Manage.Models
         [StringLength(255)]
         public string Ten { get; set; }
 
-        [StringLength(255)]
-        public string Tinh_Trang { get; set; }
+        public TinhTrangThietBi Tinh_Trang { get; set; }
 
         public int? ID_Phong { get; set; }
 
