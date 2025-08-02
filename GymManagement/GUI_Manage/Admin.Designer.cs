@@ -44,6 +44,19 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.cmbPhongTapThietBi = new System.Windows.Forms.ComboBox();
+            this.cmbTinhTrang = new System.Windows.Forms.ComboBox();
+            this.btnXoaThietBi = new MaterialSkin.Controls.MaterialButton();
+            this.btnSuaThietBi = new MaterialSkin.Controls.MaterialButton();
+            this.btnThemThietBi = new MaterialSkin.Controls.MaterialButton();
+            this.dgvThietBi = new System.Windows.Forms.DataGridView();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.txtIDThietBi = new MaterialSkin.Controls.MaterialTextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.txtTenThietBi = new MaterialSkin.Controls.MaterialTextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.tabPage6 = new System.Windows.Forms.TabPage();
@@ -52,6 +65,8 @@
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPhong)).BeginInit();
+            this.tabPage3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvThietBi)).BeginInit();
             this.SuspendLayout();
             // 
             // materialTabControl1
@@ -80,7 +95,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 29);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(815, 561);
+            this.tabPage1.Size = new System.Drawing.Size(851, 547);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -283,20 +298,207 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.cmbPhongTapThietBi);
+            this.tabPage3.Controls.Add(this.cmbTinhTrang);
+            this.tabPage3.Controls.Add(this.btnXoaThietBi);
+            this.tabPage3.Controls.Add(this.btnSuaThietBi);
+            this.tabPage3.Controls.Add(this.btnThemThietBi);
+            this.tabPage3.Controls.Add(this.dgvThietBi);
+            this.tabPage3.Controls.Add(this.label10);
+            this.tabPage3.Controls.Add(this.label6);
+            this.tabPage3.Controls.Add(this.txtIDThietBi);
+            this.tabPage3.Controls.Add(this.label7);
+            this.tabPage3.Controls.Add(this.txtTenThietBi);
+            this.tabPage3.Controls.Add(this.label8);
+            this.tabPage3.Controls.Add(this.label9);
             this.tabPage3.Location = new System.Drawing.Point(4, 29);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(815, 561);
+            this.tabPage3.Size = new System.Drawing.Size(851, 547);
             this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "tabPage3";
+            this.tabPage3.Text = "Thiết bị";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // cmbPhongTapThietBi
+            // 
+            this.cmbPhongTapThietBi.FormattingEnabled = true;
+            this.cmbPhongTapThietBi.Location = new System.Drawing.Point(564, 122);
+            this.cmbPhongTapThietBi.Name = "cmbPhongTapThietBi";
+            this.cmbPhongTapThietBi.Size = new System.Drawing.Size(181, 28);
+            this.cmbPhongTapThietBi.TabIndex = 16;
+            // 
+            // cmbTinhTrang
+            // 
+            this.cmbTinhTrang.FormattingEnabled = true;
+            this.cmbTinhTrang.Location = new System.Drawing.Point(210, 122);
+            this.cmbTinhTrang.Name = "cmbTinhTrang";
+            this.cmbTinhTrang.Size = new System.Drawing.Size(181, 28);
+            this.cmbTinhTrang.TabIndex = 16;
+            // 
+            // btnXoaThietBi
+            // 
+            this.btnXoaThietBi.AutoSize = false;
+            this.btnXoaThietBi.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnXoaThietBi.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            this.btnXoaThietBi.Depth = 0;
+            this.btnXoaThietBi.HighEmphasis = true;
+            this.btnXoaThietBi.Icon = null;
+            this.btnXoaThietBi.Location = new System.Drawing.Point(609, 346);
+            this.btnXoaThietBi.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.btnXoaThietBi.MouseState = MaterialSkin.MouseState.HOVER;
+            this.btnXoaThietBi.Name = "btnXoaThietBi";
+            this.btnXoaThietBi.NoAccentTextColor = System.Drawing.Color.Empty;
+            this.btnXoaThietBi.Size = new System.Drawing.Size(195, 52);
+            this.btnXoaThietBi.TabIndex = 13;
+            this.btnXoaThietBi.Text = "xóa";
+            this.btnXoaThietBi.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            this.btnXoaThietBi.UseAccentColor = false;
+            this.btnXoaThietBi.UseVisualStyleBackColor = true;
+            this.btnXoaThietBi.Click += new System.EventHandler(this.btnXoaThietBi_Click);
+            // 
+            // btnSuaThietBi
+            // 
+            this.btnSuaThietBi.AutoSize = false;
+            this.btnSuaThietBi.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnSuaThietBi.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            this.btnSuaThietBi.Depth = 0;
+            this.btnSuaThietBi.HighEmphasis = true;
+            this.btnSuaThietBi.Icon = null;
+            this.btnSuaThietBi.Location = new System.Drawing.Point(609, 269);
+            this.btnSuaThietBi.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.btnSuaThietBi.MouseState = MaterialSkin.MouseState.HOVER;
+            this.btnSuaThietBi.Name = "btnSuaThietBi";
+            this.btnSuaThietBi.NoAccentTextColor = System.Drawing.Color.Empty;
+            this.btnSuaThietBi.Size = new System.Drawing.Size(195, 52);
+            this.btnSuaThietBi.TabIndex = 14;
+            this.btnSuaThietBi.Text = "SỬA";
+            this.btnSuaThietBi.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            this.btnSuaThietBi.UseAccentColor = false;
+            this.btnSuaThietBi.UseVisualStyleBackColor = true;
+            this.btnSuaThietBi.Click += new System.EventHandler(this.btnSuaThietBi_Click);
+            // 
+            // btnThemThietBi
+            // 
+            this.btnThemThietBi.AutoSize = false;
+            this.btnThemThietBi.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnThemThietBi.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            this.btnThemThietBi.Depth = 0;
+            this.btnThemThietBi.HighEmphasis = true;
+            this.btnThemThietBi.Icon = null;
+            this.btnThemThietBi.Location = new System.Drawing.Point(609, 192);
+            this.btnThemThietBi.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.btnThemThietBi.MouseState = MaterialSkin.MouseState.HOVER;
+            this.btnThemThietBi.Name = "btnThemThietBi";
+            this.btnThemThietBi.NoAccentTextColor = System.Drawing.Color.Empty;
+            this.btnThemThietBi.Size = new System.Drawing.Size(195, 52);
+            this.btnThemThietBi.TabIndex = 15;
+            this.btnThemThietBi.Text = "Thêm";
+            this.btnThemThietBi.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            this.btnThemThietBi.UseAccentColor = false;
+            this.btnThemThietBi.UseVisualStyleBackColor = true;
+            this.btnThemThietBi.Click += new System.EventHandler(this.btnThemThietBi_Click);
+            // 
+            // dgvThietBi
+            // 
+            this.dgvThietBi.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvThietBi.Location = new System.Drawing.Point(53, 192);
+            this.dgvThietBi.Name = "dgvThietBi";
+            this.dgvThietBi.RowHeadersWidth = 48;
+            this.dgvThietBi.RowTemplate.Height = 24;
+            this.dgvThietBi.Size = new System.Drawing.Size(527, 324);
+            this.dgvThietBi.TabIndex = 12;
+            this.dgvThietBi.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvThietBi_CellContentClick);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.0177F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(68, 120);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(121, 29);
+            this.label10.TabIndex = 6;
+            this.label10.Text = "Tình trạng";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.0177F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(436, 120);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(122, 29);
+            this.label6.TabIndex = 6;
+            this.label6.Text = "Phòng tập";
+            // 
+            // txtIDThietBi
+            // 
+            this.txtIDThietBi.AnimateReadOnly = false;
+            this.txtIDThietBi.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtIDThietBi.Depth = 0;
+            this.txtIDThietBi.Font = new System.Drawing.Font("Roboto", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.txtIDThietBi.LeadingIcon = null;
+            this.txtIDThietBi.Location = new System.Drawing.Point(691, 31);
+            this.txtIDThietBi.MaxLength = 50;
+            this.txtIDThietBi.MouseState = MaterialSkin.MouseState.OUT;
+            this.txtIDThietBi.Multiline = false;
+            this.txtIDThietBi.Name = "txtIDThietBi";
+            this.txtIDThietBi.Size = new System.Drawing.Size(87, 50);
+            this.txtIDThietBi.TabIndex = 10;
+            this.txtIDThietBi.Text = "";
+            this.txtIDThietBi.TrailingIcon = null;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.0177F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(630, 44);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(42, 29);
+            this.label7.TabIndex = 7;
+            this.label7.Text = "ID:";
+            // 
+            // txtTenThietBi
+            // 
+            this.txtTenThietBi.AnimateReadOnly = false;
+            this.txtTenThietBi.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtTenThietBi.Depth = 0;
+            this.txtTenThietBi.Font = new System.Drawing.Font("Roboto", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.txtTenThietBi.LeadingIcon = null;
+            this.txtTenThietBi.Location = new System.Drawing.Point(380, 31);
+            this.txtTenThietBi.MaxLength = 50;
+            this.txtTenThietBi.MouseState = MaterialSkin.MouseState.OUT;
+            this.txtTenThietBi.Multiline = false;
+            this.txtTenThietBi.Name = "txtTenThietBi";
+            this.txtTenThietBi.Size = new System.Drawing.Size(200, 50);
+            this.txtTenThietBi.TabIndex = 11;
+            this.txtTenThietBi.Text = "";
+            this.txtTenThietBi.TrailingIcon = null;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.0177F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(218, 41);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(133, 29);
+            this.label8.TabIndex = 8;
+            this.label8.Text = "Tên thiết bị";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 17.84071F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(47, 38);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(119, 33);
+            this.label9.TabIndex = 5;
+            this.label9.Text = "Thiết bị";
             // 
             // tabPage4
             // 
             this.tabPage4.Location = new System.Drawing.Point(4, 29);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(815, 561);
+            this.tabPage4.Size = new System.Drawing.Size(851, 547);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "tabPage4";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -306,7 +508,7 @@
             this.tabPage5.Location = new System.Drawing.Point(4, 29);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(815, 561);
+            this.tabPage5.Size = new System.Drawing.Size(851, 547);
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "tabPage5";
             this.tabPage5.UseVisualStyleBackColor = true;
@@ -316,9 +518,9 @@
             this.tabPage6.Location = new System.Drawing.Point(4, 29);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(815, 561);
+            this.tabPage6.Size = new System.Drawing.Size(851, 547);
             this.tabPage6.TabIndex = 5;
-            this.tabPage6.Text = "tabPage6";
+            this.tabPage6.Text = "Hóa đơn";
             this.tabPage6.UseVisualStyleBackColor = true;
             // 
             // tabPage7
@@ -326,7 +528,7 @@
             this.tabPage7.Location = new System.Drawing.Point(4, 29);
             this.tabPage7.Name = "tabPage7";
             this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage7.Size = new System.Drawing.Size(815, 561);
+            this.tabPage7.Size = new System.Drawing.Size(851, 547);
             this.tabPage7.TabIndex = 6;
             this.tabPage7.Text = "tabPage7";
             this.tabPage7.UseVisualStyleBackColor = true;
@@ -348,6 +550,9 @@
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPhong)).EndInit();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvThietBi)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -374,5 +579,18 @@
         private MaterialSkin.Controls.MaterialButton btnSuaPhong;
         private MaterialSkin.Controls.MaterialButton btnThemPhong;
         private System.Windows.Forms.Label label5;
+        private MaterialSkin.Controls.MaterialButton btnXoaThietBi;
+        private MaterialSkin.Controls.MaterialButton btnSuaThietBi;
+        private MaterialSkin.Controls.MaterialButton btnThemThietBi;
+        private System.Windows.Forms.DataGridView dgvThietBi;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label6;
+        private MaterialSkin.Controls.MaterialTextBox txtIDThietBi;
+        private System.Windows.Forms.Label label7;
+        private MaterialSkin.Controls.MaterialTextBox txtTenThietBi;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ComboBox cmbPhongTapThietBi;
+        private System.Windows.Forms.ComboBox cmbTinhTrang;
     }
 }
