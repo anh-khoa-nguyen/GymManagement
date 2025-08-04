@@ -1,0 +1,93 @@
+﻿@{
+    ViewBag.Title = "Đặt Lịch Tập";
+}
+
+<h2><i class="fas fa-calendar-plus"></i> @ViewBag.Title</h2>
+<p>Chọn một ngày trên lịch để đặt buổi tập với Huấn luyện viên của chúng tôi.</p>
+
+<div id='calendar'></div>
+
+<!-- Bootstrap Modal để đặt lịch -->
+<div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            @using (Html.BeginForm("TaoLichTap", "HoiVien", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bookingModalLabel">Đặt lịch tập</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="ngayDatLich" name="ngayDatLich" />
+
+                    <div class="form-group">
+                        <label>Chọn Huấn luyện viên</label>
+                        @Html.DropDownList("huanLuyenVienId", (SelectList)ViewBag.DanhSachPT, "--- Chọn PT ---", new { @class = "form-control" })
+                    </div>
+
+                    <div class="form-group">
+                        <label>Giờ bắt đầu</label>
+                        <input type="time" id="gioBatDau" name="gioBatDau" class="form-control" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ghi chú</label>
+                        <textarea name="ghiChu" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-primary">Gửi Yêu Cầu</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+
+            // Khởi tạo đối tượng Calendar
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                // Mở đầu đối tượng cấu hình
+                initialView: 'dayGridMonth',
+                locale: 'vi',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                selectable: true,
+
+                events: '@Url.Action("GetLichTapCuaHoiVien", "HoiVien")',
+
+                dateClick: function(info) {
+                    $('#ngayDatLich').val(info.dateStr);
+                    $('#bookingModal').modal('show');
+                },
+
+                eventClick: function(info) {
+                    info.jsEvent.preventDefault();
+                    var eventDetails = "Buổi tập: " + info.event.title + "\n" +
+                                       "Bắt đầu: " + info.event.start.toLocaleString('vi-VN') + "\n" +
+                                       "Trạng thái: " + info.event.extendedProps.trangThaiText;
+                    alert(eventDetails);
+                }, // <-- SỬA LỖI: Thêm dấu phẩy ở đây
+
+                eventDidMount: function (info) {
+                    if (info.event.extendedProps && info.event.extendedProps.color) { // An toàn hơn khi kiểm tra extendedProps
+                         info.el.style.backgroundColor = info.event.extendedProps.color;
+                         info.el.style.borderColor = info.event.extendedProps.color;
+                    }
+                }
+            });
+
+            calendar.render();
+        });
+    </script>
+}

@@ -295,6 +295,7 @@
     <Content Include="Views\Shared\_LayoutAccount.cshtml" />
     <Content Include="Views\HoiVien\DanhSachGoiTap.cshtml" />
     <Content Include="Views\PT\Dashboard.cshtml" />
+    <Content Include="Views\HoiVien\DatLich.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

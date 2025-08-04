@@ -68,5 +68,106 @@ namespace GymManagementSystem.Controllers
             return RedirectToAction("DanhSachGoiTap");
         }
 
+        // GET: HoiVien/DatLich
+        public ActionResult DatLich()
+        {
+            // Lấy danh sách PT để đưa vào dropdown
+            var danhSachPT = db.HuanLuyenViens.Include(pt => pt.ApplicationUser).ToList();
+            ViewBag.DanhSachPT = new SelectList(danhSachPT, "Id", "ApplicationUser.HoTen");
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult TaoLichTap(int huanLuyenVienId, string ngayDatLich, string gioBatDau, string ghiChu)
+        {
+            // Lấy thông tin hội viên hiện tại
+            var currentUserId = User.Identity.GetUserId();
+            var hoiVienProfile = db.HoiViens.FirstOrDefault(hv => hv.ApplicationUserId == currentUserId);
+
+            if (hoiVienProfile == null)
+            {
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest, "Không tìm thấy hồ sơ hội viên.");
+            }
+
+            // Xử lý chuỗi ngày và giờ để tạo đối tượng DateTime hoàn chỉnh
+            DateTime ngay = DateTime.Parse(ngayDatLich);
+            TimeSpan gio = TimeSpan.Parse(gioBatDau);
+            DateTime thoiGianBatDau = ngay.Add(gio);
+
+            // Giả sử mỗi buổi tập kéo dài 1 tiếng
+            DateTime thoiGianKetThuc = thoiGianBatDau.AddHours(1);
+
+            // Tạo một bản ghi Lịch Tập mới
+            var lichTapMoi = new LichTap
+            {
+                HoiVienId = hoiVienProfile.Id,
+                HuanLuyenVienId = huanLuyenVienId,
+                ThoiGianBatDau = thoiGianBatDau,
+                ThoiGianKetThuc = thoiGianKetThuc,
+                GhiChuHoiVien = ghiChu,
+                TrangThai = TrangThaiLichTap.ChoDuyet // Trạng thái ban đầu
+            };
+
+            db.LichTaps.Add(lichTapMoi);
+            db.SaveChanges();
+
+            // Có thể dùng TempData để gửi thông báo thành công
+            TempData["SuccessMessage"] = "Yêu cầu đặt lịch của bạn đã được gửi đi thành công!";
+
+            return RedirectToAction("DatLich");
+        }
+
+        // GET: HoiVien/GetLichTapCuaHoiVien
+        public JsonResult GetLichTapCuaHoiVien()
+        {
+            var currentUserId = User.Identity.GetUserId();
+
+            // SỬA ĐỔI LOGIC TRUY VẤN Ở ĐÂY
+            // Chúng ta không cần tìm HoiVienId nữa.
+            // Hãy đi trực tiếp từ bảng LichTap và lọc theo ApplicationUserId của Hội viên liên quan.
+            var events = db.LichTaps
+                .Where(l => l.HoiVien.ApplicationUserId == currentUserId) // <-- THAY ĐỔI QUAN TRỌNG
+                .Select(l => new // Chuyển đổi thành định dạng mà FullCalendar hiểu
+                {
+                    id = l.Id,
+                    title = l.HuanLuyenVienId != null
+                            ? "Tập với PT " + l.HuanLuyenVien.ApplicationUser.HoTen
+                            : "Tự tập",
+                    start = l.ThoiGianBatDau, // Gửi trực tiếp đối tượng DateTime
+                    end = l.ThoiGianKetThuc,   // FullCalendar v5+ có thể xử lý trực tiếp
+                    color = l.TrangThai == TrangThaiLichTap.ChoDuyet ? "#f0ad4e" :
+                            l.TrangThai == TrangThaiLichTap.DaDuyet ? "#5cb85c" :
+                            l.TrangThai == TrangThaiLichTap.DaHuy ? "#777777" :
+                            "#337ab7", // DaHoanThanh
+                    extendedProps = new
+                    {
+                        trangThaiText = l.TrangThai.ToString(),
+                        ghiChu = l.GhiChuHoiVien ?? ""
+                    }
+                }).ToList();
+
+            return Json(events, JsonRequestBehavior.AllowGet);
+        }
+
+        // Hàm helper để quyết định màu sắc dựa trên trạng thái
+        private string GetEventColor(TrangThaiLichTap trangThai)
+        {
+            switch (trangThai)
+            {
+                case TrangThaiLichTap.ChoDuyet:
+                    return "#f0ad4e"; 
+                case TrangThaiLichTap.DaDuyet:
+                    return "#5cb85c"; 
+                case TrangThaiLichTap.DaHuy:
+                    return "#777777"; 
+                case TrangThaiLichTap.DaHoanThanh:
+                    return "#337ab7"; 
+                default:
+                    return "#777777";
+            }
+        }
+
     }
 }
