@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Gym Management System</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.6.2/dist/cyborg/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link href="~/Content/AccountLayout.css" rel="stylesheet" />
+
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <!-- LỚP NỀN: SLIDESHOW ẢNH -->
+    <div class="background-slideshow">
+        <div id="accountCarousel" class="carousel slide h-100" data-ride="carousel">
+            <div class="carousel-inner h-100">
+                <div class="carousel-item active h-100">
+                    <img src="~/images/account_bg/bg1.jpg" alt="Gym Image 1">
+                </div>
+                <div class="carousel-item h-100">
+                    <img src="~/images/account_bg/bg2.jpg" alt="Gym Image 2">
+                </div>
+                <div class="carousel-item h-100">
+                    <img src="~/images/account_bg/bg3.jpg" alt="Gym Image 3">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LỚP NỘI DUNG: CONTAINER CĂN GIỮA FORM -->
+    <div class="form-overlay-container">
+        @RenderBody()
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

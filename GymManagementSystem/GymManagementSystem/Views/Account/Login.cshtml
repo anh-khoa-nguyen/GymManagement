@@ -1,0 +1,43 @@
+﻿@model GymManagementSystem.Models.LoginViewModel
+@{
+    ViewBag.Title = "Đăng Nhập";
+    Layout = "~/Views/Shared/_LayoutAccount.cshtml";
+}
+
+<div class="form-panel">
+    <div class="text-center mb-4">
+        <i class="fas fa-dumbbell fa-3x text-primary"></i>
+        <h2 class="mt-2">@ViewBag.Title</h2>
+        <p class="text-muted">Chào mừng trở lại!</p>
+    </div>
+
+    @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Email)
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control form-control-lg", placeholder = "Nhập email của bạn" })
+            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Password)
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control form-control-lg", placeholder = "Nhập mật khẩu" })
+            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group mt-4">
+            <input type="submit" value="Đăng nhập" class="btn btn-primary btn-block btn-lg" />
+        </div>
+        <p class="text-center mt-3">
+            Chưa có tài khoản? @Html.ActionLink("Đăng ký ngay", "Register")
+        </p>
+    }
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}```
+

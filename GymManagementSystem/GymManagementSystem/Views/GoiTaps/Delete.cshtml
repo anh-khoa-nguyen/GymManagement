@@ -1,0 +1,37 @@
+﻿@model GymManagementSystem.Models.GoiTap
+
+@{
+    ViewBag.Title = "Xác nhận Xóa Gói Tập";
+    var culture = new System.Globalization.CultureInfo("vi-VN");
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4><i class="fas fa-exclamation-triangle"></i> @ViewBag.Title</h4>
+            </div>
+            <div class="card-body">
+                <h5 class="text-danger">Bạn có chắc chắn muốn xóa gói tập này không?</h5>
+                <p>Hành động này không thể hoàn tác.</p>
+                <hr />
+                <dl class="dl-horizontal">
+                    <dt>@Html.DisplayNameFor(model => model.TenGoi)</dt>
+                    <dd>@Html.DisplayFor(model => model.TenGoi)</dd>
+                    <dt>@Html.DisplayNameFor(model => model.GiaTien)</dt>
+                    <dd>@Model.GiaTien.ToString("C0", culture)</dd>
+                </dl>
+
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-actions no-color mt-4">
+                        <input type="submit" value="Xác nhận Xóa" class="btn btn-danger" />
+                        @Html.ActionLink("Hủy", "Index", null, new { @class = "btn btn-secondary" })
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

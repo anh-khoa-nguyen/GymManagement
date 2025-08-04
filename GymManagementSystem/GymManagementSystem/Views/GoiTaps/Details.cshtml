@@ -1,0 +1,35 @@
+﻿@model GymManagementSystem.Models.GoiTap
+
+@{
+    ViewBag.Title = "Chi Tiết Gói Tập";
+    var culture = new System.Globalization.CultureInfo("vi-VN");
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card border-info">
+            <div class="card-header">
+                <h4><i class="fas fa-info-circle"></i> @ViewBag.Title</h4>
+            </div>
+            <div class="card-body">
+                <dl class="dl-horizontal">
+                    <dt>@Html.DisplayNameFor(model => model.TenGoi)</dt>
+                    <dd>@Html.DisplayFor(model => model.TenGoi)</dd>
+                    <hr />
+                    <dt>@Html.DisplayNameFor(model => model.GiaTien)</dt>
+                    <dd class="text-success font-weight-bold">@Model.GiaTien.ToString("C0", culture)</dd>
+                    <hr />
+                    <dt>@Html.DisplayNameFor(model => model.SoBuoiTapVoiPT)</dt>
+                    <dd>@Html.DisplayFor(model => model.SoBuoiTapVoiPT)</dd>
+                    <hr />
+                    <dt>@Html.DisplayNameFor(model => model.MoTaQuyenLoi)</dt>
+                    <dd>@Html.DisplayFor(model => model.MoTaQuyenLoi)</dd>
+                </dl>
+            </div>
+            <div class="card-footer">
+                @Html.ActionLink("Sửa", "Edit", new { id = Model.Id }, new { @class = "btn btn-warning" })
+                @Html.ActionLink("Quay lại danh sách", "Index", null, new { @class = "btn btn-secondary" })
+            </div>
+        </div>
+    </div>
+</div>

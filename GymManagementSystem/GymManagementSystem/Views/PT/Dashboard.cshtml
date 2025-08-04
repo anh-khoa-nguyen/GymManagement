@@ -1,0 +1,42 @@
+﻿@model GymManagementSystem.Models.PTDashboardViewModel
+@{ ViewBag.Title = "Bảng Điều Khiển Huấn Luyện Viên"; }
+
+<h2><i class="fas fa-tachometer-alt"></i> @ViewBag.Title</h2>
+<hr />
+
+<div class="row">
+    <!-- Lịch hẹn sắp tới -->
+    <div class="col-md-6">
+        <h3><i class="fas fa-calendar-check"></i> Lịch hẹn sắp tới</h3>
+        @if (!Model.LichSapToi.Any())
+        {<p class="text-muted">Bạn không có lịch hẹn nào sắp tới.</p>}
+        else { /* Hiển thị danh sách lịch đã duyệt */ }
+    </div>
+
+    <!-- Yêu cầu đặt lịch mới -->
+    <div class="col-md-6">
+        <h3><i class="fas fa-bell"></i> Yêu cầu đặt lịch mới</h3>
+        @if (!Model.LichChoDuyet.Any())
+        {<p class="text-muted">Không có yêu cầu mới nào.</p> }
+        else
+        {
+            <ul class="list-group">
+                @foreach (var item in Model.LichChoDuyet)
+                {
+                    <li class="list-group-item">
+                        <div><strong>Hội viên:</strong> @item.HoiVien.ApplicationUser.HoTen</div>
+                        <div><strong>Thời gian:</strong> @item.ThoiGianBatDau.ToString("g")</div>
+                        <div class="mt-2">
+                            @using (Html.BeginForm("DuyetLich", "PT", new { lichTapId = item.Id }, FormMethod.Post, new { @style = "display:inline;" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-success"><i class="fas fa-check"></i> Duyệt</button>
+                            }
+                            @* Nút hủy sẽ cần thêm form và ô nhập lý do - sẽ làm sau *@
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+</div>

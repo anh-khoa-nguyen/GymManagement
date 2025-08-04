@@ -1,0 +1,63 @@
+﻿
+html, body {
+    height: 100%;
+    overflow: hidden; /* Cực kỳ quan trọng: KHÓA thanh cuộn của toàn bộ trang */
+}
+
+.background-slideshow {
+    position: fixed; /* Cố định vị trí, không bị ảnh hưởng bởi các element khác */
+    top: 0;
+    left: 0;
+    width: 100vw; /* Rộng 100% viewport */
+    height: 100vh; /* Cao 100% viewport */
+    z-index: -1; /* Đặt nó ở lớp dưới cùng, sau tất cả mọi thứ */
+}
+
+.carousel, .carousel-inner, .carousel-item {
+    height: 100%;
+}
+
+    .carousel-item img {
+        object-fit: cover; /* Phép màu: Bắt ảnh lấp đầy container mà không bị méo */
+        object-position: center;
+        height: 100%;
+        width: 100%;
+    }
+
+/* Lớp phủ tối, là một phần của slideshow */
+.background-slideshow::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5); /* Làm tối nền đi 50% để form nổi bật hơn */
+    z-index: 0;
+}
+
+/* =========================================
+   CONTAINER CĂN GIỮA FORM (PHẦN SỬA ĐỔI)
+========================================= */
+.form-overlay-container {
+    display: flex;
+    align-items: center; /* Căn giữa theo chiều dọc */
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    height: 100vh; /* Bắt buộc container này phải cao bằng màn hình */
+    padding: 2rem 1rem; /* Thêm khoảng đệm trên/dưới và trái/phải */
+}
+
+/* =========================================
+   PANEL FORM - ĐÂY LÀ NƠI PHÉP THUẬT XẢY RA
+========================================= */
+.form-panel {
+    width: 100%;
+    max-width: 450px;
+    max-height: 100%; /* Cho phép panel cao tối đa bằng container cha */
+    overflow-y: auto; /* QUAN TRỌNG: Tự động hiển thị thanh cuộn NẾU nội dung bên trong nó dài hơn */
+    padding: 2.5rem;
+    background-color: rgba(30, 30, 30, 0.85); /* Màu nền gần đen, hơi trong suốt */
+    border-radius: 8px; /* Bo góc cho hiện đại */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5); /* Đổ bóng tạo chiều sâu */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}

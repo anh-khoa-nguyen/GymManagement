@@ -1,0 +1,48 @@
+﻿@model IEnumerable<GymManagementSystem.Models.GoiTap>
+
+@{
+    ViewBag.Title = "Chọn Gói Tập Của Bạn";
+    var culture = new System.Globalization.CultureInfo("vi-VN");
+}
+
+<h2><i class="fas fa-tags"></i> @ViewBag.Title</h2>
+<p class="text-muted">Hãy chọn một gói tập phù hợp để bắt đầu hành trình của bạn!</p>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-dismissible alert-success">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <strong>Thành công!</strong> @TempData["SuccessMessage"]
+    </div>
+}
+
+<div class="row mt-4">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card border-primary h-100 d-flex flex-column">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">@item.TenGoi</h5>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title text-success font-weight-bold">@item.GiaTien.ToString("C0", culture)</h3>
+                    <p class="card-text">
+                        <strong>Số buổi với PT:</strong> @item.SoBuoiTapVoiPT buổi
+                    </p>
+                    <hr />
+                    <p class="card-text text-muted">@item.MoTaQuyenLoi</p>
+                </div>
+                <div class="card-footer mt-auto text-center bg-transparent border-top-0">
+                    @using (Html.BeginForm("ChonGoiTap", "HoiVien", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="goiTapId" value="@item.Id" />
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check-circle"></i> Chọn Gói này
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
