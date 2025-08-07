@@ -1,0 +1,121 @@
+﻿@model GymManagementSystem.Models.ViewModels.TaoHoaDonViewModel
+
+@{
+    // Nếu là Partial View, không cần Layout
+    if (!Request.IsAjaxRequest())
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+}
+
+<!-- Tiêu đề này sẽ được file app-crud.js lấy làm tiêu đề cho Offcanvas -->
+<h2>Lập Hóa Đơn Mới</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="mb-3">
+        <label class="form-label">Chọn Hội Viên</label>
+        @Html.DropDownListFor(model => model.HoiVienId, Model.DanhSachHoiVien, "-- Chọn hội viên --", new { @class = "form-select" })
+        @Html.ValidationMessageFor(model => model.HoiVienId, "", new { @class = "text-danger d-block mt-1" })
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Chọn Gói Tập</label>
+        @Html.DropDownListFor(model => model.GoiTapId, Model.DanhSachGoiTap, "-- Chọn gói tập --", new { @class = "form-select" })
+        @Html.ValidationMessageFor(model => model.GoiTapId, "", new { @class = "text-danger d-block mt-1" })
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Áp dụng Khuyến Mãi (Nếu có)</label>
+        @Html.DropDownListFor(model => model.KhuyenMaiId, Model.DanhSachKhuyenMai, "-- Không áp dụng --", new { @class = "form-select" })
+    </div>
+
+    <hr class="my-4" />
+    <h5 class="mb-3">Chi tiết thanh toán</h5>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white px-0">
+            Giá gốc
+            <span id="giaGocDisplay">0 VNĐ</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white px-0">
+            Giảm giá
+            <span class="text-danger" id="giamGiaDisplay">0 VNĐ</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white px-0 border-top pt-3">
+            <strong>Thành tiền</strong>
+            <strong id="thanhTienDisplay" style="font-size: 1.2rem; color: #a5ff36;">0 VNĐ</strong>
+        </li>
+    </ul>
+    <hr class="my-4" />
+
+    <div class="offcanvas-footer">
+        <div class="d-grid gap-2">
+            <input type="submit" value="Tạo Hóa đơn" class="btn btn-offcanvas-primary" />
+        </div>
+    </div>
+}
+
+
+<!--
+    Quan trọng: Đoạn script này phải được đặt trực tiếp trong file partial view.
+    Khi jQuery tải HTML này vào Offcanvas, nó sẽ tự động thực thi đoạn script này,
+    gắn các sự kiện 'change' vào các dropdown và làm cho chức năng tính giá hoạt động.
+-->
+<script>
+    // Đặt trong một hàm để tránh xung đột biến toàn cục
+    (function () {
+        // Biến lưu giá trị
+        var giaGoc = 0;
+        var soTienGiam = 0;
+
+        // Hàm cập nhật giá
+        function updatePrice() {
+            var thanhTien = giaGoc - soTienGiam;
+            if (thanhTien < 0) thanhTien = 0;
+
+            // Định dạng tiền tệ
+            var format = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' });
+
+            $('#giaGocDisplay').text(format.format(giaGoc));
+            $('#giamGiaDisplay').text(format.format(soTienGiam));
+            $('#thanhTienDisplay').text(format.format(thanhTien));
+        }
+
+        // Sự kiện khi thay đổi Gói Tập
+        $('#GoiTapId').change(function () {
+            var goiTapId = $(this).val();
+            if (goiTapId) {
+                // Gọi AJAX để lấy giá
+                $.get('@Url.Action("GetGoiTapInfo", "HoaDons")', { id: goiTapId }, function (data) {
+                    giaGoc = data.giaGoc;
+                    // Trigger sự kiện change của khuyến mãi để tính lại giảm giá
+                    $('#KhuyenMaiId').trigger('change');
+                });
+            } else {
+                giaGoc = 0;
+                $('#KhuyenMaiId').trigger('change');
+            }
+        });
+
+        // Sự kiện khi thay đổi Khuyến Mãi
+        $('#KhuyenMaiId').change(function () {
+            var khuyenMaiId = $(this).val();
+            if (khuyenMaiId && giaGoc > 0) {
+                // Gọi AJAX để tính giảm giá
+                $.get('@Url.Action("GetKhuyenMaiDiscount", "HoaDons")', { id: khuyenMaiId, giaGoc: giaGoc }, function (data) {
+                    soTienGiam = data.soTienGiam;
+                    updatePrice();
+                });
+            } else {
+                soTienGiam = 0;
+                updatePrice();
+            }
+        });
+
+        // Cập nhật giá lần đầu khi form được tải
+        updatePrice();
+    })();
+</script>

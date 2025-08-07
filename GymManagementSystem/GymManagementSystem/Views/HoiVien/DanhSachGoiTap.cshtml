@@ -1,5 +1,4 @@
 ﻿@model IEnumerable<GymManagementSystem.Models.GoiTap>
-
 @{
     ViewBag.Title = "Chọn Gói Tập Của Bạn";
     var culture = new System.Globalization.CultureInfo("vi-VN");
@@ -33,7 +32,7 @@
                     <p class="card-text text-muted">@item.MoTaQuyenLoi</p>
                 </div>
                 <div class="card-footer mt-auto text-center bg-transparent border-top-0">
-                    @using (Html.BeginForm("ChonGoiTap", "HoiVien", FormMethod.Post))
+                    @using (Html.BeginForm("DangKyGoiTap", "HoiVien", FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="goiTapId" value="@item.Id" />

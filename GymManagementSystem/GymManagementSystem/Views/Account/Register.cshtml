@@ -41,7 +41,7 @@
         <div class="form-group">
             @Html.LabelFor(m => m.VaiTro)
             @Html.DropDownListFor(m => m.VaiTro,
-                new SelectList(new[] { "HoiVien", "PT" }.Select(r => new { Value = r, Text = RoleHelper.GetVietnameseRoleName(r) }), "Value", "Text"),
+                new SelectList(new[] { "HoiVien", "PT", "QuanLy"}.Select(r => new { Value = r, Text = RoleHelper.GetVietnameseRoleName(r) }), "Value", "Text"),
                 "--- Vui lòng chọn vai trò ---",
                 new { @class = "form-control", id = "vaiTroDropdown" })
         </div>

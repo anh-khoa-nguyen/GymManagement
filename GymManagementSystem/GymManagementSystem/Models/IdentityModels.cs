@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace GymManagementSystem.Models
 {
@@ -24,6 +25,12 @@ namespace GymManagementSystem.Models
         public int? HuanLuyenVienId { get; set; }
         public virtual ICollection<ThongBao> ThongBaos { get; set; }
 
+
+
+        public int? HangHoiVienId { get; set; }
+        [ForeignKey("HangHoiVienId")]
+        public virtual HangHoiVien HangHoiVien { get; set; }
+        public string NguoiGioiThieuId { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
@@ -44,6 +51,18 @@ namespace GymManagementSystem.Models
         public DbSet<ChiSoSucKhoe> ChiSoSucKhoes { get; set; }
         public DbSet<ThongBao> ThongBaos { get; set; }
 
+        //Khoa
+        public DbSet<KeHoach> KeHoachs { get; set; }
+        public DbSet<ChiTietKeHoach> ChiTietKeHoachs { get; set; }
+        public DbSet<DangKyKeHoach> DangKyKeHoachs { get; set; }
+
+        public DbSet<BaiTap> BaiTaps { get; set; }
+        public DbSet<BuocThucHien> BuocThucHiens { get; set; }
+        public DbSet<TienDoBaiTap> TienDoBaiTaps { get; set; }
+        public DbSet<HangHoiVien> HangHoiViens { get; set; }
+        public DbSet<HoaDon> HoaDons { get; set; }
+        public DbSet<KhuyenMai> KhuyenMais { get; set; }
+        public DbSet<HangCoKhuyenMai> HangHoiVien_KhuyenMais { get; set; }
 
 
         public ApplicationDbContext()

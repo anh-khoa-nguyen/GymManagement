@@ -1,0 +1,197 @@
+﻿<head>
+    <link href="@Url.Content("~/Content/Workout/do.css")" rel="stylesheet" type="text/css" />
+</head>
+
+@model GymManagementSystem.Models.ChiTietKeHoach
+@{
+    ViewBag.Title = Model.BaiTap.TenBaiTap;
+}
+<link href="@Url.Content("~/Content/ai-workout.css")" rel="stylesheet" type="text/css" />
+
+<div class="ai-workout-wrapper">
+    <div class="plan-header text-center mb-4">
+        <h2>@ViewBag.Title</h2>
+        <p>Mục tiêu của bạn: @Model.SoLanMucTieu lần</p>
+    </div>
+
+    <!-- Khung TV chính -->
+    <div class="tv-frame">
+        <!-- Màn hình Camera -->
+        <div class="camera-screen">
+            <video id="webcam" autoplay playsinline></video>
+            <canvas id="canvas"></canvas>
+        </div>
+
+        <!-- Cột thông số (HUD) -->
+        <div class="hud-panel">
+            <div class="hud-card">
+                <h3>Số lần</h3>
+                <h1 id="rep-counter">0</h1>
+            </div>
+
+            <div class="hud-card">
+                <h3>Trạng thái</h3>
+                <div id="status">Nhấn "Bắt đầu" để bật camera.</div>
+            </div>
+
+            <button id="startButton">
+                <i class="fas fa-camera"></i> Bắt đầu
+            </button>
+        </div>
+    </div>
+
+    <div class="text-center">
+        @Html.ActionLink("Quay lại kế hoạch", "XemKeHoach", "ThucHienKeHoach", new { dangKyKeHoachId = ViewBag.DangKyKeHoachId }, new { @class = "back-link" })
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        var url1 = "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0/dist/tf.min.js";
+        var url2 = "https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection@2.0.0/dist/pose-detection.min.js";
+    }
+
+    <script src="@url1"></script>
+    <script src="@url2"></script>
+
+    <script>
+        // Lấy các phần tử DOM
+        const video = document.getElementById('webcam');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const repCounter = document.getElementById('rep-counter');
+        const startButton = document.getElementById('startButton');
+        const statusDiv = document.getElementById('status');
+
+        // Lấy thông tin từ Model
+        const targetReps = @Model.SoLanMucTieu;
+        const dangKyKeHoachId = @ViewBag.DangKyKeHoachId;
+        const baiTapId = @Model.BaiTapId;
+
+        // Biến toàn cục
+        let detector;
+        let repCount = 0;
+        let poseState = 'up';
+        let isTracking = false;
+
+        // Hàm thiết lập camera
+        async function setupCamera() {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                throw new Error('Trình duyệt không hỗ trợ API camera.');
+            }
+            const stream = await navigator.mediaDevices.getUserMedia({ 'audio': false, 'video': { width: 640, height: 480 } });
+            video.srcObject = stream;
+            return new Promise((resolve) => {
+                video.onloadedmetadata = () => {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    resolve(video);
+                };
+            });
+        }
+
+        // Hàm tải mô hình AI
+        async function loadModel() {
+            statusDiv.innerText = 'Đang tải mô hình AI...';
+            const detectorConfig = { modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING };
+            detector = await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet, detectorConfig);
+            statusDiv.innerText = 'Mô hình đã sẵn sàng!';
+        }
+
+        // Vòng lặp chính để nhận diện
+        async function detectPose() {
+            if (!isTracking) return;
+            const poses = await detector.estimatePoses(video);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (poses && poses.length > 0) {
+                drawKeypoints(poses[0].keypoints);
+                countReps(poses[0]);
+            }
+            requestAnimationFrame(detectPose);
+        }
+
+        // Hàm vẽ các điểm khớp
+        function drawKeypoints(keypoints) {
+            for (let i = 0; i < keypoints.length; i++) {
+                const keypoint = keypoints[i];
+                if (keypoint.score > 0.5) {
+                    ctx.beginPath();
+                    ctx.arc(keypoint.x, keypoint.y, 5, 0, 2 * Math.PI);
+                    ctx.fillStyle = '#a5ff36'; // Màu xanh neon
+                    ctx.fill();
+                }
+            }
+        }
+
+        // Hàm xử lý logic đếm (VÍ DỤ CHO SQUAT)
+        function countReps(pose) {
+            const leftHip = pose.keypoints.find(k => k.name === 'left_hip');
+            const leftKnee = pose.keypoints.find(k => k.name === 'left_knee');
+            if (leftHip && leftKnee && leftHip.score > 0.5 && leftKnee.score > 0.5) {
+                if (poseState === 'up' && leftHip.y > leftKnee.y) {
+                    poseState = 'down';
+                    statusDiv.innerText = 'Hạ xuống...';
+                    statusDiv.className = 'status-warning';
+                }
+                if (poseState === 'down' && leftHip.y < leftKnee.y) {
+                    repCount++;
+                    repCounter.innerText = repCount;
+                    poseState = 'up';
+                    statusDiv.innerText = `Tốt! Lần thứ ${repCount}`;
+                    statusDiv.className = '';
+
+                    if (repCount >= targetReps) {
+                        isTracking = false;
+                        video.srcObject.getTracks().forEach(track => track.stop());
+                        statusDiv.className = 'status-success';
+                        statusDiv.innerText = 'Hoàn thành! Đang lưu kết quả...';
+                        sendCompletionToServer();
+                    }
+                }
+            }
+        }
+
+        // Hàm gửi kết quả lên server
+        async function sendCompletionToServer() {
+            const data = { dangKyKeHoachId: dangKyKeHoachId, baiTapId: baiTapId };
+            const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+            const token = tokenInput ? tokenInput.value : '';
+            try {
+                const response = await fetch('@Url.Action("HoanThanhBaiTap", "ThucHienKeHoach")', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'RequestVerificationToken': token },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                alert(result.message);
+                window.location.href = '@Url.Action("XemKeHoach", "ThucHienKeHoach", new { dangKyKeHoachId = ViewBag.DangKyKeHoachId })';
+            } catch (error) {
+                console.error('Lỗi khi gửi kết quả:', error);
+                alert('Có lỗi xảy ra khi lưu kết quả.');
+            }
+        }
+
+        // Sự kiện nhấn nút Bắt đầu
+        startButton.onclick = async () => {
+            try {
+                startButton.disabled = true;
+                startButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+                await setupCamera();
+                await loadModel();
+                isTracking = true;
+                detectPose();
+                startButton.style.display = 'none';
+            } catch (error) {
+                statusDiv.className = 'status-error';
+                statusDiv.innerText = 'Lỗi: ' + error.message;
+                startButton.disabled = false;
+                startButton.innerHTML = '<i class="fas fa-camera"></i> Bắt đầu';
+            }
+        };
+    </script>
+
+    <!-- Thêm một thẻ input ẩn để lấy token -->
+    @using (Html.BeginForm())
+    {@Html.AntiForgeryToken()}
+}

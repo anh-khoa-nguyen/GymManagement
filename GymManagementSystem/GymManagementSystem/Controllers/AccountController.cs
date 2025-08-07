@@ -1,14 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using GymManagementSystem.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using GymManagementSystem.Models;
 
 namespace GymManagementSystem.Controllers
 {
@@ -152,13 +154,32 @@ namespace GymManagementSystem.Controllers
         {
             if (ModelState.IsValid)
             {
+                string nguoiGioiThieuId = null;
+
+                if (!string.IsNullOrWhiteSpace(model.MaGioiThieuNhapVao))
+                {
+                    // Tìm hồ sơ hội viên có mã giới thiệu này
+                    var hoivienGioiThieu = await db.HoiViens.FirstOrDefaultAsync(h => h.MaGioiThieu == model.MaGioiThieuNhapVao.ToUpper());
+                    if (hoivienGioiThieu != null)
+                    {
+                        // Lấy ApplicationUserId của người giới thiệu
+                        nguoiGioiThieuId = hoivienGioiThieu.ApplicationUserId;
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("MaGioiThieuNhapVao", "Mã giới thiệu không hợp lệ.");
+                        return View(model);
+                    }
+                }
+
                 // 1. Tạo đối tượng ApplicationUser với các thông tin cơ bản
                 var user = new ApplicationUser
                 {
                     UserName = model.Email,
                     Email = model.Email,
                     HoTen = model.HoTen,
-                    VaiTro = model.VaiTro 
+                    VaiTro = model.VaiTro,
+                    NguoiGioiThieuId = nguoiGioiThieuId
                 };
 
                 // 2. Tạo người dùng trong hệ thống Identity
@@ -186,10 +207,16 @@ namespace GymManagementSystem.Controllers
                             ApplicationUserId = user.Id,
                             ChieuCao = model.ChieuCao ?? 0, // Cung cấp giá trị mặc định nếu null
                             CanNang = model.CanNang ?? 0,
-                            MucTieuTapLuyen = model.MucTieuTapLuyen
+                            MucTieuTapLuyen = model.MucTieuTapLuyen,
+                            MaGioiThieu = await GenerateUniqueReferralCode() // <-- Tạo mã và lưu vào đây
                         };
                         db.HoiViens.Add(hoiVienProfile);
                         db.SaveChanges(); // Lưu hồ sơ hội viên
+
+                        if (nguoiGioiThieuId != null)
+                        {
+                            await CheckAndGrantReferralRewardAsync(nguoiGioiThieuId);
+                        }
 
                         // Cập nhật lại user để lưu Id của hồ sơ hội viên
                         user.HoiVienId = hoiVienProfile.Id;
@@ -455,6 +482,53 @@ namespace GymManagementSystem.Controllers
         public ActionResult ExternalLoginFailure()
         {
             return View();
+        }
+
+        private async Task<string> GenerateUniqueReferralCode()
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            var random = new Random();
+            string code;
+            do
+            {
+                code = new string(Enumerable.Repeat(chars, 6)
+                    .Select(s => s[random.Next(s.Length)]).ToArray());
+            }
+            // Lặp lại cho đến khi tìm được một mã chưa tồn tại trong bảng HoiViens
+            while (await db.HoiViens.AnyAsync(h => h.MaGioiThieu == code)); // <-- THAY ĐỔI Ở ĐÂY
+
+            return code;
+        }
+
+        private async Task CheckAndGrantReferralRewardAsync(string referrerId)
+        {
+            // Đếm xem người này đã giới thiệu được bao nhiêu người
+            int referralCount = await UserManager.Users.CountAsync(u => u.NguoiGioiThieuId == referrerId);
+
+            // Định nghĩa các mốc thưởng và mã khuyến mãi tương ứng
+            var rewardTiers = new Dictionary<int, string>
+            {
+                { 5, "REFERRAL_5" },   // Mã KM cho mốc 5 người
+                { 10, "REFERRAL_10" }, // Mã KM cho mốc 10 người
+                { 15, "REFERRAL_15" }  // Mã KM cho mốc 15 người
+            };
+
+            // Kiểm tra xem có đạt mốc nào không
+            if (rewardTiers.ContainsKey(referralCount))
+            {
+                string maKhuyenMai = rewardTiers[referralCount];
+                var khuyenMai = await db.KhuyenMais.FirstOrDefaultAsync(k => k.MaKhuyenMai == maKhuyenMai);
+
+                if (khuyenMai != null)
+                {
+                    // TODO: Logic tặng khuyến mãi cho người dùng có ID là referrerId
+                    // Ví dụ: Tạo một bản ghi trong bảng nối HoiVien_KhuyenMai
+                    // db.HoiVien_KhuyenMais.Add(new HoiVien_KhuyenMai { HoiVienId = referrerId, KhuyenMaiId = khuyenMai.Id });
+                    // await db.SaveChangesAsync();
+
+                    // Có thể gửi email thông báo cho người giới thiệu
+                }
+            }
         }
 
         protected override void Dispose(bool disposing)

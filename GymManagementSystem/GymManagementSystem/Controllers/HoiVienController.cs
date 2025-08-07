@@ -1,9 +1,11 @@
-﻿using GymManagementSystem.Models;
-using Microsoft.AspNet.Identity;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
+using GymManagementSystem.Models;
+using Microsoft.AspNet.Identity;
 
 namespace GymManagementSystem.Controllers
 {
@@ -19,54 +21,54 @@ namespace GymManagementSystem.Controllers
             return View();
         }
 
-        // GET: HoiVien/DanhSachGoiTap
-        public ActionResult DanhSachGoiTap()
-        {
-            var goiTaps = db.GoiTaps.ToList();
-            return View(goiTaps);
-        }
+        //// GET: HoiVien/DanhSachGoiTap
+        //public ActionResult DanhSachGoiTap()
+        //{
+        //    var goiTaps = db.GoiTaps.ToList();
+        //    return View(goiTaps);
+        //}
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult ChonGoiTap(int goiTapId)
-        {
-            // 1. Lấy ID của người dùng đang đăng nhập
-            var currentUserId = User.Identity.GetUserId();
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult ChonGoiTap(int goiTapId)
+        //{
+        //    // 1. Lấy ID của người dùng đang đăng nhập
+        //    var currentUserId = User.Identity.GetUserId();
 
-            // 2. Tìm hồ sơ Hội viên để lấy ID của bảng HoiVien (chứ không phải ApplicationUser)
-            var hoiVienProfile = db.HoiViens.FirstOrDefault(hv => hv.ApplicationUserId == currentUserId);
+        //    // 2. Tìm hồ sơ Hội viên để lấy ID của bảng HoiVien (chứ không phải ApplicationUser)
+        //    var hoiVienProfile = db.HoiViens.FirstOrDefault(hv => hv.ApplicationUserId == currentUserId);
 
-            // 3. Tìm thông tin gói tập để biết thời hạn (nếu có)
-            // Trong tương lai, bạn có thể thêm cột ThoiHan (số ngày) vào bảng GoiTap
-            var goiTap = db.GoiTaps.Find(goiTapId);
+        //    // 3. Tìm thông tin gói tập để biết thời hạn (nếu có)
+        //    // Trong tương lai, bạn có thể thêm cột ThoiHan (số ngày) vào bảng GoiTap
+        //    var goiTap = db.GoiTaps.Find(goiTapId);
 
-            if (hoiVienProfile != null && goiTap != null)
-            {
-                // 4. Tạo một bản ghi Đăng ký mới
-                var dangKyMoi = new DangKyGoiTap
-                {
-                    HoiVienId = hoiVienProfile.Id,
-                    GoiTapId = goiTapId,
-                    NgayDangKy = DateTime.Now,
-                    NgayHetHan = DateTime.Now.AddDays(30), // Giả sử mặc định là 30 ngày
-                    TrangThai = TrangThaiDangKy.HoatDong
-                };
+        //    if (hoiVienProfile != null && goiTap != null)
+        //    {
+        //        // 4. Tạo một bản ghi Đăng ký mới
+        //        var dangKyMoi = new DangKyGoiTap
+        //        {
+        //            HoiVienId = hoiVienProfile.Id,
+        //            GoiTapId = goiTapId,
+        //            NgayDangKy = DateTime.Now,
+        //            NgayHetHan = DateTime.Now.AddDays(30), // Giả sử mặc định là 30 ngày
+        //            TrangThai = TrangThaiDangKy.HoatDong
+        //        };
 
-                // 5. Thêm bản ghi mới vào CSDL
-                db.DangKyGoiTaps.Add(dangKyMoi);
-                db.SaveChanges();
+        //        // 5. Thêm bản ghi mới vào CSDL
+        //        db.DangKyGoiTaps.Add(dangKyMoi);
+        //        db.SaveChanges();
 
-                // 6. Gửi thông báo thành công về cho View
-                TempData["SuccessMessage"] = $"Bạn đã đăng ký thành công gói '{goiTap.TenGoi}'!";
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "Đã có lỗi xảy ra. Vui lòng thử lại.";
-            }
+        //        // 6. Gửi thông báo thành công về cho View
+        //        TempData["SuccessMessage"] = $"Bạn đã đăng ký thành công gói '{goiTap.TenGoi}'!";
+        //    }
+        //    else
+        //    {
+        //        TempData["ErrorMessage"] = "Đã có lỗi xảy ra. Vui lòng thử lại.";
+        //    }
 
-            // 7. Chuyển hướng người dùng trở lại trang danh sách gói tập
-            return RedirectToAction("DanhSachGoiTap");
-        }
+        //    // 7. Chuyển hướng người dùng trở lại trang danh sách gói tập
+        //    return RedirectToAction("DanhSachGoiTap");
+        //}
 
         // GET: HoiVien/DatLich
         public ActionResult DatLich()
@@ -172,6 +174,87 @@ namespace GymManagementSystem.Controllers
                 Response.StatusCode = 500;
                 return Json(new { message = ex.Message }, JsonRequestBehavior.AllowGet);
             }
+        }
+
+
+        // GET: /HoiVien/DanhSachGoiTap
+        // Hiển thị danh sách các gói tập cho hội viên chọn
+        public async Task<ActionResult> DanhSachGoiTap()
+        {
+            var goiTaps = await db.GoiTaps.ToListAsync();
+            return View(goiTaps);
+        }
+
+        // POST: /HoiVien/DangKyGoiTap
+        // Action này được gọi khi hội viên nhấn nút "Chọn Gói này"
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> DangKyGoiTap(int goiTapId)
+        {
+            var goiTap = await db.GoiTaps.FindAsync(goiTapId);
+            if (goiTap == null)
+            {
+                return HttpNotFound();
+            }
+
+            var userId = User.Identity.GetUserId();
+
+            // 1. TẠO RA MỘT HÓA ĐƠN MỚI Ở TRẠNG THÁI "CHỜ THANH TOÁN"
+            var hoaDon = new HoaDon
+            {
+                HoiVienId = userId,
+                GoiTapId = goiTap.Id,
+                NgayTao = DateTime.Now,
+                GiaGoc = goiTap.GiaTien,
+                SoTienGiam = 0, // Tạm thời chưa xử lý khuyến mãi ở bước này
+                ThanhTien = goiTap.GiaTien,
+                TrangThai = TrangThai.ChoThanhToan
+            };
+
+            db.HoaDons.Add(hoaDon);
+            await db.SaveChangesAsync();
+
+            // 2. CHUYỂN HƯỚNG NGƯỜI DÙNG ĐẾN TRANG XÁC NHẬN VÀ THANH TOÁN
+            // Chúng ta sẽ truyền ID của hóa đơn vừa tạo đi
+            return RedirectToAction("XacNhanThanhToan", new { hoaDonId = hoaDon.Id });
+        }
+
+        // GET: /HoiVien/XacNhanThanhToan?hoaDonId=5
+        // Hiển thị trang xác nhận thông tin trước khi thanh toán
+        public async Task<ActionResult> XacNhanThanhToan(int hoaDonId)
+        {
+            var hoaDon = await db.HoaDons
+                                 .Include(h => h.GoiTap)
+                                 .FirstOrDefaultAsync(h => h.Id == hoaDonId);
+
+            if (hoaDon == null || hoaDon.HoiVienId != User.Identity.GetUserId())
+            {
+                return HttpNotFound(); // Đảm bảo người dùng chỉ xem được hóa đơn của chính mình
+            }
+
+            return View(hoaDon);
+        }
+
+        public async Task<ActionResult> GoiTapCuaToi()
+        {
+            var userId = User.Identity.GetUserId();
+
+            // Tìm hồ sơ HoiVien của người dùng đang đăng nhập
+            var hoivienProfile = await db.HoiViens.FirstOrDefaultAsync(h => h.ApplicationUserId == userId);
+            if (hoivienProfile == null)
+            {
+                // Nếu không có hồ sơ, trả về danh sách rỗng
+                return View(new List<DangKyGoiTap>());
+            }
+
+            // Lấy danh sách đăng ký dựa trên HoiVienId
+            var danhSachDangKy = await db.DangKyGoiTaps
+                                         .Include(d => d.GoiTap)
+                                         .Where(d => d.HoiVienId == hoivienProfile.Id)
+                                         .OrderByDescending(d => d.NgayDangKy)
+                                         .ToListAsync();
+
+            return View(danhSachDangKy);
         }
 
         // Hàm helper để quyết định màu sắc dựa trên trạng thái

@@ -1,33 +1,56 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Homepage";
 }
 
-<main>
-    <section class="row" aria-labelledby="aspnetTitle">
-        <h1 id="title">ASP.NET</h1>
-        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-        <p><a href="https://asp.net" class="btn btn-primary btn-md">Learn more &raquo;</a></p>
-    </section>
-
-    <div class="row">
-        <section class="col-md-4" aria-labelledby="gettingStartedTitle">
-            <h2 id="gettingStartedTitle">Getting started</h2>
-            <p>
-                ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-                enables a clean separation of concerns and gives you full control over markup
-                for enjoyable, agile development.
-            </p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="librariesTitle">
-            <h2 id="librariesTitle">Get more libraries</h2>
-            <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="hostingTitle">
-            <h2 id="hostingTitle">Web Hosting</h2>
-            <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-        </section>
+<div class="hero-section">
+    <!-- Nội dung chính giữa -->
+    <div class="container-fluid">
+        <h1 class="hero-title text-white">
+            Siết cơ bắp,<br>Thắp tinh thần
+        </h1>
     </div>
-</main>
+
+    <!-- Các thẻ thông tin (Stat Cards) -->
+    <div class="stat-card card-hours">
+        <div class="icon"><i class="fas fa-clock"></i></div>
+        <div class="value">1.5</div>
+        <div class="label">Hours</div>
+    </div>
+    <div class="stat-card card-poses">
+        <div class="icon"><i class="fas fa-running"></i></div>
+        <div class="value">20</div>
+        <div class="label">Poses</div>
+    </div>
+    <div class="stat-card card-kcal">
+        <div class="icon"><i class="fas fa-fire-alt"></i></div>
+        <div class="value">550</div>
+        <div class="label">Kcal</div>
+    </div>
+    <div class="stat-card card-sets">
+        <div class="icon"><i class="fas fa-dumbbell"></i></div>
+        <div class="value">5</div>
+        <div class="label">Sets</div>
+    </div>
+
+    <!-- Chữ dọc hai bên -->
+    <div class="side-nav prev">T R Ứ Ớ C</div>
+    <div class="side-nav next">S A U</div>
+
+    <!-- Thông tin góc dưới bên trái -->
+    <div class="bottom-left-info">
+        <div class="avatar-group">
+            <!-- Thay bằng ảnh thật -->
+            <img src="https://i.pravatar.cc/40?img=1" alt="Avatar 1" class="avatar">
+            <img src="https://i.pravatar.cc/40?img=2" alt="Avatar 2" class="avatar">
+            <img src="https://i.pravatar.cc/40?img=3" alt="Avatar 3" class="avatar">
+        </div>
+        <div class="happy-spirits-text">
+            <strong>12k+</strong> Đánh giá
+        </div>
+    </div>
+
+    <!-- Nút bắt đầu góc dưới bên phải -->
+    <div class="bottom-right-action">
+        <a href="#" class="btn-start">Triển ngay &gt;&gt;&gt;</a>
+    </div>
+</div>

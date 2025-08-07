@@ -1,0 +1,70 @@
+﻿<head>
+    <link href="@Url.Content("~/Content/CRUD/crud.css")" rel="stylesheet" type="text/css" />
+</head>
+
+@model IEnumerable<GymManagementSystem.Models.KhuyenMai>
+@using GymManagementSystem.Models.ViewModels
+
+@{
+    ViewBag.Title = "Quản lý Khuyến mãi";
+
+    // Khởi tạo và điền dữ liệu cho Header ViewModel
+    var headerViewModel = new AdminPageHeaderViewModel
+    {
+        Title = ViewBag.Title,
+        CreateActionUrl = Url.Action("Create"),
+        SearchAction = "Index",
+        SearchController = "KhuyenMais",
+        CurrentFilter = ViewBag.CurrentFilter
+    };
+}
+
+<!-- Gọi Partial View cho Header -->
+@Html.Partial("_AdminPageHeader", headerViewModel)
+
+
+<!-- Bắt đầu Form để xóa hàng loạt -->
+@using (Html.BeginForm("DeleteMultiple", "KhuyenMais", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <!-- Gọi Partial View cho nút "Xóa đã chọn" -->
+    @Html.Partial("_DeleteSelectedButton")
+
+    <table class="modern-table">
+        <thead>
+            <tr>
+                <th style="width: 40px;"><input type="checkbox" class="form-check-input" id="checkAll" /></th>
+                <th>Tên Khuyến Mãi</th>
+                <th>Mã</th>
+                <th>Giảm Giá</th>
+                <th>Ngày Bắt Đầu</th>
+                <th>Ngày Kết Thúc</th>
+                <th>Trạng Thái</th>
+                <th class="text-end">Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><input type="checkbox" class="form-check-input row-checkbox" name="idsToDelete" value="@item.Id" /></td>
+                    <td>@Html.DisplayFor(modelItem => item.TenKhuyenMai)</td>
+                    <td>@Html.DisplayFor(modelItem => item.MaKhuyenMai)</td>
+                    <td>@(item.PhanTramGiamGia > 0 ? $"{item.PhanTramGiamGia}%" : $"{item.SoTienGiamGia:N0} VNĐ")</td>
+                    <td>@item.NgayBatDau.ToShortDateString()</td>
+                    <td>@item.NgayKetThuc.ToShortDateString()</td>
+                    <td>
+                        @if (item.IsActive)
+                        {<span class="status-badge status-active">Kích hoạt</span> }
+                        else
+                        { <span class="status-badge status-inactive">Vô hiệu hóa</span>}
+                    </td>
+                    <td>
+                        @Html.Partial("_CrudButtons", item.Id)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

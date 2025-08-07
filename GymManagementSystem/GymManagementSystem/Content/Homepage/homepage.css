@@ -1,0 +1,265 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+/* --- General Styles --- */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #000;
+    color: #fff;
+    letter-spacing: 0.5px;
+}
+
+/* --- Hero Section (Main background and content container) --- */
+.hero-section {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden; /* Ngăn các phần tử con bị tràn ra ngoài */
+    background-image: url('https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?q=80&w=2070&auto=format&fit=crop'); /* Thay bằng ảnh của bạn */
+    background-size: cover;
+    background-position: center top;
+}
+
+    /* Lớp phủ màu đen mờ trên ảnh nền để chữ dễ đọc hơn */
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.6);
+        z-index: 1;
+    }
+
+    /* Đảm bảo nội dung nằm trên lớp phủ */
+    .hero-section > .container-fluid {
+        position: relative;
+        z-index: 2;
+    }
+
+
+/* --- Main Headline --- */
+.hero-title {
+    font-size: 5.5rem; /* Kích thước chữ lớn */
+    font-weight: 800; /* Rất đậm */
+    line-height: 1.1;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+    letter-spacing: 2px;
+}
+
+/* --- Stat Cards --- */
+.stat-card {
+    position: absolute;
+    z-index: 3;
+    background-color: rgba(43, 43, 43, 0.5); /* Màu nền bán trong suốt */
+    backdrop-filter: blur(10px); /* Hiệu ứng mờ kính */
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 1.2rem 1.5rem;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+    .stat-card .icon {
+        font-size: 1.5rem;
+        color: #a5ff36; /* Màu xanh lá cây neon */
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-card .value {
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+
+    .stat-card .label {
+        font-size: 1rem;
+        margin: 0;
+    }
+
+/* Định vị cho từng card */
+.card-hours {
+    top: 30%;
+    left: 10%;
+}
+
+.card-poses {
+    top: 30%;
+    right: 10%;
+}
+
+.card-kcal {
+    bottom: 20%;
+    left: 13%;
+}
+
+.card-sets {
+    bottom: 20%;
+    right: 13%;
+}
+
+
+/* --- Side Navigation (Prev/Next) --- */
+.side-nav {
+    position: absolute;
+    z-index: 3;
+    top: 50%;
+    transform: translateY(-50%);
+    writing-mode: vertical-rl; /* Xoay chữ dọc */
+    text-orientation: mixed;
+    font-size: 1rem;
+    letter-spacing: 0.3em;
+}
+
+    .side-nav.prev {
+        left: 40px;
+    }
+
+    .side-nav.next {
+        right: 40px;
+    }
+
+/* --- Bottom Elements --- */
+.bottom-left-info, .bottom-right-action {
+    position: absolute;
+    z-index: 3;
+    bottom: 40px;
+}
+
+.bottom-left-info {
+    left: 60px;
+    display: flex;
+    align-items: center;
+}
+
+.avatar-group {
+    display: flex;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid white;
+    margin-left: -15px;
+}
+
+    .avatar:first-child {
+        margin-left: 0;
+    }
+
+.happy-spirits-text {
+    margin-left: 15px;
+}
+
+.bottom-right-action {
+    right: 60px;
+}
+
+.btn-start {
+    background-color: #a5ff36; /* Màu xanh lá cây neon */
+    color: #000;
+    font-weight: 700;
+    border-radius: 50px;
+    padding: 10px 25px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+    .btn-start:hover {
+        background-color: #fff;
+        color: #000;
+        transform: scale(1.05);
+    }
+
+/* --- Navbar Customization --- */
+.navbar-transparent {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    background: transparent !important;
+}
+
+.navbar-brand {
+    font-weight: 800;
+    font-size: 1.5rem;
+}
+
+.nav-link {
+    font-weight: 400;
+    margin: 0 10px;
+}
+
+.btn-outline-custom {
+    border-color: #a5ff36;
+    color: #a5ff36;
+}
+
+    .btn-outline-custom:hover {
+        background-color: #a5ff36;
+        color: #000;
+    }
+
+.btn-custom-green {
+    background-color: #a5ff36;
+    color: #000;
+    font-weight: 700;
+    border-radius: 50px;
+}
+
+    .btn-custom-green:hover {
+        background-color: #fff;
+        color: #000;
+    }
+
+.main-content-padding {
+    padding-top: 80px; /* Tạo khoảng trống phía trên, bạn có thể điều chỉnh giá trị này */
+}
+
+.table {
+    color: #dee2e6; /* Đổi màu chữ trong bảng thành màu sáng */
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+
+h2, h3, h4 {
+    color: #fff; /* Đảm bảo các tiêu đề cũng có màu trắng */
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 992px) {
+    .hero-title {
+        font-size: 4rem;
+    }
+
+    .stat-card {
+        display: none;
+    }
+    /* Ẩn các card trên màn hình nhỏ */
+    .side-nav {
+        display: none;
+    }
+    /* Ẩn prev/next */
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 3rem;
+    }
+
+    .bottom-left-info {
+        left: 20px;
+    }
+
+    .bottom-right-action {
+        right: 20px;
+    }
+}
+

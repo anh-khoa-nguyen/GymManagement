@@ -1,89 +1,100 @@
-﻿@model GymManagementSystem.Models.IndexViewModel
+﻿@model GymManagementSystem.Models.ViewModels.UserProfileViewModel
 @{
-    ViewBag.Title = "Manage";
+    ViewBag.Title = "Bảng điều khiển";
 }
+<link href="@Url.Content("~/Content/Manage/profile.css")" rel="stylesheet" type="text/css" />
 
-<main aria-labelledby="title">
-    <h2 id="title">@ViewBag.Title.</h2>
+<!-- ======================================================== -->
+<!-- CONTAINER CHÍNH CHO TOÀN BỘ DASHBOARD -->
+<!-- ======================================================== -->
+<div class="profile-dashboard-wrapper">
 
-    <p class="text-success">@ViewBag.StatusMessage</p>
-    <div>
-        <h4>Change your account settings</h4>
-        <hr />
-        <dl class="dl-horizontal">
-            <dt>Password:</dt>
-            <dd>
-                [
-                @if (Model.HasPassword)
+    <div class="profile-header">
+        <img src="https://i.pravatar.cc/80" alt="Avatar" class="profile-avatar" />
+        <div class="profile-info">
+            <h3>@Model.UserName</h3>
+            <p>@Model.Email</p>
+        </div>
+        @Html.ActionLink("Chỉnh sửa thông tin", "Edit", "Manage", null, new { @class = "btn-edit-profile" })
+    </div>
+
+    <div class="row">
+        <!-- NỀN HIỆU ỨNG BONG BÓNG NỔI -->
+        <ul class="background-bubbles">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+
+        <!-- Cột chính bên trái -->
+        <div class="col-lg-8">
+            <div class="membership-card">
+                @if (Model.MembershipInfo.HangHienTai != null)
                 {
-                    @Html.ActionLink("Change your password", "ChangePassword")
+                    <span class="unlocked-badge">@Model.MembershipInfo.HangHienTai.TenHang</span>
+                    <div class="tier-progress">
+                        <div>
+                            <h3 class="tier-name">@Model.MembershipInfo.HangHienTai.TenHang Member</h3>
+                            <p class="text-muted">Điểm tích lũy: @String.Format("{0:N0}", Model.MembershipInfo.TongChiTieu) / @String.Format("{0:N0}", Model.MembershipInfo.HangTiepTheo?.NguongChiTieu ?? Model.MembershipInfo.TongChiTieu)</p>
+                            <div class="progress-bar-custom">
+                                <div class="progress" style="width: @Model.MembershipInfo.PhanTramHoanThanh%;"></div>
+                            </div>
+                        </div>
+                        @if (Model.MembershipInfo.HangTiepTheo != null)
+                        {
+                            <button class="btn-upgrade">Nâng cấp</button>
+                        }
+                    </div>
                 }
                 else
                 {
-                    @Html.ActionLink("Create", "SetPassword")
+                    <h3 class="tier-name">New Member</h3>
                 }
-                ]
-            </dd>
-            <dt>External Logins:</dt>
-            <dd>
-                @Model.Logins.Count [
-                @Html.ActionLink("Manage", "ManageLogins") ]
-            </dd>
-            @*
-                Phone Numbers can used as a second factor of verification in a two-factor authentication system.
-                
-                See <a href="https://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
-                    for details on setting up this ASP.NET application to support two-factor authentication using SMS.
-                
-                Uncomment the following block after you have set up two-factor authentication
-            *@
-            @*  
-                <dt>Phone Number:</dt>
-                <dd>
-                    @(Model.PhoneNumber ?? "None")
-                    @if (Model.PhoneNumber != null)
+            </div>
+
+            <div class="member-benefits">
+                <h4>Đặc quyền của bạn</h4>
+                <div class="benefits-grid">
+                    <div class="benefit-item"><i class="fas fa-bed"></i><p>Room Upgrade</p></div>
+                    <div class="benefit-item"><i class="fas fa-birthday-cake"></i><p>Birthday Bonus</p></div>
+                    <div class="benefit-item"><i class="fas fa-percent"></i><p>Partner Discounts</p></div>
+                    <div class="benefit-item"><i class="fas fa-utensils"></i><p>Sunrise Feast</p></div>
+                    <div class="benefit-item"><i class="fas fa-box-open"></i><p>Special Package</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cột phụ bên phải -->
+        <div class="col-lg-4">
+            <div class="side-card invite-card">
+                <h4>Mời bạn bè</h4>
+                <p class="text-muted">Mã giới thiệu của bạn: <strong class="text-white">@Model.MaGioiThieu</strong></p>
+                <p>Danh sách đã mời (@Model.ReferralInfo.DanhSachNguoiDuocGioiThieu.Count()):</p>
+                <div class="buddies-list">
+                    @foreach (var buddy in Model.ReferralInfo.DanhSachNguoiDuocGioiThieu.Take(5))
                     {
-                        <br />
-                        <text>[&nbsp;&nbsp;@Html.ActionLink("Change", "AddPhoneNumber")&nbsp;&nbsp;]</text>
-                        using (Html.BeginForm("RemovePhoneNumber", "Manage", FormMethod.Post, new { role = "form" }))
-                        {
-                            @Html.AntiForgeryToken()
-                            <text>[<input type="submit" value="Remove" class="btn-link" />]</text>
-                        }
+                        <div class="buddy-item">
+                            <img src="https://i.pravatar.cc/60?u=@buddy.Email" alt="@buddy.HoTen" />
+                            <p>@buddy.HoTen.Split(' ').FirstOrDefault()</p>
+                        </div>
                     }
-                    else
-                    {
-                        <text>[&nbsp;&nbsp;@Html.ActionLink("Add", "AddPhoneNumber")
-                    }
-                </dd>
-            *@
-            <dt>Two-Factor Authentication:</dt>
-            <dd>
-                <p>
-                    There are no two-factor authentication providers configured. See <a href="https://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
-                    for details on setting up this ASP.NET application to support two-factor authentication.
-                </p>
-                @*@if (Model.TwoFactor)
-                    {
-                        using (Html.BeginForm("DisableTwoFactorAuthentication", "Manage", FormMethod.Post, new { role = "form" }))
-                        {
-                            @Html.AntiForgeryToken()
-                            <text>Enabled
-                            <input type="submit" value="Disable" class="btn btn-link" />
-                            </text>
-                        }
-                    }
-                    else
-                    {
-                        using (Html.BeginForm("EnableTwoFactorAuthentication", "Manage", FormMethod.Post, new { role = "form" }))
-                        {
-                            @Html.AntiForgeryToken()
-                            <text>Disabled
-                            <input type="submit" value="Enable" class="btn btn-link" />
-                            </text>
-                        }
-                    }*@
-            </dd>
-        </dl>
+                </div>
+            </div>
+
+            <div class="side-card qr-code-card">
+                <h4>Mã QR Check-in</h4>
+                <p class="text-muted">Đưa mã này cho nhân viên để vào phòng tập.</p>
+                <div class="text-center">
+                    <img src="@Model.QrCodeUri" alt="Mã QR" style="width: 100%; border-radius: 12px;" />
+                </div>
+            </div>
+        </div>
     </div>
-</main>
+</div>

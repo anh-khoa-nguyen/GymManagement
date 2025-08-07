@@ -1,0 +1,41 @@
+﻿@model GymManagementSystem.Models.HoaDon
+@{
+    ViewBag.Title = "Xác Nhận và Thanh Toán";
+    var culture = new System.Globalization.CultureInfo("vi-VN");
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Vui lòng kiểm tra lại thông tin hóa đơn</h3>
+            </div>
+            <div class="panel-body">
+                <dl class="dl-horizontal">
+                    <dt>Gói tập</dt>
+                    <dd>@Model.GoiTap.TenGoi</dd>
+
+                    <dt>Giá gốc</dt>
+                    <dd>@Model.GiaGoc.ToString("C0", culture)</dd>
+
+                    <dt>Giảm giá</dt>
+                    <dd class="text-danger">- @Model.SoTienGiam.ToString("C0", culture)</dd>
+
+                    <dt><strong>Thành tiền</strong></dt>
+                    <dd><strong>@Model.ThanhTien.ToString("C0", culture)</strong></dd>
+                </dl>
+            </div>
+            <div class="panel-footer text-center">
+                <h4>Chọn phương thức thanh toán</h4>
+
+                <!-- Nút thanh toán MoMo -->
+                @Html.ActionLink("Thanh toán qua MoMo", "CreatePaymentRequest", "Momo", new { hoaDonId = Model.Id }, new { @class = "btn btn-danger", @target = "_blank" })
+
+                <!-- Có thể thêm các nút thanh toán khác ở đây -->
+                <a href="#" class="btn btn-default">Thanh toán tại quầy</a>
+            </div>
+        </div>
+    </div>
+</div>

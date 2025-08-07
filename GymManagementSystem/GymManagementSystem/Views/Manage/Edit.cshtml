@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "Chỉnh sửa thông tin";
+}
+@model GymManagementSystem.Models.IndexViewModel
+
+<h2 class="text-white">@ViewBag.Title</h2>
+
+<p class="text-success">@ViewBag.StatusMessage</p>
+<div class="side-card" style="max-width: 600px;">
+    <h4>Cài đặt tài khoản</h4>
+    <hr />
+    <dl>
+        <dt class="text-muted">Mật khẩu</dt>
+        <dd class="mb-3">
+            @if (Model.HasPassword)
+            {
+                @Html.ActionLink("Đổi mật khẩu của bạn", "ChangePassword")
+            }
+            else
+            {
+                @Html.ActionLink("Tạo mật khẩu", "SetPassword")
+            }
+        </dd>
+
+        <dt class="text-muted">Đăng nhập ngoài</dt>
+        <dd class="mb-3">
+            @*@Model.Logins.Count*@
+            @Html.ActionLink("Quản lý", "ManageLogins") ]
+        </dd>
+
+        @* Thêm các cài đặt khác vào đây nếu cần *@
+    </dl>
+</div>

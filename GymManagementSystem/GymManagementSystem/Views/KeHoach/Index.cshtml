@@ -1,0 +1,55 @@
+﻿<head>
+    <link href="@Url.Content("~/Content/Workout/plan.css")" rel="stylesheet" type="text/css" />
+</head>
+@model GymManagementSystem.Models.ViewModels.KeHoachListViewModel
+@{
+    ViewBag.Title = "Kế Hoạch Tập Luyện";
+}
+<link href="@Url.Content("~/Content/workout-plans.css")" rel="stylesheet" type="text/css" />
+
+<div class="workout-plans-wrapper">
+
+    <div class="plans-layout">
+        <!-- CỘT BÊN TRÁI: ĐANG THỰC HIỆN -->
+        <div class="plans-column">
+            <div class="page-header mb-4">
+                <h2 class="text-white">@ViewBag.Title</h2>
+                <p>Chọn một kế hoạch bên dưới để bắt đầu hành trình của bạn!</p>
+            </div>
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+            }
+
+            <div class="workout-plans-container">
+                @foreach (var keHoach in Model.DaDangKy)
+                {
+                    // SỬA LỖI Ở ĐÂY: Truyền Model của trang cha vào ViewData
+                    ViewData["ParentModel"] = Model;
+                    @Html.Partial("_PlanCard", keHoach)
+                }
+            </div>
+        </div>
+
+        <!-- Đường kẻ phân cách -->
+        <div class="column-divider"></div>
+
+        <!-- CỘT BÊN PHẢI: CHƯA ĐĂNG KÝ -->
+        <div class="plans-column">
+            <div class="page-header mb-4">
+                <h2 class="text-white">Khám phá thêm</h2>
+                <p>Các kế hoạch bạn có thể tham gia.</p>
+            </div>
+
+            <div class="workout-plans-container">
+                @foreach (var keHoach in Model.ChuaDangKy)
+                {
+                    // SỬA LỖI Ở ĐÂY: Truyền Model của trang cha vào ViewData
+                    ViewData["ParentModel"] = Model;
+                    @Html.Partial("_PlanCard", keHoach)
+                }
+            </div>
+        </div>
+    </div>
+</div>

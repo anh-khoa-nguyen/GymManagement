@@ -1,0 +1,52 @@
+﻿@model GymManagementSystem.Models.KeHoach
+@{
+    if (!Request.IsAjaxRequest()) { Layout = "~/Views/Shared/_Layout.cshtml"; }
+}
+
+<h2>Chi Tiết Kế Hoạch</h2>
+
+<div class="details-container">
+    <dl>
+        <dt class="text-muted">Tên Kế Hoạch</dt>
+        <dd>@Model.TenKeHoach</dd>
+
+        <dt class="text-muted">Thời gian thực hiện</dt>
+        <dd>@Model.ThoiGianThucHien ngày</dd>
+
+        <dt class="text-muted">Trạng Thái</dt>
+        <dd>
+            @if (Model.IsActive)
+            {<span class="status-badge status-active">Kích hoạt</span> }
+            else
+            { <span class="status-badge status-inactive">Vô hiệu hóa</span>}
+        </dd>
+    </dl>
+
+    <hr class="my-4" />
+    <h5 class="mb-3">Danh sách bài tập theo ngày</h5>
+    <table class="modern-table">
+        <thead>
+            <tr>
+                <th>Ngày</th>
+                <th>Bài Tập</th>
+                <th>Mục Tiêu</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ChiTietKeHoachs.OrderBy(ct => ct.NgayTrongKeHoach))
+            {
+                <tr>
+                    <td>@item.NgayTrongKeHoach</td>
+                    <td>@item.BaiTap.TenBaiTap</td>
+                    <td>@item.SoLanMucTieu lần</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="offcanvas-footer">
+        <div class="d-grid gap-2">
+            <button type="button" class="btn btn-offcanvas-secondary" data-bs-dismiss="offcanvas">Đóng</button>
+        </div>
+    </div>
+</div>
