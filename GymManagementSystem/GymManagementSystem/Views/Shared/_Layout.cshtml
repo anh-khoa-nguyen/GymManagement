@@ -21,8 +21,6 @@
     <link href="@Url.Content("~/Content/Homepage/homepage.css")" rel="stylesheet" type="text/css" />
 
     @Scripts.Render("~/bundles/modernizr")
-
-
 </head>
 <body>
     <header>
@@ -50,6 +48,7 @@
                             <li class="nav-item">@Html.ActionLink("Kế Hoạch Tập", "Index", "KeHoach", null, new { @class = "nav-link" })</li>
                             <li class="nav-item">@Html.ActionLink("Các Gói Tập", "DanhSachGoiTap", "HoiVien", null, new { @class = "nav-link" })</li>
                             <li class="nav-item">@Html.ActionLink("Đặt Lịch", "DatLich", "HoiVien", null, new { @class = "nav-link" })</li>
+                            <li class="nav-item">@Html.ActionLink("Xem Tiến Độ", "XemTienDo", "HoiVien", null, new { @class = "nav-link" })</li>
                             <li class="nav-item">@Html.ActionLink("Hạng Thành Viên", "HangThanhVien", "Manage", null, new { @class = "nav-link" })</li>
                             <li class="nav-item">@Html.ActionLink("Gói Tập Của Tôi", "GoiTapCuaToi", "HoiVien", null, new { @class = "nav-link" })</li>
 
@@ -57,31 +56,16 @@
                         @if (Request.IsAuthenticated && User.IsInRole("PT"))
                         {
                             <li class="nav-item">@Html.ActionLink("Dashboard", "Dashboard", "PT", null, new { @class = "nav-link" })</li>
+                            <li class="nav-item">@Html.ActionLink("Lịch Làm Việc", "LichLamViec", "PT", null, new { @class = "nav-link" })</li>
                         }
                     </ul>
-                    @* Chỉ hiển thị link này nếu người dùng đã đăng nhập VÀ có vai trò là "QuanLy" *@
-                    @if (Request.IsAuthenticated && User.IsInRole("QuanLy"))
-                    {
-                        <li class="nav-item">@Html.ActionLink("Quản Lý Gói Tập", "Index", "GoiTaps", null, new { @class = "nav-link" })</li>
-                    }
 
-                    @* Chỉ hiển thị link này nếu người dùng là Hội Viên *@
-                    @if (Request.IsAuthenticated && User.IsInRole("HoiVien"))
-                    {
-                        <li class="nav-item">@Html.ActionLink("Các Gói Tập", "DanhSachGoiTap", "HoiVien", null, new { @class = "nav-link" })</li>
-                        <li class="nav-item">@Html.ActionLink("Đặt Lịch", "DatLich", "HoiVien", null, new { @class = "nav-link" })</li>
-                        <li class="nav-item">@Html.ActionLink("Xem Tiến Độ", "XemTienDo", "HoiVien", null, new { @class = "nav-link" })</li>
-                    }
-                    @if (Request.IsAuthenticated && User.IsInRole("PT"))
-                    {
-                        <li class="nav-item">@Html.ActionLink("Lịch Làm Việc", "LichLamViec", "PT", null, new { @class = "nav-link" })</li>
-                    }
                     @if (Request.IsAuthenticated)
                     {
                         @Html.Action("NotificationBell", "Home")
                     }
 
-                    
+
                     <div class="d-flex align-items-center">
                         @if (Request.IsAuthenticated)
                         {
@@ -100,14 +84,6 @@
 
     <!-- Thẻ main sẽ có class 'main-content-padding' ở các trang con để đẩy nội dung xuống -->
     <main role="main" class="@(isHomePage ? "" : "main-content-padding container")">
-                </ul>
-
-                @Html.Partial("_LoginPartial")
-            </div>
-        </div>
-    </div>
-    <div class="container body-content py-4">
-    <div class="container body-content py-4">
         @RenderBody()
     </main>
 
@@ -121,6 +97,7 @@
             <!-- Nội dung từ các Partial View sẽ được load vào đây -->
         </div>
     </div>
+
     <script src="~/Scripts/jquery-3.7.0.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
     @Scripts.Render("~/bundles/jquery")
