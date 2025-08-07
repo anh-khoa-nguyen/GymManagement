@@ -82,67 +82,83 @@ namespace GymManagementSystem.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult TaoLichTap(int huanLuyenVienId, string ngayDatLich, string gioBatDau, string ghiChu)
+        public JsonResult TaoLichTap(int huanLuyenVienId, string ngayDatLich, string gioBatDau, string ghiChu)
         {
-            // Lấy thông tin hội viên hiện tại
-            var currentUserId = User.Identity.GetUserId();
-            var hoiVienProfile = db.HoiViens.FirstOrDefault(hv => hv.ApplicationUserId == currentUserId);
-
-            if (hoiVienProfile == null)
+            try
             {
-                return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest, "Không tìm thấy hồ sơ hội viên.");
+                var currentUserId = User.Identity.GetUserId();
+                var hoiVienProfile = db.HoiViens.FirstOrDefault(hv => hv.ApplicationUserId == currentUserId);
+
+                if (hoiVienProfile == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy hồ sơ hội viên." });
+                }
+
+                // Kiểm tra đầu vào
+                if (string.IsNullOrEmpty(ngayDatLich) || string.IsNullOrEmpty(gioBatDau))
+                {
+                    return Json(new { success = false, message = "Vui lòng chọn ngày và giờ." });
+                }
+
+                DateTime ngay = DateTime.Parse(ngayDatLich);
+                TimeSpan gio = TimeSpan.Parse(gioBatDau);
+                DateTime thoiGianBatDau = ngay.Add(gio);
+                DateTime thoiGianKetThuc = thoiGianBatDau.AddHours(1);
+
+                var lichTapMoi = new LichTap
+                {
+                    HoiVienId = hoiVienProfile.Id,
+                    HuanLuyenVienId = huanLuyenVienId,
+                    ThoiGianBatDau = thoiGianBatDau,
+                    ThoiGianKetThuc = thoiGianKetThuc,
+                    GhiChuHoiVien = ghiChu,
+                    TrangThai = TrangThaiLichTap.ChoDuyet
+                };
+
+                db.LichTaps.Add(lichTapMoi);
+                db.SaveChanges();
+
+                // Trả về kết quả thành công dưới dạng JSON
+                return Json(new { success = true, message = "Yêu cầu đặt lịch đã được gửi đi!" });
             }
-
-            // Xử lý chuỗi ngày và giờ để tạo đối tượng DateTime hoàn chỉnh
-            DateTime ngay = DateTime.Parse(ngayDatLich);
-            TimeSpan gio = TimeSpan.Parse(gioBatDau);
-            DateTime thoiGianBatDau = ngay.Add(gio);
-
-            // Giả sử mỗi buổi tập kéo dài 1 tiếng
-            DateTime thoiGianKetThuc = thoiGianBatDau.AddHours(1);
-
-            // Tạo một bản ghi Lịch Tập mới
-            var lichTapMoi = new LichTap
+            catch (Exception ex)
             {
-                HoiVienId = hoiVienProfile.Id,
-                HuanLuyenVienId = huanLuyenVienId,
-                ThoiGianBatDau = thoiGianBatDau,
-                ThoiGianKetThuc = thoiGianKetThuc,
-                GhiChuHoiVien = ghiChu,
-                TrangThai = TrangThaiLichTap.ChoDuyet // Trạng thái ban đầu
-            };
-
-            db.LichTaps.Add(lichTapMoi);
-            db.SaveChanges();
-
-            // Có thể dùng TempData để gửi thông báo thành công
-            TempData["SuccessMessage"] = "Yêu cầu đặt lịch của bạn đã được gửi đi thành công!";
-
-            return RedirectToAction("DatLich");
+                // Ghi lại lỗi và trả về thông báo lỗi
+                System.Diagnostics.Debug.WriteLine(ex.ToString());
+                return Json(new { success = false, message = "Đã có lỗi hệ thống xảy ra. Vui lòng thử lại." });
+            }
         }
 
         // GET: HoiVien/GetLichTapCuaHoiVien
         public JsonResult GetLichTapCuaHoiVien()
         {
-            var currentUserId = User.Identity.GetUserId();
+            try
+            {
+                var currentUserId = User.Identity.GetUserId();
 
-            // SỬA ĐỔI LOGIC TRUY VẤN Ở ĐÂY
-            // Chúng ta không cần tìm HoiVienId nữa.
-            // Hãy đi trực tiếp từ bảng LichTap và lọc theo ApplicationUserId của Hội viên liên quan.
-            var events = db.LichTaps
-                .Where(l => l.HoiVien.ApplicationUserId == currentUserId) // <-- THAY ĐỔI QUAN TRỌNG
-                .Select(l => new // Chuyển đổi thành định dạng mà FullCalendar hiểu
+                // Lấy dữ liệu thô từ CSDL
+                var lichTapData = db.LichTaps
+                    .Where(l => l.HoiVien.ApplicationUserId == currentUserId)
+                    .Select(l => new
+                    {
+                        Id = l.Id,
+                        HoTenPT = l.HuanLuyenVien.ApplicationUser.HoTen,
+                        ThoiGianBatDau = l.ThoiGianBatDau,
+                        ThoiGianKetThuc = l.ThoiGianKetThuc,
+                        TrangThai = l.TrangThai,
+                        GhiChuHoiVien = l.GhiChuHoiVien
+                    })
+                    .ToList();
+
+                // Xử lý dữ liệu trên bộ nhớ
+                var events = lichTapData.Select(l => new
                 {
                     id = l.Id,
-                    title = l.HuanLuyenVienId != null
-                            ? "Tập với PT " + l.HuanLuyenVien.ApplicationUser.HoTen
-                            : "Tự tập",
-                    start = l.ThoiGianBatDau, // Gửi trực tiếp đối tượng DateTime
-                    end = l.ThoiGianKetThuc,   // FullCalendar v5+ có thể xử lý trực tiếp
-                    color = l.TrangThai == TrangThaiLichTap.ChoDuyet ? "#f0ad4e" :
-                            l.TrangThai == TrangThaiLichTap.DaDuyet ? "#5cb85c" :
-                            l.TrangThai == TrangThaiLichTap.DaHuy ? "#777777" :
-                            "#337ab7", // DaHoanThanh
+                    title = "Tập với PT " + (l.HoTenPT ?? "Chưa xác định"),
+                    start = l.ThoiGianBatDau.ToString("o"),
+                    end = l.ThoiGianKetThuc.ToString("o"),
+                    backgroundColor = GetEventColor(l.TrangThai),
+                    borderColor = GetEventColor(l.TrangThai),
                     extendedProps = new
                     {
                         trangThaiText = l.TrangThai.ToString(),
@@ -150,7 +166,14 @@ namespace GymManagementSystem.Controllers
                     }
                 }).ToList();
 
-            return Json(events, JsonRequestBehavior.AllowGet);
+                return Json(events, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.ToString());
+                Response.StatusCode = 500;
+                return Json(new { message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
         }
 
 
@@ -239,16 +262,94 @@ namespace GymManagementSystem.Controllers
         {
             switch (trangThai)
             {
-                case TrangThaiLichTap.ChoDuyet:
-                    return "#f0ad4e"; 
-                case TrangThaiLichTap.DaDuyet:
-                    return "#5cb85c"; 
-                case TrangThaiLichTap.DaHuy:
-                    return "#777777"; 
-                case TrangThaiLichTap.DaHoanThanh:
-                    return "#337ab7"; 
-                default:
-                    return "#777777";
+                case TrangThaiLichTap.ChoDuyet: return "#f0ad4e";
+                case TrangThaiLichTap.DaDuyet: return "#5cb85c";
+                case TrangThaiLichTap.DaHuy: return "#777777";
+                case TrangThaiLichTap.DaHoanThanh: return "#337ab7";
+                default: return "#777777";
+            }
+        }
+
+        // GET: HoiVien/XemTienDo
+        public ActionResult XemTienDo()
+        {
+            var currentUserId = User.Identity.GetUserId();
+            var hoiVien = db.HoiViens
+                            .Include(hv => hv.ApplicationUser)
+                            .Include(hv => hv.ChiSoSucKhoes)
+                            .FirstOrDefault(hv => hv.ApplicationUserId == currentUserId);
+
+            if (hoiVien == null)
+            {
+                return HttpNotFound("Không tìm thấy hồ sơ hội viên của bạn.");
+            }
+
+            // Sắp xếp lại danh sách chỉ số theo ngày tháng
+            if (hoiVien.ChiSoSucKhoes != null)
+            {
+                hoiVien.ChiSoSucKhoes = hoiVien.ChiSoSucKhoes.OrderBy(cs => cs.NgayCapNhat).ToList();
+            }
+
+            // --- BẮT ĐẦU TÍNH TOÁN CÁC CHỈ SỐ THỐNG KÊ ---
+            if (hoiVien.ChiSoSucKhoes.Any())
+            {
+                var chiSoDauTien = hoiVien.ChiSoSucKhoes.First();
+                var chiSoMoiNhat = hoiVien.ChiSoSucKhoes.Last();
+
+                ViewBag.CanNangBatDau = chiSoDauTien.CanNang;
+                ViewBag.CanNangHienTai = chiSoMoiNhat.CanNang;
+                ViewBag.ThayDoiCanNang = Math.Round(chiSoMoiNhat.CanNang - chiSoDauTien.CanNang, 1);
+
+                ViewBag.SoNgayTheoDoi = (chiSoMoiNhat.NgayCapNhat - chiSoDauTien.NgayCapNhat).Days;
+            }
+            else
+            {
+                ViewBag.CanNangBatDau = 0;
+                ViewBag.CanNangHienTai = 0;
+                ViewBag.ThayDoiCanNang = 0;
+                ViewBag.SoNgayTheoDoi = 0;
+            }
+            // --- KẾT THÚC TÍNH TOÁN ---
+
+            return View(hoiVien);
+        }
+
+        // GET: HoiVien/GetBookingForm
+        public PartialViewResult GetBookingForm()
+        {
+            var danhSachPT = db.HuanLuyenViens.Include(pt => pt.ApplicationUser).ToList();
+            ViewBag.DanhSachPT = new SelectList(danhSachPT, "Id", "ApplicationUser.HoTen");
+            return PartialView("_BookingFormPartial");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult GuiDanhGia(int lichTapId, int soSao, string phanHoi)
+        {
+            try
+            {
+                var currentUserId = User.Identity.GetUserId();
+                // Tìm lịch tập, đồng thời kiểm tra xem nó có đúng là của hội viên này không để bảo mật
+                var lichTap = db.LichTaps.FirstOrDefault(l => l.Id == lichTapId && l.HoiVien.ApplicationUserId == currentUserId);
+
+                if (lichTap == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy buổi tập hợp lệ." });
+                }
+
+                // Cập nhật thông tin đánh giá
+                lichTap.DanhGiaSao = soSao;
+                lichTap.PhanHoi = phanHoi;
+
+                db.Entry(lichTap).State = EntityState.Modified;
+                db.SaveChanges();
+
+                return Json(new { success = true, message = "Cảm ơn bạn đã gửi đánh giá!" });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.ToString());
+                return Json(new { success = false, message = "Đã có lỗi hệ thống xảy ra." });
             }
         }
 

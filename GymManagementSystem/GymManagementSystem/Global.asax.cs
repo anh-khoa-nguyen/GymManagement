@@ -19,7 +19,7 @@ namespace GymManagementSystem
             Database.SetInitializer<ApplicationDbContext>(null);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
-            BundleConfig.RegisterBundles(BundleTable.Bundles);
+            //BundleConfig.RegisterBundles(BundleTable.Bundles);
 
              //Kiểm tra và tạo các vai trò nếu chưa tồn tại
             IdentityConfig.SeedRoles();

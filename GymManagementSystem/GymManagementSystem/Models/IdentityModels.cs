@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
@@ -22,6 +23,9 @@ namespace GymManagementSystem.Models
         // Các khóa ngoại để liên kết tới các bảng hồ sơ chi tiết
         public int? HoiVienId { get; set; }
         public int? HuanLuyenVienId { get; set; }
+        public virtual ICollection<ThongBao> ThongBaos { get; set; }
+
+
 
         public int? HangHoiVienId { get; set; }
         [ForeignKey("HangHoiVienId")]
@@ -44,6 +48,8 @@ namespace GymManagementSystem.Models
         public DbSet<HuanLuyenVien> HuanLuyenViens { get; set; }
         public DbSet<DangKyGoiTap> DangKyGoiTaps { get; set; }
         public DbSet<LichTap> LichTaps { get; set; }
+        public DbSet<ChiSoSucKhoe> ChiSoSucKhoes { get; set; }
+        public DbSet<ThongBao> ThongBaos { get; set; }
 
         //Khoa
         public DbSet<KeHoach> KeHoachs { get; set; }

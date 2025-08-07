@@ -45,6 +45,14 @@ namespace GymManagementSystem.Models
         [Display(Name = "Phản hồi của PT")]
         public string GhiChuPT { get; set; }
 
+        [Range(1, 5)]
+        [Display(Name = "Đánh giá (1-5 sao)")]
+        public int? DanhGiaSao { get; set; }
+
+        [StringLength(1000)]
+        [Display(Name = "Phản hồi")]
+        public string PhanHoi { get; set; }
+
         // Navigation properties
         [ForeignKey("HoiVienId")]
         public virtual HoiVien HoiVien { get; set; }

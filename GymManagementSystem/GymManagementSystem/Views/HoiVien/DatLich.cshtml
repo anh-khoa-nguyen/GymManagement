@@ -1,60 +1,75 @@
 ﻿@{
-    ViewBag.Title = "Đặt Lịch Tập";
+    ViewBag.Title = "Đặt Lịch & Lịch Trình Tập Luyện";
 }
 
 <h2><i class="fas fa-calendar-plus"></i> @ViewBag.Title</h2>
-<p>Chọn một ngày trên lịch để đặt buổi tập với Huấn luyện viên của chúng tôi.</p>
+<p>Chọn một ngày trống trên lịch để đặt buổi tập, hoặc nhấp vào một buổi tập đã có để xem chi tiết hoặc đánh giá.</p>
+<hr />
 
-<div id='calendar'></div>
+<div id="calendar"></div>
 
-<!-- Bootstrap Modal để đặt lịch -->
-<div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
+<!-- ======================================================= -->
+<!--          MODAL ĐỂ ĐẶT LỊCH TẬP (KHUNG RỖNG)           -->
+<!-- ======================================================= -->
+<div class="modal fade" id="bookingModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" id="modalContent">
+            <!-- Nội dung form đặt lịch sẽ được tải vào đây bằng AJAX -->
+        </div>
+    </div>
+</div>
+
+
+<!-- ============================================== -->
+<!--          MODAL ĐỂ ĐÁNH GIÁ BUỔI TẬP           -->
+<!-- ============================================== -->
+<div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            @using (Html.BeginForm("TaoLichTap", "HoiVien", FormMethod.Post))
-            {
+            <form id="feedbackForm">
                 @Html.AntiForgeryToken()
                 <div class="modal-header">
-                    <h5 class="modal-title" id="bookingModalLabel">Đặt lịch tập</h5>
+                    <h5 class="modal-title">Đánh giá Buổi tập</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" id="ngayDatLich" name="ngayDatLich" />
+                    <p>Vui lòng đánh giá chất lượng buổi tập của bạn.</p>
+                    <input type="hidden" id="feedbackLichTapId" name="lichTapId" />
 
-                    <div class="form-group">
-                        <label>Chọn Huấn luyện viên</label>
-                        @Html.DropDownList("huanLuyenVienId", (SelectList)ViewBag.DanhSachPT, "--- Chọn PT ---", new { @class = "form-control" })
+                    <!-- Hệ thống chọn sao -->
+                    <div class="form-group text-center">
+                        <div class="rating-stars">
+                            <input type="radio" id="star5" name="soSao" value="5" /><label for="star5" title="Tuyệt vời">★</label>
+                            <input type="radio" id="star4" name="soSao" value="4" /><label for="star4" title="Tốt">★</label>
+                            <input type="radio" id="star3" name="soSao" value="3" /><label for="star3" title="Khá">★</label>
+                            <input type="radio" id="star2" name="soSao" value="2" /><label for="star2" title="Tạm được">★</label>
+                            <input type="radio" id="star1" name="soSao" value="1" /><label for="star1" title="Tệ">★</label>
+                        </div>
                     </div>
 
+                    <!-- Ô nhập phản hồi -->
                     <div class="form-group">
-                        <label>Giờ bắt đầu</label>
-                        <input type="time" id="gioBatDau" name="gioBatDau" class="form-control" required />
-                    </div>
-
-                    <div class="form-group">
-                        <label>Ghi chú</label>
-                        <textarea name="ghiChu" class="form-control" rows="3"></textarea>
+                        <label for="feedbackPhanHoi">Phản hồi chi tiết (tùy chọn):</label>
+                        <textarea id="feedbackPhanHoi" name="phanHoi" class="form-control" rows="4"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                    <button type="submit" class="btn btn-primary">Gửi Yêu Cầu</button>
+                    <button type="submit" class="btn btn-primary">Gửi Đánh giá</button>
                 </div>
-            }
+            </form>
         </div>
     </div>
 </div>
+
 
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
-
-            // Khởi tạo đối tượng Calendar
             var calendar = new FullCalendar.Calendar(calendarEl, {
-                // Mở đầu đối tượng cấu hình
                 initialView: 'dayGridMonth',
                 locale: 'vi',
                 headerToolbar: {
@@ -63,31 +78,120 @@
                     right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 },
                 selectable: true,
-
                 events: '@Url.Action("GetLichTapCuaHoiVien", "HoiVien")',
 
-                dateClick: function(info) {
-                    $('#ngayDatLich').val(info.dateStr);
-                    $('#bookingModal').modal('show');
+                eventDisplay: 'block', // Hiển thị sự kiện dạng khối thay vì dòng
+                eventTimeFormat: { // Định dạng lại thời gian cho gọn
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false // Dùng định dạng 24h
                 },
 
+                // KHI CLICK VÀO NGÀY TRỐNG
+                dateClick: function(info) {
+                    // Dùng AJAX để tải form MỚI NHẤT từ server
+                    $.get('@Url.Action("GetBookingForm", "HoiVien")', function(data) {
+                        // Đặt HTML của form vào trong modal
+                        $('#modalContent').html(data);
+                        // Gán ngày đã chọn vào hidden field
+                        $('#ngayDatLich').val(info.dateStr);
+                        // Hiển thị modal
+                        $('#bookingModal').modal('show');
+                    });
+                },
+
+                // KHI CLICK VÀO SỰ KIỆN ĐÃ CÓ
                 eventClick: function(info) {
                     info.jsEvent.preventDefault();
-                    var eventDetails = "Buổi tập: " + info.event.title + "\n" +
-                                       "Bắt đầu: " + info.event.start.toLocaleString('vi-VN') + "\n" +
-                                       "Trạng thái: " + info.event.extendedProps.trangThaiText;
-                    alert(eventDetails);
-                }, // <-- SỬA LỖI: Thêm dấu phẩy ở đây
 
-                eventDidMount: function (info) {
-                    if (info.event.extendedProps && info.event.extendedProps.color) { // An toàn hơn khi kiểm tra extendedProps
-                         info.el.style.backgroundColor = info.event.extendedProps.color;
-                         info.el.style.borderColor = info.event.extendedProps.color;
+                    var trangThai = info.event.extendedProps.trangThaiText;
+                    var startTime = info.event.start;
+                    var now = new Date();
+
+                    // Điều kiện để được đánh giá: Đã duyệt VÀ thời gian bắt đầu đã qua
+                    if (trangThai === 'DaDuyet' && startTime < now) {
+                        // Gán ID lịch tập vào hidden field của form đánh giá
+                        $('#feedbackLichTapId').val(info.event.id);
+                        // Reset form cũ (xóa các sao đã chọn và text cũ)
+                        $('#feedbackForm')[0].reset();
+                        // Mở modal đánh giá
+                        $('#feedbackModal').modal('show');
+                    } else {
+                        // Ngược lại, chỉ hiển thị thông tin như cũ
+                        var eventDetails = "Buổi tập: " + info.event.title + "\n" +
+                                           "Bắt đầu: " + startTime.toLocaleString('vi-VN') + "\n" +
+                                           "Trạng thái: " + trangThai;
+                        alert(eventDetails);
+                    }
+                },
+
+                // TÔ MÀU CHO SỰ KIỆN
+                eventDidMount: function(info) {
+                     if (info.event.backgroundColor) {
+                         info.el.style.backgroundColor = info.event.backgroundColor;
+                         info.el.style.borderColor = info.event.backgroundColor;
                     }
                 }
             });
 
             calendar.render();
+
+            // --- CÁC TRÌNH XỬ LÝ SỰ KIỆN BẰNG JQUERY ---
+
+            // 1. Submit form Đặt lịch bằng AJAX
+            $(document).on('submit', '#bookingFormAjax', function(e) {
+                e.preventDefault(); // Ngăn form tải lại trang
+                var form = $(this);
+                $.ajax({
+                    url: form.attr('action'),
+                    method: form.attr('method'),
+                    data: form.serialize(),
+                    success: function(response) {
+                        if (response.success) {
+                            $('#bookingModal').modal('hide');
+                            calendar.refetchEvents();
+                            alert(response.message || "Đặt lịch thành công!");
+                        } else {
+                            alert('Lỗi: ' + response.message);
+                        }
+                    },
+                    error: function() {
+                        alert("Đã có lỗi kết nối xảy ra.");
+                    }
+                });
+            });
+
+            // 2. Submit form Đánh giá bằng AJAX
+            $('#feedbackForm').on('submit', function(e) {
+                e.preventDefault();
+                var form = $(this);
+                if ($('input[name=soSao]:checked').length === 0) {
+                    alert('Vui lòng chọn số sao để đánh giá.');
+                    return;
+                }
+                $.ajax({
+                    url: '@Url.Action("GuiDanhGia", "HoiVien")',
+                    method: 'POST',
+                    data: form.serialize(),
+                    success: function(response) {
+                        if (response.success) {
+                            $('#feedbackModal').modal('hide');
+                            alert(response.message);
+                            // Có thể cập nhật lại sự kiện trên lịch để hiển thị là "Đã đánh giá"
+                        } else {
+                            alert('Lỗi: ' + response.message);
+                        }
+                    },
+                    error: function() {
+                        alert("Đã có lỗi kết nối khi gửi đánh giá.");
+                    }
+                });
+            });
+
+            // 3. Xử lý đóng tất cả các modal
+            $(document).on('click', '[data-dismiss="modal"]', function (e) {
+                $(this).closest('.modal').modal('hide');
+            });
         });
     </script>
 }

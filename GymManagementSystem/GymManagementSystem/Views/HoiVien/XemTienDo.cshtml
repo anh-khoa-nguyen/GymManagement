@@ -1,0 +1,134 @@
+﻿@model GymManagementSystem.Models.HoiVien
+
+@{
+    ViewBag.Title = "Bảng Theo Dõi Tiến Độ";
+    // Lấy dữ liệu từ ViewBag
+    var canNangBatDau = (double)ViewBag.CanNangBatDau;
+    var canNangHienTai = (double)ViewBag.CanNangHienTai;
+    var thayDoiCanNang = (double)ViewBag.ThayDoiCanNang;
+    var soNgayTheoDoi = (int)ViewBag.SoNgayTheoDoi;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2><i class="fas fa-chart-line"></i> @ViewBag.Title</h2>
+    <span class="text-muted">Xin chào, @Model.ApplicationUser.HoTen!</span>
+</div>
+<p>Đây là quá trình thay đổi của bạn. Hãy tiếp tục cố gắng!</p>
+<hr />
+
+@if (!Model.ChiSoSucKhoes.Any())
+{
+    <div class="alert alert-info">
+        <h4>Chưa có dữ liệu!</h4>
+        <p>Hiện tại chưa có dữ liệu tiến độ nào được cập nhật. Hãy liên hệ với Huấn luyện viên của bạn để bắt đầu theo dõi ngay nhé.</p>
+    </div>
+}
+else
+{
+    <!-- Hàng chứa các Card chỉ số KPI -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-flag-checkered"></i> Cân nặng bắt đầu</h5>
+                    <p class="card-text display-4">@canNangBatDau <small>kg</small></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-weight"></i> Cân nặng hiện tại</h5>
+                    <p class="card-text display-4">@canNangHienTai <small>kg</small></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white @(thayDoiCanNang <= 0 ? "bg-info" : "bg-danger") h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-exchange-alt"></i> Thay đổi</h5>
+                    <p class="card-text display-4">
+                        @(thayDoiCanNang > 0 ? "+" : "")@thayDoiCanNang <small>kg</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-secondary h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-calendar-day"></i> Thời gian theo dõi</h5>
+                    <p class="card-text display-4">@soNgayTheoDoi <small>ngày</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hàng chứa Biểu đồ và Lịch sử -->
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    Biểu đồ Cân nặng theo Thời gian
+                </div>
+                <div class="card-body">
+                    <canvas id="progressChart" height="150"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    Lịch sử Cập nhật
+                </div>
+                <div class="card-body" style="max-height: 350px; overflow-y: auto;">
+                    <ul class="list-group list-group-flush">
+                        @foreach (var item in Model.ChiSoSucKhoes.OrderByDescending(cs => cs.NgayCapNhat))
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>
+                                    <i class="fas fa-calendar-alt text-muted"></i> @item.NgayCapNhat.ToString("dd/MM/yyyy")
+                                </span>
+                                <span class="badge badge-primary badge-pill">@item.CanNang kg</span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@section Scripts {
+    @if (Model.ChiSoSucKhoes.Any())
+    {
+        <script>
+            // Đoạn script này hoàn toàn giống với trang của PT
+            var labels = [@Html.Raw(String.Join(",", Model.ChiSoSucKhoes.Select(cs => "'" + cs.NgayCapNhat.ToString("dd/MM") + "'")))];
+            var data = [@Html.Raw(String.Join(",", Model.ChiSoSucKhoes.Select(cs => cs.CanNang)))];
+
+            const ctx = document.getElementById('progressChart').getContext('2d');
+            const progressChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Cân nặng (kg)',
+                        data: data,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 2,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
+                }
+            });
+        </script>
+    }
+}

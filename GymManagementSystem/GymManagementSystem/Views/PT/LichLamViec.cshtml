@@ -1,0 +1,162 @@
+﻿@{
+    ViewBag.Title = "Lịch Làm Việc Của Tôi";
+}
+
+<h2><i class="fas fa-calendar-alt"></i> @ViewBag.Title</h2>
+<p>Quản lý các buổi tập và yêu cầu từ hội viên.</p>
+
+<div id="pt-calendar"></div>
+
+<!-- Modal để hiển thị chi tiết và duyệt lịch -->
+<div class="modal fade" id="eventDetailModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="eventDetailTitle">Chi tiết Lịch hẹn</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Hội viên:</strong> <span id="eventDetailHoiVien"></span></p>
+                <p><strong>Bắt đầu:</strong> <span id="eventDetailStart"></span></p>
+                <p><strong>Trạng thái:</strong> <span id="eventDetailStatus"></span></p>
+                <p><strong>Ghi chú:</strong> <span id="eventDetailGhiChu"></span></p>
+            </div>
+            <div class="modal-footer" id="eventDetailFooter">
+                <!-- Các nút Duyệt, Hủy sẽ được thêm vào đây bằng JS -->
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal để Hủy/Từ chối lịch -->
+<div class="modal fade" id="cancelModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            @using (Html.BeginForm("HuyLich", "PT", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title">Xác nhận Hủy/Từ chối Lịch hẹn</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Vui lòng nhập lý do hủy hoặc từ chối lịch hẹn này.</p>
+                    <input type="hidden" id="cancelLichTapId" name="lichTapId" />
+                    <div class="form-group">
+                        <label for="lyDo">Lý do:</label>
+                        <textarea id="lyDo" name="lyDo" class="form-control" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-danger">Xác nhận</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('pt-calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek',
+                locale: 'vi',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: '@Url.Action("GetLichCuaPT", "PT")',
+                
+                eventClick: function(info) {
+                    info.jsEvent.preventDefault();
+
+                    // Điền thông tin vào Modal
+                    $('#eventDetailTitle').text(info.event.title);
+                    $('#eventDetailHoiVien').text(info.event.title.replace('Tập với ', ''));
+                    $('#eventDetailStart').text(info.event.start.toLocaleString('vi-VN'));
+                    $('#eventDetailStatus').text(info.event.extendedProps.trangThaiText);
+                    $('#eventDetailGhiChu').text(info.event.extendedProps.ghiChuHoiVien);
+
+                    // Xử lý các nút bấm ở footer
+                    var footer = $('#eventDetailFooter');
+                    footer.find('.dynamic-button').remove(); // Luôn xóa các nút cũ trước khi thêm mới
+
+                    var trangThai = info.event.extendedProps.trangThaiText;
+
+                    // --- LOGIC HIỂN THỊ NÚT BẤM ĐƯỢC NÂNG CẤP ---
+
+                    if (trangThai === 'ChoDuyet') {
+                        // NÚT TỪ CHỐI (MỞ MODAL HỦY)
+                        var rejectBtn = $('<button>', {
+                            text: 'Từ chối',
+                            type: 'button',
+                            class: 'btn btn-danger dynamic-button',
+                        }).attr('data-toggle', 'modal').attr('data-target', '#cancelModal').attr('data-lichtapid', info.event.id).attr('data-dismiss', 'modal');
+                        footer.prepend(rejectBtn);
+
+                        // NÚT DUYỆT
+                        var approveBtn = $('<button>', {
+                            text: 'Duyệt',
+                            class: 'btn btn-success dynamic-button',
+                            click: function() {
+                                if (confirm('Bạn có chắc muốn duyệt lịch này?')) {
+                                    $.post('@Url.Action("DuyetLich", "PT")', { __RequestVerificationToken: $('input[name=__RequestVerificationToken]').val(), lichTapId: info.event.id }, function(data) {
+                                        if (data.success) {
+                                            calendar.refetchEvents();
+                                            $('#eventDetailModal').modal('hide');
+                                        } else {
+                                            alert(data.message || 'Đã có lỗi xảy ra.');
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                        footer.prepend(approveBtn);
+                    }
+                    else if (trangThai === 'DaDuyet') {
+                        // NÚT HỦY (MỞ MODAL HỦY)
+                         var cancelBtn = $('<button>', {
+                            text: 'Hủy lịch',
+                            type: 'button',
+                            class: 'btn btn-outline-danger dynamic-button',
+                        }).attr('data-toggle', 'modal').attr('data-target', '#cancelModal').attr('data-lichtapid', info.event.id).attr('data-dismiss', 'modal');
+                        footer.prepend(cancelBtn);
+
+                        // NÚT XEM HỒ SƠ
+                        var profileBtn = $('<a>', {
+                            text: 'Xem Hồ sơ',
+                            class: 'btn btn-info dynamic-button',
+                            href: '@Url.Action("ChiTietHoiVien", "PT")/' + info.event.extendedProps.hoiVienId
+                        });
+                        footer.prepend(profileBtn);
+                    }
+
+                    // Mở Modal
+                    $('#eventDetailModal').modal('show');
+                }
+            });
+            calendar.render();
+        });
+
+        // Script để truyền lichTapId vào modal HỦY khi nhấn nút
+        $('#cancelModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var lichTapId = button.data('lichtapid');
+            var modal = $(this);
+            modal.find('#cancelLichTapId').val(lichTapId);
+        });
+        // BẮT SỰ KIỆN CLICK VÀO CÁC NÚT ĐÓNG MODAL
+        $(document).on('click', '[data-dismiss="modal"]', function (e) {
+            $(this).closest('.modal').modal('hide');
+        });
+    </script>
+    @Html.AntiForgeryToken()
+}

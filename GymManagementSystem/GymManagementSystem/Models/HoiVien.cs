@@ -33,6 +33,8 @@ namespace GymManagementSystem.Models
 
         public virtual ICollection<DangKyGoiTap> DangKyGoiTaps { get; set; }
         public virtual ICollection<LichTap> LichTaps { get; set; }
+        public virtual ICollection<ChiSoSucKhoe> ChiSoSucKhoes { get; set; }
+
 
 
     }
