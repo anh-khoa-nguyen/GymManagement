@@ -1,0 +1,65 @@
+﻿@model GymManagementSystem.Models.ViewModels.HangThanhVienViewModel
+@{
+    ViewBag.Title = "Hạng Thành Viên";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Hạng Hiện Tại Của Bạn</h3>
+            </div>
+            <div class="panel-body">
+                @if (Model.HangHienTai != null)
+                {
+                    <h3 style="margin-top:0;">
+                        <span class="label label-success">@Model.HangHienTai.TenHang</span>
+                    </h3>
+                    <p><strong>Tổng chi tiêu:</strong> @String.Format("{0:N0} VNĐ", Model.TongChiTieu)</p>
+                    <h4>Đặc quyền của bạn:</h4>
+                    <p>@Model.HangHienTai.DacQuyen</p>
+                    <!-- Bạn có thể lặp qua danh sách khuyến mãi đặc quyền ở đây nếu có -->
+                }
+                else
+                {
+                    <p>Bạn chưa có hạng thành viên. Hãy bắt đầu chi tiêu để nhận ưu đãi!</p>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Tiến Trình Lên Hạng</h3>
+            </div>
+            <div class="panel-body">
+                @if (Model.HangTiepTheo != null)
+                {
+                    <h4>Mục tiêu tiếp theo: <span class="label label-info">@Model.HangTiepTheo.TenHang</span></h4>
+                    <p>
+                        Bạn cần chi tiêu thêm <strong>@String.Format("{0:N0} VNĐ", Model.ChiTieuCanThem)</strong> để đạt hạng này.
+                    </p>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar"
+                             aria-valuenow="@Model.PhanTramHoanThanh" aria-valuemin="0" aria-valuemax="100"
+                             style="width: @Model.PhanTramHoanThanh%;">
+                            @Model.PhanTramHoanThanh%
+                        </div>
+                    </div>
+
+                    <h4>Đặc quyền khi lên hạng:</h4>
+                    <p>@Model.HangTiepTheo.DacQuyen</p>
+                }
+                else
+                {
+                    <div class="text-center">
+                        <h3><i class="glyphicon glyphicon-king"></i> Chúc Mừng!</h3>
+                        <p>Bạn đã đạt được hạng thành viên cao nhất của chúng tôi. Cảm ơn sự đồng hành của bạn!</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

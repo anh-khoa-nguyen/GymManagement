@@ -19,6 +19,10 @@ namespace GymManagementSystem.Models
         [StringLength(200)]
         public string MucTieuTapLuyen { get; set; }
 
+        [StringLength(6)]
+        [Index(IsUnique = true)] // Rất quan trọng: Đảm bảo mã này là duy nhất
+        public string MaGioiThieu { get; set; }
+
         // Foreign Key tới bảng AspNetUsers
         [Required]
         public string ApplicationUserId { get; set; }

@@ -1,0 +1,24 @@
+﻿@model GymManagementSystem.Models.ViewModels.AdminPageHeaderViewModel
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <!-- Tiêu đề trang -->
+    <h2 class="text-white mb-0">@Model.Title</h2>
+
+    <!-- Nhóm bên phải: Tìm kiếm và Nút Tạo mới -->
+    <div class="d-flex align-items-center gap-3">
+        
+        <!-- ======================================================== -->
+        <!-- KHÔI PHỤC LẠI FORM TÌM KIẾM BẰNG HTML.BEGINFORM -->
+        <!-- ======================================================== -->
+        @using (Html.BeginForm(Model.SearchAction, Model.SearchController, FormMethod.Get, new { @class= "d-flex align-items-center" }))
+        {
+            <input type="text" name="searchString" value="@Model.CurrentFilter" class="form-control" placeholder="Tìm kiếm..." style="background-color: #2b2b2b; color: #fff; border-color: #444;"/>
+            <button type="submit" class="btn btn-crud ms-2" title="Tìm kiếm"><i class="fas fa-search"></i></button>
+        }
+
+        <!-- Nút tạo mới -->
+        <a href="#" class="btn btn-custom-green js-open-offcanvas" data-url="@Model.CreateActionUrl">
+            <i class="fas fa-plus me-2"></i>Tạo mới
+        </a>
+    </div>
+</div>

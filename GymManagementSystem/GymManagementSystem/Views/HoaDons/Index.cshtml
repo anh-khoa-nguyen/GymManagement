@@ -1,0 +1,107 @@
+﻿<head>
+    <link href="@Url.Content("~/Content/CRUD/crud.css")" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+@model IEnumerable<GymManagementSystem.Models.HoaDon>
+@using GymManagementSystem.Models.ViewModels
+
+@{
+    ViewBag.Title = "Danh sách Hóa đơn";
+
+    // Khởi tạo ViewModel cho Header
+    var headerViewModel = new AdminPageHeaderViewModel
+    {
+        Title = ViewBag.Title,
+        CreateActionUrl = Url.Action("Create"),
+        SearchAction = "Index",
+        SearchController = "HoaDons", // Sửa tên Controller
+        CurrentFilter = ViewBag.CurrentFilter
+    };
+}
+
+<!-- Header chung, không nằm trong form -->
+@Html.Partial("_AdminPageHeader", headerViewModel)
+
+<!-- Hiển thị thông báo lỗi nếu có -->
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<!-- Form xóa hàng loạt chỉ bao bọc nút và bảng -->
+@using (Html.BeginForm("DeleteMultiple", "HoaDons", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.Partial("_DeleteSelectedButton")
+
+    <table class="modern-table">
+        <thead>
+            <tr>
+                <th style="width: 40px;"><input type="checkbox" class="form-check-input" id="checkAll" /></th>
+                <th>Hội viên</th>
+                <th>Gói tập</th>
+                <th>Ngày tạo</th>
+                <th>Thành tiền</th>
+                <th>Trạng thái</th>
+                <th class="text-end">Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><input type="checkbox" class="form-check-input row-checkbox" name="idsToDelete" value="@item.Id" /></td>
+                    <td>@Html.DisplayFor(modelItem => item.HoiVien.HoTen)</td>
+                    <td>@Html.DisplayFor(modelItem => item.GoiTap.TenGoi)</td>
+                    <td>@item.NgayTao.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@String.Format("{0:N0} VNĐ", item.ThanhTien)</td>
+                    <td>
+                        @if (item.TrangThai == GymManagementSystem.Models.TrangThai.DaThanhToan)
+                        {<span class="status-badge status-active">Đã thanh toán</span> }
+                        else
+                        { <span class="status-badge status-inactive">Chờ thanh toán</span>}
+                    </td>
+                    <td class="text-end">
+                        <div class="crud-button-group">
+                            <!-- Nút chi tiết gọi Offcanvas -->
+                            <a href="#" class="btn-crud js-open-offcanvas" data-url="@Url.Action("Details", new { id = item.Id })" title="Chi tiết">
+                                <i class="fas fa-eye"></i>
+                            </a>
+
+                            @if (item.TrangThai == GymManagementSystem.Models.TrangThai.ChoThanhToan)
+                            {
+                                <!-- Nút xác nhận thanh toán thủ công -->
+                                using (Html.BeginForm("MarkAsPaid", "HoaDons", new { hoaDonId = item.Id }, FormMethod.Post, new { @style = "display: inline;" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn-crud" title="Xác nhận thanh toán">
+                                        <i class="fas fa-check-circle"></i>
+                                    </button>
+                                }
+
+                                <!-- Nút thanh toán MoMo (Mở tab mới) -->
+                                <a href="@Url.Action("CreatePaymentRequest", "Momo", new { hoaDonId = item.Id })" class="btn-crud btn-momo" title="Thanh toán MoMo" target="_blank">
+                                    <i class="fas fa-qrcode"></i> <!-- Dùng icon trực tiếp -->
+                                </a>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<style>
+    .btn-momo {
+        /* Thêm các style nền, màu sắc... nếu muốn */
+        background-color: #ae2070; /* Màu hồng đặc trưng của MoMo */
+        color: #fff !important; /* Màu icon trắng, !important để ghi đè */
+    }
+
+        .btn-momo:hover {
+            background-color: #d82d8b; /* Màu sáng hơn khi hover */
+            color: #fff !important;
+        }
+</style>

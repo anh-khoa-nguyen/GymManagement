@@ -1,0 +1,44 @@
+﻿@model GymManagementSystem.Models.KhuyenMai
+
+@{
+    if (!Request.IsAjaxRequest()) { Layout = "~/Views/Shared/_Layout.cshtml"; }
+}
+
+<h4>Chi tiết Khuyến mãi</h4>
+
+<dl>
+    <dt class="text-muted">Tên Khuyến Mãi</dt>
+    <dd class="mb-3">@Html.DisplayFor(model => model.TenKhuyenMai)</dd>
+
+    <dt class="text-muted">Mô Tả</dt>
+    <dd class="mb-3">@Html.DisplayFor(model => model.MoTa)</dd>
+
+    <dt class="text-muted">Mã Khuyến Mãi</dt>
+    <dd class="mb-3">@Html.DisplayFor(model => model.MaKhuyenMai)</dd>
+
+    <dt class="text-muted">Giảm Giá</dt>
+    <dd class="mb-3">@(Model.PhanTramGiamGia > 0 ? $"{Model.PhanTramGiamGia}%" : $"{Model.SoTienGiamGia:N0} VNĐ")</dd>
+
+    <dt class="text-muted">Ngày Bắt Đầu</dt>
+    <dd class="mb-3">@Model.NgayBatDau.ToShortDateString()</dd>
+
+    <dt class="text-muted">Ngày Kết Thúc</dt>
+    <dd class="mb-3">@Model.NgayKetThuc.ToShortDateString()</dd>
+
+    <dt class="text-muted">Trạng Thái</dt>
+    <dd>
+        @if (Model.IsActive)
+        {
+            <span class="status-badge status-active">Kích hoạt</span>
+        }
+        else
+        {
+            <span class="status-badge status-inactive">Vô hiệu hóa</span>
+        }
+    </dd>
+    <div class="offcanvas-footer">
+        <div class="d-grid gap-2">
+            <button type="button" class="btn btn-offcanvas-secondary" data-bs-dismiss="offcanvas">Đóng</button>
+        </div>
+    </div>
+</dl>

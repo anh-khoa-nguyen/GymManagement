@@ -97,6 +97,9 @@ namespace GymManagementSystem.Models
 
         [Display(Name = "Mục tiêu tập luyện")]
         public string MucTieuTapLuyen { get; set; }
+
+        [Display(Name = "Mã giới thiệu (Nếu có)")]
+        public string MaGioiThieuNhapVao { get; set; }
     }
 
     public class ResetPasswordViewModel

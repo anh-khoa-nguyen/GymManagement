@@ -1,0 +1,71 @@
+﻿@model GymManagementSystem.Models.HoaDon
+
+@{
+    // Không dùng layout khi được gọi bằng AJAX
+    if (!Request.IsAjaxRequest())
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+}
+
+<!-- Tiêu đề này sẽ được JavaScript lấy để đặt cho Offcanvas -->
+<h2>Chi tiết Hóa đơn</h2>
+
+<div class="details-container">
+    <!-- Phần thông tin chung -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <span class="text-muted">Mã Hóa Đơn: #@Model.Id</span>
+        <span>
+            @if (Model.TrangThai == GymManagementSystem.Models.TrangThai.DaThanhToan)
+            {
+                <span class="status-badge status-active">Đã thanh toán</span>
+            }
+            else
+            {
+                <span class="status-badge status-inactive">Chờ thanh toán</span>
+            }
+        </span>
+    </div>
+    <p class="text-muted">Ngày tạo: @Model.NgayTao.ToString("dd/MM/yyyy HH:mm")</p>
+
+    <hr class="my-4" />
+
+    <!-- Phần thông tin khách hàng -->
+    <h5 class="mb-3">Khách hàng</h5>
+    <p class="mb-1"><strong>Tên:</strong> @Model.HoiVien.HoTen</p>
+    <p class="text-muted"><strong>Email:</strong> @Model.HoiVien.Email</p>
+
+    <hr class="my-4" />
+
+    <!-- Phần chi tiết thanh toán -->
+    <h5 class="mb-3">Chi tiết thanh toán</h5>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white px-0">
+            <span>Gói tập</span>
+            <strong>@Model.GoiTap.TenGoi</strong>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white px-0">
+            <span>Giá gốc</span>
+            <span>@String.Format("{0:N0} VNĐ", Model.GoiTap.GiaTien)</span>
+        </li>
+
+        @if (Model.KhuyenMai != null)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-danger px-0">
+                <span>Khuyến mãi: @Model.KhuyenMai.TenKhuyenMai</span>
+                <span>- @String.Format("{0:N0} VNĐ", Model.SoTienGiam)</span>
+            </li>
+        }
+
+        <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white px-0 border-top pt-3 mt-2">
+            <strong style="font-size: 1.1rem;">Thành tiền</strong>
+            <strong style="font-size: 1.3rem; color: #a5ff36;">@String.Format("{0:N0} VNĐ", Model.ThanhTien)</strong>
+        </li>
+    </ul>
+
+    <hr class="my-4" />
+
+    <div class="d-grid gap-2">
+        <button type="button" class="btn btn-offcanvas-secondary" data-bs-dismiss="offcanvas">Đóng</button>
+    </div>
+</div>

@@ -1,0 +1,163 @@
+﻿/* =================================================== */
+/* --- WORKOUT PLANS - VIP/CYBERPUNK THEME (SIMPLIFIED) --- */
+/* =================================================== */
+
+:root {
+    --neon-green: #a5ff36;
+    --mystic-purple: #8a2be2;
+    --glow-purple: rgba(138, 43, 226, 0.3);
+}
+
+.workout-plans-wrapper {
+    background: rgba(30, 30, 30, 0.45);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid #2c2c2c;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 0 50px var(--glow-purple);
+}
+
+.page-header h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.page-header p {
+    color: #9e9e9e;
+    font-size: 1.1rem;
+}
+
+.workout-plans-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.plan-card {
+    position: relative;
+    padding: 1.5rem;
+    border-radius: 20px;
+    color: #fff;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #292E49, #536976);
+    border: 1px solid rgba(138, 43, 226, 0.5);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+    .plan-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 40px var(--glow-purple);
+    }
+
+    .plan-card .illustration {
+        position: absolute;
+        right: -20px;
+        bottom: -10px;
+        width: 100%;
+        height: auto;
+        opacity: 0.15;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+
+    .plan-card:hover .illustration {
+        opacity: 0.3;
+    }
+
+.plan-card-content {
+    position: relative;
+    z-index: 2;
+}
+
+    .plan-card-content h3 {
+        font-size: 2.2rem;
+        font-weight: 800;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+        line-height: 1.2;
+        color: #fff;
+    }
+
+    .plan-card-content .duration {
+        font-size: 1rem;
+        color: #ccc;
+        margin-bottom: 1rem;
+    }
+
+    .plan-card-content .btn-start {
+        background: var(--neon-green);
+        color: #000;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 20px;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 1rem;
+        transition: all 0.2s ease;
+        box-shadow: 0 0 15px rgba(165, 255, 54, 0.4);
+    }
+
+        .plan-card-content .btn-start:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(165, 255, 54, 0.7);
+        }
+
+/* --- VÒNG TRÒN TIẾN ĐỘ (ĐƠN GIẢN HÓA BẰNG CSS) --- */
+.progress-circle {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    /* Dùng conic-gradient để vẽ vòng tròn */
+    /* var(--p) sẽ là phần trăm tiến độ, được truyền từ style inline */
+    background: radial-gradient(closest-side, #2c3e50 79%, transparent 80% 100%), conic-gradient(var(--neon-green) calc(var(--p) * 1%), #444 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+    z-index: 3;
+}
+
+/* =================================================== */
+/* --- LAYOUT 2 CỘT CHO KẾ HOẠCH --- */
+/* =================================================== */
+
+.plans-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* Cột trái rộng gấp đôi cột phải */
+    gap: 2rem;
+    align-items: start; /* Căn các cột theo đỉnh */
+}
+
+.plans-column {
+    /* Style cho từng cột */
+}
+
+.column-divider {
+    width: 1px;
+    background-color: #333; /* Màu của đường kẻ phân cách */
+    align-self: stretch; /* Kéo dài đường kẻ theo chiều cao của grid */
+}
+
+/* Responsive cho màn hình nhỏ */
+@media (max-width: 992px) {
+    .plans-layout {
+        grid-template-columns: 1fr; /* Chuyển thành 1 cột */
+    }
+
+    .column-divider {
+        display: none; /* Ẩn đường kẻ đi */
+    }
+}

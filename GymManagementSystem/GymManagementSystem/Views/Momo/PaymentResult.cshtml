@@ -1,0 +1,46 @@
+﻿<head>
+    <link href="@Url.Content("~/Content/Payment/status.css")" rel="stylesheet" type="text/css" />
+</head>
+@{
+    ViewBag.Title = "Kết Quả Thanh Toán";
+
+    string statusClass = "success";
+    string iconClass = "fas fa-check";
+
+    if (ViewBag.Status == "error")
+    {
+        statusClass = "error";
+        iconClass = "fas fa-times";
+    }
+    else if (ViewBag.Status == "warning")
+    {
+        statusClass = "warning";
+        iconClass = "fas fa-exclamation";
+    }
+}
+<link href="@Url.Content("~/Content/status-page.css")" rel="stylesheet" type="text/css" />
+
+<div class="status-page-wrapper">
+    <!-- KHUNG CHỨA NỘI DUNG MỚI -->
+    <div class="status-container">
+        <div class="status-icon @statusClass">
+            <i class="@iconClass"></i>
+        </div>
+
+        <div class="status-content">
+            <h2>Thanh toán thành công</h2>
+            <p>
+                @ViewBag.Message
+            </p>
+            <hr />
+            <p>
+                Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.
+            </p>
+        </div>
+
+        <div class="status-actions">
+            @Html.ActionLink("Quay về trang Hóa đơn", "Index", "HoaDons", null, new { @class = "btn-status-primary" })
+            @Html.ActionLink("Về Trang Chủ", "Index", "Home", null, new { @class = "btn-status-secondary" })
+        </div>
+    </div>
+</div>

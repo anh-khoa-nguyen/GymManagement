@@ -1,0 +1,76 @@
+﻿@model GymManagementSystem.Models.KhuyenMai
+
+@{
+    // Khi được gọi bằng AJAX, view này sẽ không sử dụng layout
+    if (!Request.IsAjaxRequest())
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+}
+
+<!-- Tiêu đề này sẽ được JavaScript lấy để đặt cho Offcanvas -->
+<h2>Tạo Khuyến mãi mới</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <!-- KHÔNG có HiddenFor(Id) ở đây vì đây là form tạo mới -->
+
+    <div class="mb-3">
+        @Html.LabelFor(model => model.TenKhuyenMai, "Tên Khuyến Mãi", htmlAttributes: new { @class = "form-label" })
+        @Html.EditorFor(model => model.TenKhuyenMai, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.TenKhuyenMai, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(model => model.MoTa, "Mô Tả", htmlAttributes: new { @class = "form-label" })
+        @Html.EditorFor(model => model.MoTa, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.MoTa, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(model => model.MaKhuyenMai, "Mã Khuyến Mãi", htmlAttributes: new { @class = "form-label" })
+        @Html.EditorFor(model => model.MaKhuyenMai, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.MaKhuyenMai, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="row mb-3">
+        <div class="col">
+            @Html.LabelFor(model => model.PhanTramGiamGia, "Giảm Giá (%)", htmlAttributes: new { @class = "form-label" })
+            @Html.EditorFor(model => model.PhanTramGiamGia, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.PhanTramGiamGia, "", new { @class = "text-danger" })
+        </div>
+        <div class="col">
+            @Html.LabelFor(model => model.SoTienGiamGia, "Số Tiền Giảm (VNĐ)", htmlAttributes: new { @class = "form-label" })
+            @Html.EditorFor(model => model.SoTienGiamGia, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.SoTienGiamGia, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col">
+            @Html.LabelFor(model => model.NgayBatDau, "Ngày Bắt Đầu", htmlAttributes: new { @class = "form-label" })
+            @Html.EditorFor(model => model.NgayBatDau, new { htmlAttributes = new { @class = "form-control", @type = "date" } })
+            @Html.ValidationMessageFor(model => model.NgayBatDau, "", new { @class = "text-danger" })
+        </div>
+        <div class="col">
+            @Html.LabelFor(model => model.NgayKetThuc, "Ngày Kết Thúc", htmlAttributes: new { @class = "form-label" })
+            @Html.EditorFor(model => model.NgayKetThuc, new { htmlAttributes = new { @class = "form-control", @type = "date" } })
+            @Html.ValidationMessageFor(model => model.NgayKetThuc, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-check form-switch mb-4">
+        @Html.CheckBoxFor(model => model.IsActive, new { @class = "form-check-input", role = "switch" })
+        @Html.LabelFor(model => model.IsActive, "Kích hoạt", htmlAttributes: new { @class = "form-check-label" })
+    </div>
+
+    <!-- Footer cố định với nút bấm -->
+    <div class="offcanvas-footer">
+        <div class="d-grid gap-2">
+            <input type="submit" value="Tạo Khuyến mãi" class="btn btn-offcanvas-primary" />
+        </div>
+    </div>
+}

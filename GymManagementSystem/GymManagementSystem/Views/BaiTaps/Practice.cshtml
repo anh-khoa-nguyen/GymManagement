@@ -1,0 +1,206 @@
+﻿@model GymManagementSystem.Models.BaiTap
+@{
+    ViewBag.Title = "Tập Luyện: " + Model.TenBaiTap;
+}
+
+<style>
+    /* CSS để bố cục camera và thông tin */
+    .practice-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .video-container {
+        position: relative;
+        width: 640px;
+        height: 480px;
+        border: 2px solid #007bff;
+    }
+
+    .video-feed, .canvas-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .video-feed {
+        /* Lật ngược camera để giống như soi gương */
+        transform: scaleX(-1);
+    }
+
+    .info-container {
+        flex-grow: 1;
+    }
+
+    .rep-counter {
+        font-size: 4em;
+        font-weight: bold;
+        color: #28a745;
+        text-align: center;
+    }
+
+    .feedback-box {
+        font-size: 1.5em;
+        color: #dc3545;
+        text-align: center;
+        margin-top: 20px;
+    }
+</style>
+
+<h2>@ViewBag.Title</h2>
+<hr />
+
+<div class="practice-container">
+    <!-- Cột bên trái chứa camera và kết quả -->
+    <div class="info-container">
+        <h3>Kết quả</h3>
+        <div class="rep-counter" id="rep-count">0 / @ViewBag.RepGoal</div>
+        <div class="feedback-box" id="feedback">Bắt đầu nào!</div>
+        <hr />
+        <h3>Các bước thực hiện</h3>
+        <ol>
+            @foreach (var buoc in Model.CacBuocThucHien.OrderBy(b => b.ThuTuBuoc))
+            {
+                <li>@buoc.NoiDung</li>
+            }
+        </ol>
+    </div>
+
+    <!-- Cột bên phải chứa video feed -->
+    <div class="video-container">
+        <video class="video-feed" id="video-feed" autoplay playsinline></video>
+        <canvas class="canvas-overlay" id="canvas-overlay"></canvas>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Tích hợp thư viện MediaPipe của Google -->
+    @{
+        // Tạo các biến C# để chứa URL
+        var cameraUtilsUrl = "https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js";
+        var drawingUtilsUrl = "https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js";
+        var poseUrl = "https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js";
+        var mediaPipePoseBaseUrl = "https://cdn.jsdelivr.net/npm/@mediapipe/pose/";
+    }
+
+    <!-- In các biến C# ra thuộc tính src -->
+    <script src="@cameraUtilsUrl" crossorigin="anonymous"></script>
+    <script src="@drawingUtilsUrl" crossorigin="anonymous"></script>
+    <script src="@poseUrl" crossorigin="anonymous"></script>
+
+    <script type="module">
+        const videoElement = document.getElementById('video-feed');
+        const canvasElement = document.getElementById('canvas-overlay');
+        const canvasCtx = canvasElement.getContext('2d');
+        const repCountElement = document.getElementById('rep-count');
+        const feedbackElement = document.getElementById('feedback');
+
+        const repCountingLogicName = '@ViewBag.RepCountingLogicName';
+        const repGoal = @ViewBag.RepGoal;
+
+        // Biến toàn cục để theo dõi trạng thái và số lần lặp
+        let repCount = 0;
+        let exerciseState = { currentState: "down" }; // Trạng thái ban đầu
+
+        // --- TRUNG TÂM LOGIC ĐẾM (LOGIC HUB) ---
+        // Đây là nơi bạn định nghĩa tất cả các hàm đếm cho từng bài tập
+        const repCounters = {
+
+            // Logic cho bài Jumping Jacks
+            jumpingJacksCounter: function(landmarks, state) {
+                let newState = state.currentState;
+                let repCompleted = false;
+
+                const leftShoulder = landmarks[11];
+                const rightShoulder = landmarks[12];
+                const leftHip = landmarks[23];
+                const rightHip = landmarks[24];
+                const leftWrist = landmarks[15];
+                const rightWrist = landmarks[16];
+
+                const handsUp = leftWrist.y < leftShoulder.y && rightWrist.y < rightShoulder.y;
+                const handsDown = leftWrist.y > leftHip.y && rightWrist.y > rightHip.y;
+
+                if (handsUp && state.currentState === "down") {
+                    newState = "up";
+                } else if (handsDown && state.currentState === "up") {
+                    newState = "down";
+                    repCompleted = true; // Hoàn thành 1 rep khi tay hạ xuống từ vị trí giơ cao
+                }
+
+                return { newState, repCompleted };
+            },
+
+            // Logic cho bài Bicep Curls (Gập tay trước) - VÍ DỤ MỞ RỘNG
+            bicepCurlsCounter: function(landmarks, state) {
+                // TODO: Viết logic tính góc khuỷu tay
+                // Khi góc nhỏ hơn 70 độ -> trạng thái 'up'
+                // Khi góc lớn hơn 160 độ và trạng thái đang là 'up' -> hoàn thành 1 rep, chuyển trạng thái về 'down'
+                return { newState: state.currentState, repCompleted: false };
+            },
+
+            // Thêm các hàm đếm khác ở đây...
+            // squatCounter: function(landmarks, state) { ... }
+        };
+
+        function onResults(results) {
+            // Phần vẽ khung xương (Không đổi)
+            canvasCtx.save();
+            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+            canvasCtx.translate(canvasElement.width, 0);
+            canvasCtx.scale(-1, 1);
+
+            if (results.poseLandmarks) {
+                drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, { color: '#00FF00', lineWidth: 4 });
+                drawLandmarks(canvasCtx, results.poseLandmarks, { color: '#FF0000', lineWidth: 2 });
+
+                const counterFunction = repCounters[repCountingLogicName];
+
+                if (counterFunction) {
+                    const result = counterFunction(results.poseLandmarks, exerciseState);
+
+                    exerciseState.currentState = result.newState;
+
+                    if (result.repCompleted) {
+                        repCount++;
+                        repCountElement.innerText = `${repCount} / ${repGoal}`;
+                        feedbackElement.innerText = "Tốt lắm!";
+
+                        if (repCount >= repGoal) {
+                            feedbackElement.innerText = "HOÀN THÀNH!";
+                            pose.close();
+                        }
+                    }
+                } else {
+                    feedbackElement.innerText = `Lỗi: Không tìm thấy logic đếm '${repCountingLogicName}'`;
+                }
+            }
+            canvasCtx.restore();
+        }
+
+        const pose = new Pose({
+            locateFile: (file) => {
+                // Nối chuỗi URL cơ sở (từ C#) với tên file (từ JS)
+                return '@mediaPipePoseBaseUrl' + file;
+            }
+        });
+
+        pose.setOptions({
+            modelComplexity: 1,
+            smoothLandmarks: true,
+            minDetectionConfidence: 0.5,
+            minTrackingConfidence: 0.5
+        });
+        pose.onResults(onResults);
+
+        const camera = new Camera(videoElement, {
+            onFrame: async () => { await pose.send({ image: videoElement }); },
+            width: 640,
+            height: 480
+        });
+        camera.start();
+    </script>
+}

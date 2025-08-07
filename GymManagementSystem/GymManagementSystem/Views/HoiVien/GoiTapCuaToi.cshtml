@@ -1,0 +1,49 @@
+﻿@model IEnumerable<GymManagementSystem.Models.DangKyGoiTap>
+@{
+    ViewBag.Title = "Các Gói Tập Của Tôi";
+}
+
+<h2><i class="fas fa-id-card-alt"></i> @ViewBag.Title</h2>
+<p class="text-muted">Đây là danh sách các gói tập bạn đã và đang sử dụng.</p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        Bạn chưa đăng ký gói tập nào. @Html.ActionLink("Hãy chọn một gói ngay!", "DanhSachGoiTap")
+    </div>
+}
+else
+{
+    <div class="list-group">
+        @foreach (var item in Model)
+        {
+            bool conHan = item.NgayHetHan >= DateTime.Today;
+            <div class="list-group-item">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h4 class="list-group-item-heading">@item.GoiTap.TenGoi</h4>
+                        <p class="list-group-item-text">
+                            Đăng ký ngày: @item.NgayDangKy.ToString("dd/MM/yyyy")
+                        </p>
+                        <p class="list-group-item-text">
+                            <strong>Hết hạn ngày: @item.NgayHetHan</strong>
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-right">
+                        @if (conHan)
+                        {
+                            <span class="label label-success" style="font-size: 14px;">Còn hạn</span>
+                            <p class="text-muted" style="margin-top: 5px;">
+                                Còn lại @(item.NgayHetHan - DateTime.Today)
+                            </p>
+                        }
+                        else
+                        {
+                            <span class="label label-danger" style="font-size: 14px;">Đã hết hạn</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

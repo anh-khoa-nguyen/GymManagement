@@ -1,0 +1,63 @@
+﻿@model GymManagementSystem.Models.ViewModels.ChiTietKeHoachViewModel
+<head>
+    <link href="@Url.Content("~/Content/Workout/exer.css")" rel="stylesheet" type="text/css" />
+</head>
+@{
+    ViewBag.Title = Model.DangKyKeHoach.KeHoach.TenKeHoach;
+}
+<link href="@Url.Content("~/Content/plan-progress.css")" rel="stylesheet" type="text-css" />
+
+<div class="plan-progress-wrapper">
+    <div class="plan-header">
+        <h2>@ViewBag.Title</h2>
+        <p>@Model.DangKyKeHoach.KeHoach.MoTa</p>
+    </div>
+
+    <!-- Thanh tiến trình -->
+    <div class="progress-container">
+        <p class="progress-label">Tiến độ hoàn thành: @Model.PhanTramHoanThanh%</p>
+        <div class="progress-bar-wrapper">
+            <div class="progress-bar-inner" style="width: @Model.PhanTramHoanThanh%;"></div>
+        </div>
+    </div>
+
+    <hr style="border-color: #333; margin: 2.5rem 0;" />
+
+    <!-- Danh sách các ngày -->
+    <div class="day-list">
+        @foreach (var ngayTap in Model.DanhSachNgayTap)
+        {
+            string itemClass = "";
+            string linkUrl = "#";
+            string iconClass = "";
+
+            if (ngayTap.DaHoanThanh)
+            {
+                itemClass = "completed";
+                iconClass = "fas fa-check-circle"; // Font Awesome icon
+            }
+            else if (ngayTap.CoTheTap)
+            {
+                itemClass = "tappable";
+                iconClass = "fas fa-play-circle"; // Font Awesome icon
+                linkUrl = Url.Action("BaiTapChiTiet", "ThucHienKeHoach", new { chiTietKeHoachId = ngayTap.ChiTietBaiTap.Id, dangKyKeHoachId = Model.DangKyKeHoach.Id });
+            }
+            else
+            {
+                itemClass = "locked";
+                iconClass = "fas fa-lock"; // Font Awesome icon
+            }
+
+            <a href="@linkUrl" class="day-item @itemClass">
+                <div class="day-item-info">
+                    <strong>Ngày @ngayTap.NgayTrongKeHoach</strong>
+                    <p>@ngayTap.ChiTietBaiTap.BaiTap.TenBaiTap</p>
+                </div>
+
+                <div class="day-item-status">
+                    <i class="@iconClass"></i>
+                </div>
+            </a>
+        }
+    </div>
+</div>

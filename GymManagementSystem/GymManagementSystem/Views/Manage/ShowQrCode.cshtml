@@ -1,0 +1,23 @@
+﻿@{
+    ViewBag.Title = "Mã QR Check-in";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div>
+    <p>
+        Vui lòng đưa mã này cho nhân viên tại quầy để quét khi bạn vào phòng tập.
+    </p>
+    <hr />
+
+    @if (ViewBag.QrCodeUri != null)
+    {
+        <div style="text-align: center;">
+            <img src="@ViewBag.QrCodeUri" alt="Mã QR của bạn" style="width: 300px; height: 300px;" />
+        </div>
+    }
+    else
+    {
+        <p class="text-danger">Không thể tạo mã QR. Vui lòng thử lại.</p>
+    }
+</div>

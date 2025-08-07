@@ -1,0 +1,17 @@
+﻿@model int
+@{
+    // Tự động lấy tên Controller hiện tại để tạo link cho đúng
+    var controllerName = ViewContext.RouteData.Values["controller"].ToString();
+}
+
+<div class="crud-button-group text-end">
+    <a href="#" class="btn-crud js-open-offcanvas" data-url="@Url.Action("Edit", controllerName, new { id = Model })" title="Sửa">
+        <i class="fas fa-pencil-alt"></i>
+    </a>
+    <a href="#" class="btn-crud js-open-offcanvas" data-url="@Url.Action("Details", controllerName, new { id = Model })" title="Chi tiết">
+        <i class="fas fa-eye"></i>
+    </a>
+    <a href="#" class="btn-crud js-open-offcanvas" data-url="@Url.Action("Delete", controllerName, new { id = Model })" title="Xóa">
+        <i class="fas fa-trash"></i>
+    </a>
+</div>

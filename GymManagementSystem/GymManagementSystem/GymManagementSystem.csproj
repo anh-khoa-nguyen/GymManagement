@@ -18,7 +18,8 @@
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
-    <Use64BitIISExpress />
+    <Use64BitIISExpress>
+    </Use64BitIISExpress>
     <IISExpressSSLPort>44394</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -53,15 +54,48 @@
       <HintPath>..\packages\EntityFramework.6.5.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json.Bson, Version=1.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.Bson.1.0.2\lib\net45\Newtonsoft.Json.Bson.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="QRCoder, Version=1.6.0.0, Culture=neutral, PublicKeyToken=c4ed5b9ae8358a28, processorArchitecture=MSIL">
+      <HintPath>..\packages\QRCoder.1.6.0\lib\net40\QRCoder.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.6.0.0\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Http, Version=5.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.3.0\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.3.0\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
@@ -117,6 +151,7 @@
       <Private>True</Private>
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.AspNet.Identity.Core">
@@ -168,12 +203,22 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\BaiTapsController.cs" />
+    <Compile Include="Controllers\CheckinApiController.cs" />
+    <Compile Include="Controllers\CheckinController.cs" />
     <Compile Include="Controllers\GoiTapsController.cs" />
+    <Compile Include="Controllers\HoaDonsController.cs" />
     <Compile Include="Controllers\HoiVienController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\KeHoachController.cs" />
+    <Compile Include="Controllers\KeHoachsAdminController.cs" />
+    <Compile Include="Controllers\KhuyenMaisController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\MomoController.cs" />
     <Compile Include="Controllers\PTController.cs" />
+    <Compile Include="Controllers\ThucHienKeHoachController.cs" />
     <Compile Include="Filters\HandleAntiForgeryErrorAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -199,17 +244,72 @@
     <Compile Include="Migrations\202508040359148_TaoBang_LichTap.Designer.cs">
       <DependentUpon>202508040359148_TaoBang_LichTap.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202508041438241_AddBaiTapAndBuocThucHienModels.cs" />
+    <Compile Include="Migrations\202508041438241_AddBaiTapAndBuocThucHienModels.Designer.cs">
+      <DependentUpon>202508041438241_AddBaiTapAndBuocThucHienModels.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202508041445462_SeedJumpingJacksExercise.cs" />
+    <Compile Include="Migrations\202508041445462_SeedJumpingJacksExercise.Designer.cs">
+      <DependentUpon>202508041445462_SeedJumpingJacksExercise.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202508041520507_AddRepCountingLogicToBaiTap.cs" />
+    <Compile Include="Migrations\202508041520507_AddRepCountingLogicToBaiTap.Designer.cs">
+      <DependentUpon>202508041520507_AddRepCountingLogicToBaiTap.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202508041747408_NewModel_Data.cs" />
+    <Compile Include="Migrations\202508041747408_NewModel_Data.Designer.cs">
+      <DependentUpon>202508041747408_NewModel_Data.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202508050542232_SeedInitialRolesAndAdmin.cs" />
+    <Compile Include="Migrations\202508050542232_SeedInitialRolesAndAdmin.Designer.cs">
+      <DependentUpon>202508050542232_SeedInitialRolesAndAdmin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202508050618128_AddManyToMany_HangHoiVien_KhuyenMai.cs" />
+    <Compile Include="Migrations\202508050618128_AddManyToMany_HangHoiVien_KhuyenMai.Designer.cs">
+      <DependentUpon>202508050618128_AddManyToMany_HangHoiVien_KhuyenMai.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202508051416023_AddTargetCountToChiTietKeHoach.cs" />
+    <Compile Include="Migrations\202508051416023_AddTargetCountToChiTietKeHoach.Designer.cs">
+      <DependentUpon>202508051416023_AddTargetCountToChiTietKeHoach.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202508051554161_Heee.cs" />
+    <Compile Include="Migrations\202508051554161_Heee.Designer.cs">
+      <DependentUpon>202508051554161_Heee.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202508061501475_AddMomo.cs" />
+    <Compile Include="Migrations\202508061501475_AddMomo.Designer.cs">
+      <DependentUpon>202508061501475_AddMomo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\BaiTap.cs" />
+    <Compile Include="Models\BuocThucHien.cs" />
+    <Compile Include="Models\ChiTietKeHoach.cs" />
     <Compile Include="Models\DangKyGoiTap.cs" />
+    <Compile Include="Models\DangKyKeHoach.cs" />
     <Compile Include="Models\GoiTap.cs" />
+    <Compile Include="Models\HangCoKhuyenMai.cs" />
+    <Compile Include="Models\HangHoiVien.cs" />
+    <Compile Include="Models\HoaDon.cs" />
     <Compile Include="Models\HoiVien.cs" />
     <Compile Include="Models\HuanLuyenVien.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\KeHoach.cs" />
+    <Compile Include="Models\KhuyenMai.cs" />
     <Compile Include="Models\LichTap.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\PTDashboardViewModel.cs" />
+    <Compile Include="Models\TienDoBaiTap.cs" />
+    <Compile Include="Models\ViewModels\AdminPageHeaderViewModel.cs" />
+    <Compile Include="Models\ViewModels\ChiTietKeHoachViewModel.cs" />
+    <Compile Include="Models\ViewModels\HangThanhVienViewModel.cs" />
+    <Compile Include="Models\ViewModels\KeHoachListViewModel.cs" />
+    <Compile Include="Models\ViewModels\KeHoachViewModel.cs" />
+    <Compile Include="Models\ViewModels\LichSuGioiThieuViewModel.cs" />
+    <Compile Include="Models\ViewModels\TaoHoaDonViewModel.cs" />
+    <Compile Include="Models\ViewModels\UserProfileViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\MomoService.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -230,6 +330,13 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\CRUD\crud.css" />
+    <Content Include="Content\Homepage\homepage.css" />
+    <Content Include="Content\Manage\profile.css" />
+    <Content Include="Content\Payment\status.css" />
+    <Content Include="Content\Workout\do.css" />
+    <Content Include="Content\Workout\exer.css" />
+    <Content Include="Content\Workout\plan.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -243,6 +350,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
+    <Content Include="Scripts\crud.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
     <Content Include="Scripts\jquery-3.7.0.slim.js" />
@@ -253,6 +361,8 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\momo.js" />
+    <Content Include="Scripts\tb-features.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -296,9 +406,46 @@
     <Content Include="Views\HoiVien\DanhSachGoiTap.cshtml" />
     <Content Include="Views\PT\Dashboard.cshtml" />
     <Content Include="Views\HoiVien\DatLich.cshtml" />
+    <Content Include="Views\Manage\ShowQrCode.cshtml" />
+    <Content Include="Views\Checkin\Scan.cshtml" />
+    <Content Include="Views\BaiTaps\Create.cshtml" />
+    <Content Include="Views\BaiTaps\Delete.cshtml" />
+    <Content Include="Views\BaiTaps\Details.cshtml" />
+    <Content Include="Views\BaiTaps\Edit.cshtml" />
+    <Content Include="Views\BaiTaps\Index.cshtml" />
+    <Content Include="Views\BaiTaps\Practice.cshtml" />
+    <Content Include="Views\KhuyenMais\Create.cshtml" />
+    <Content Include="Views\KhuyenMais\Delete.cshtml" />
+    <Content Include="Views\KhuyenMais\Details.cshtml" />
+    <Content Include="Views\KhuyenMais\Edit.cshtml" />
+    <Content Include="Views\KhuyenMais\Index.cshtml" />
+    <Content Include="Views\HoaDons\Create.cshtml" />
+    <Content Include="Views\HoaDons\Index.cshtml" />
+    <Content Include="Views\Manage\HangThanhVien.cshtml" />
+    <Content Include="Views\ThucHienKeHoach\XemKeHoach.cshtml" />
+    <Content Include="Views\ThucHienKeHoach\BaiTapChiTiet.cshtml" />
+    <Content Include="Views\KeHoach\Index.cshtml" />
+    <Content Include="Views\KeHoachsAdmin\Create.cshtml" />
+    <Content Include="Views\KeHoachsAdmin\Index.cshtml" />
+    <Content Include="Views\KeHoachsAdmin\Edit.cshtml" />
+    <Content Include="Views\KeHoachsAdmin\Details.cshtml" />
+    <Content Include="Views\KeHoachsAdmin\Delete.cshtml" />
+    <Content Include="Views\Manage\LichSuGioiThieu.cshtml" />
+    <Content Include="Views\HoaDons\Details.cshtml" />
+    <Content Include="Views\Shared\_CrudButtons.cshtml" />
+    <Content Include="Views\Shared\_AdminPageHeader.cshtml" />
+    <Content Include="Views\Shared\_DeleteSelectedButton.cshtml" />
+    <Content Include="Views\Manage\Edit.cshtml" />
+    <Content Include="Views\KeHoach\_PlanCard.cshtml" />
+    <Content Include="Views\Momo\PaymentResult.cshtml" />
+    <Content Include="Views\HoiVien\XacNhanThanhToan.cshtml" />
+    <Content Include="Views\HoiVien\GoiTapCuaToi.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\App_LocalResources\" />
+    <Folder Include="Views\Index\" />
+    <Folder Include="Views\KeHoachViewModel\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
@@ -342,6 +489,33 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202508040359148_TaoBang_LichTap.resx">
       <DependentUpon>202508040359148_TaoBang_LichTap.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202508041438241_AddBaiTapAndBuocThucHienModels.resx">
+      <DependentUpon>202508041438241_AddBaiTapAndBuocThucHienModels.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202508041445462_SeedJumpingJacksExercise.resx">
+      <DependentUpon>202508041445462_SeedJumpingJacksExercise.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202508041520507_AddRepCountingLogicToBaiTap.resx">
+      <DependentUpon>202508041520507_AddRepCountingLogicToBaiTap.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202508041747408_NewModel_Data.resx">
+      <DependentUpon>202508041747408_NewModel_Data.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202508050542232_SeedInitialRolesAndAdmin.resx">
+      <DependentUpon>202508050542232_SeedInitialRolesAndAdmin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202508050618128_AddManyToMany_HangHoiVien_KhuyenMai.resx">
+      <DependentUpon>202508050618128_AddManyToMany_HangHoiVien_KhuyenMai.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202508051416023_AddTargetCountToChiTietKeHoach.resx">
+      <DependentUpon>202508051416023_AddTargetCountToChiTietKeHoach.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202508051554161_Heee.resx">
+      <DependentUpon>202508051554161_Heee.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202508061501475_AddMomo.resx">
+      <DependentUpon>202508061501475_AddMomo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
