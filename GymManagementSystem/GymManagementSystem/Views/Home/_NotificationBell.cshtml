@@ -1,0 +1,25 @@
+﻿
+@model List<GymManagementSystem.Models.ThongBao>
+
+<li class="nav-item dropdown notification-dropdown">
+    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-bell"></i>
+        @if (Model.Any())
+        {
+            <span class="badge badge-pill badge-danger">@Model.Count</span>
+        }
+    </a>
+    <div class="dropdown-menu dropdown-menu-right">
+        @if (Model.Any())
+        {
+            foreach (var notification in Model)
+            {
+                <a class="dropdown-item" href="@notification.URL">@notification.NoiDung</a>
+            }
+        }
+        else
+        {
+            <span class="dropdown-item">Không có thông báo mới.</span>
+        }
+    </div>
+</li>

@@ -199,8 +199,21 @@
     <Compile Include="Migrations\202508040359148_TaoBang_LichTap.Designer.cs">
       <DependentUpon>202508040359148_TaoBang_LichTap.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202508040933057_TaoBang_ChiSoSucKhoe.cs" />
+    <Compile Include="Migrations\202508040933057_TaoBang_ChiSoSucKhoe.Designer.cs">
+      <DependentUpon>202508040933057_TaoBang_ChiSoSucKhoe.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202508050258056_TaoBang_ThongBao.cs" />
+    <Compile Include="Migrations\202508050258056_TaoBang_ThongBao.Designer.cs">
+      <DependentUpon>202508050258056_TaoBang_ThongBao.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202508051724006_Them_DanhGia_Vao_LichTap.cs" />
+    <Compile Include="Migrations\202508051724006_Them_DanhGia_Vao_LichTap.Designer.cs">
+      <DependentUpon>202508051724006_Them_DanhGia_Vao_LichTap.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\ChiSoSucKhoe.cs" />
     <Compile Include="Models\DangKyGoiTap.cs" />
     <Compile Include="Models\GoiTap.cs" />
     <Compile Include="Models\HoiVien.cs" />
@@ -209,6 +222,7 @@
     <Compile Include="Models\LichTap.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\PTDashboardViewModel.cs" />
+    <Compile Include="Models\ThongBao.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -294,8 +308,11 @@
     <Content Include="Views\GoiTaps\Index.cshtml" />
     <Content Include="Views\Shared\_LayoutAccount.cshtml" />
     <Content Include="Views\HoiVien\DanhSachGoiTap.cshtml" />
-    <Content Include="Views\PT\Dashboard.cshtml" />
     <Content Include="Views\HoiVien\DatLich.cshtml" />
+    <Content Include="Views\PT\LichLamViec.cshtml" />
+    <Content Include="Views\HoiVien\XemTienDo.cshtml" />
+    <Content Include="Views\Home\_NotificationBell.cshtml" />
+    <Content Include="Views\HoiVien\_BookingFormPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -342,6 +359,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202508040359148_TaoBang_LichTap.resx">
       <DependentUpon>202508040359148_TaoBang_LichTap.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202508040933057_TaoBang_ChiSoSucKhoe.resx">
+      <DependentUpon>202508040933057_TaoBang_ChiSoSucKhoe.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202508050258056_TaoBang_ThongBao.resx">
+      <DependentUpon>202508050258056_TaoBang_ThongBao.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202508051724006_Them_DanhGia_Vao_LichTap.resx">
+      <DependentUpon>202508051724006_Them_DanhGia_Vao_LichTap.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
