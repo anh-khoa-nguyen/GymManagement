@@ -255,3 +255,32 @@ G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\GymManagementSystem\GymManagementSystem\GymMa
 G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\GymManagementSystem\GymManagementSystem\GymManagementSystem\obj\Debug\GymManagementSystem.Migrations.AddTargetCountToChiTietKeHoach.resources
 G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\GymManagementSystem\GymManagementSystem\GymManagementSystem\obj\Debug\GymManagementSystem.Migrations.Heee.resources
 G:\Nam 3\HK3 - Nam3\Lap trinh CSDL\GymManagementSystem\GymManagementSystem\GymManagementSystem\obj\Debug\GymManagementSystem.Migrations.AddMomo.resources
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\bin\Newtonsoft.Json.Bson.dll
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\bin\QRCoder.dll
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\bin\System.Buffers.dll
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\bin\System.Memory.dll
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\bin\System.Net.Http.Formatting.dll
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\bin\System.Numerics.Vectors.dll
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\bin\System.Runtime.CompilerServices.Unsafe.dll
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\bin\System.Threading.Tasks.Extensions.dll
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\bin\System.Web.Http.dll
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\bin\System.Web.Http.WebHost.dll
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\bin\Newtonsoft.Json.Bson.pdb
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\bin\Newtonsoft.Json.Bson.xml
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\bin\System.Buffers.xml
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\bin\System.Memory.xml
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\bin\System.Net.Http.Formatting.xml
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\bin\System.Numerics.Vectors.xml
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\bin\System.Runtime.CompilerServices.Unsafe.xml
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\bin\System.Threading.Tasks.Extensions.xml
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\bin\System.Web.Http.xml
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\bin\System.Web.Http.WebHost.xml
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\obj\Debug\GymManagementSystem.Migrations.AddBaiTapAndBuocThucHienModels.resources
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\obj\Debug\GymManagementSystem.Migrations.SeedJumpingJacksExercise.resources
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\obj\Debug\GymManagementSystem.Migrations.AddRepCountingLogicToBaiTap.resources
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\obj\Debug\GymManagementSystem.Migrations.NewModel_Data.resources
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\obj\Debug\GymManagementSystem.Migrations.SeedInitialRolesAndAdmin.resources
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\obj\Debug\GymManagementSystem.Migrations.AddManyToMany_HangHoiVien_KhuyenMai.resources
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\obj\Debug\GymManagementSystem.Migrations.AddTargetCountToChiTietKeHoach.resources
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\obj\Debug\GymManagementSystem.Migrations.Heee.resources
+D:\Desktop\GymManagementSystem\GymManagementSystem\GymManagementSystem\obj\Debug\GymManagementSystem.Migrations.AddMomo.resources
