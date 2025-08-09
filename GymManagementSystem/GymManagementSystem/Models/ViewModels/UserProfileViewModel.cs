@@ -1,23 +1,21 @@
 ﻿namespace GymManagementSystem.Models.ViewModels
 {
-    // ViewModel "mẹ" chứa tất cả thông tin cho trang quản lý tài khoản
     public class UserProfileViewModel
     {
-        // Thông tin cơ bản
+        //Lấy từ user hiện tại
         public string UserName { get; set; }
         public string Email { get; set; }
+
+        //Lấy từ user.HoiVien
         public string MaGioiThieu { get; set; }
-        public string QrCodeUri { get; set; }
+        public string QrCodeUri { get; set; } //Generate từ ApplicationUserID
 
-        // Chứa thông tin từ ViewModel Hạng thành viên
+        // Lấy từ View Model khác
         public HangThanhVienViewModel MembershipInfo { get; set; }
-
-        // Chứa thông tin từ ViewModel Lịch sử giới thiệu
         public LichSuGioiThieuViewModel ReferralInfo { get; set; }
 
         public UserProfileViewModel()
         {
-            // Khởi tạo để tránh lỗi null
             MembershipInfo = new HangThanhVienViewModel();
             ReferralInfo = new LichSuGioiThieuViewModel();
         }

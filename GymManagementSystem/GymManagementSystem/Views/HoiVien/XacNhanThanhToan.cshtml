@@ -1,40 +1,85 @@
-﻿@model GymManagementSystem.Models.HoaDon
+﻿<head>
+    <link href="@Url.Content("~/Content/Payment/status.css")" rel="stylesheet" type="text/css" />
+</head>
+
+@* THAY ĐỔI MODEL Ở ĐÂY *@
+@model GymManagementSystem.Models.ViewModels.XacNhanThanhToanViewModel
 @{
     ViewBag.Title = "Xác Nhận và Thanh Toán";
     var culture = new System.Globalization.CultureInfo("vi-VN");
 }
 
-<h2>@ViewBag.Title</h2>
 
-<div class="row">
-    <div class="col-md-8 col-md-offset-2">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Vui lòng kiểm tra lại thông tin hóa đơn</h3>
+<div class="status-page-wrapper">
+    <div class="status-container">
+
+        <div class="status-icon success">
+            <i class="fas fa-file-invoice-dollar"></i>
+        </div>
+
+        <div class="status-content">
+            <h2>@ViewBag.Title</h2>
+            <p>Kiểm tra lại thông tin hóa đơn trước khi thanh toán.</p>
+        </div>
+
+        <!-- Hiển thị thông báo thành công/thất bại -->
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger mt-3">@TempData["ErrorMessage"]</div>
+        }
+
+        <!-- Bảng tóm tắt chi phí -->
+        <ul class="payment-summary">
+            <li>
+                <span class="label">Gói tập</span>
+                <span class="value">@Model.HoaDon.GoiTap.TenGoi</span>
+            </li>
+            <li>
+                <span class="label">Giá gốc</span>
+                <span class="value">@Model.HoaDon.GiaGoc.ToString("C0", culture)</span>
+            </li>
+            @if (Model.HoaDon.SoTienGiam > 0)
+            {
+                <li>
+                    <span class="label">Giảm giá</span>
+                    <span class="value discount">- @Model.HoaDon.SoTienGiam.ToString("C0", culture)</span>
+                </li>
+            }
+            <li class="total">
+                <span class="label">Thành tiền</span>
+                <span class="value">@Model.HoaDon.ThanhTien.ToString("C0", culture)</span>
+            </li>
+        </ul>
+
+        @if (Model.KhuyenMaiDaApDung != null)
+        {
+            <div class="alert alert-success applied-promo">
+                <i class="fas fa-check-circle"></i>
+                Đã áp dụng khuyến mãi: <strong>@Model.KhuyenMaiDaApDung.TenKhuyenMai</strong>
             </div>
-            <div class="panel-body">
-                <dl class="dl-horizontal">
-                    <dt>Gói tập</dt>
-                    <dd>@Model.GoiTap.TenGoi</dd>
+        }
 
-                    <dt>Giá gốc</dt>
-                    <dd>@Model.GiaGoc.ToString("C0", culture)</dd>
+        <!-- ====================================================== -->
+        <!-- === FORM ÁP DỤNG KHUYẾN MÃI ĐƯỢC THÊM VÀO ĐÂY === -->
+        <!-- ====================================================== -->
+        @using (Html.BeginForm("ApDungKhuyenMai", "HoiVien"))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.HoaDon.Id)
 
-                    <dt>Giảm giá</dt>
-                    <dd class="text-danger">- @Model.SoTienGiam.ToString("C0", culture)</dd>
-
-                    <dt><strong>Thành tiền</strong></dt>
-                    <dd><strong>@Model.ThanhTien.ToString("C0", culture)</strong></dd>
-                </dl>
+            <div class="promo-code-section">
+                @Html.DropDownListFor(m => m.KhuyenMaiCuaHoiVienId, Model.DanhSachKhuyenMai, "-- Chọn khuyến mãi --", new { @class = "form-select" })
+                <button type="submit" class="btn-apply-promo">Áp dụng</button>
             </div>
-            <div class="panel-footer text-center">
-                <h4>Chọn phương thức thanh toán</h4>
+        }
+        <!-- ====================================================== -->
+        <!-- Khu vực chọn phương thức thanh toán -->
+        <div class="payment-methods w-100">
+            <h5>Chọn phương thức thanh toán</h5>
 
-                <!-- Nút thanh toán MoMo -->
-                @Html.ActionLink("Thanh toán qua MoMo", "CreatePaymentRequest", "Momo", new { hoaDonId = Model.Id }, new { @class = "btn btn-danger", @target = "_blank" })
-
-                <!-- Có thể thêm các nút thanh toán khác ở đây -->
-                <a href="#" class="btn btn-default">Thanh toán tại quầy</a>
+            <div class="d-flex mt-4">
+                @Html.ActionLink("Thanh toán qua MoMo", "CreatePaymentRequest", "Momo", new { hoaDonId = Model.HoaDon.Id }, new { @class = "btn-payment btn-momo-payment", @target = "_blank" })
+                @Html.ActionLink("Thanh toán tại quầy", "Index", "Home", null, new { @class = "btn-payment btn-counter-payment" })
             </div>
         </div>
     </div>

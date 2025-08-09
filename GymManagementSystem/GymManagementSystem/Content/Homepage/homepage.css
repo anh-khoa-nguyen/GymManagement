@@ -16,35 +16,33 @@ body {
     align-items: center;
     justify-content: center;
     text-align: center;
-    overflow: hidden; /* Ngăn các phần tử con bị tràn ra ngoài */
+    overflow: hidden;
     background-image: url('https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?q=80&w=2070&auto=format&fit=crop'); /* Thay bằng ảnh của bạn */
     background-size: cover;
     background-position: center top;
 }
 
-    /* Lớp phủ màu đen mờ trên ảnh nền để chữ dễ đọc hơn */
-    .hero-section::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: rgba(0, 0, 0, 0.6);
-        z-index: 1;
-    }
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1;
+}
 
-    /* Đảm bảo nội dung nằm trên lớp phủ */
-    .hero-section > .container-fluid {
-        position: relative;
-        z-index: 2;
-    }
+.hero-section > .container-fluid {
+    position: relative;
+    z-index: 2;
+}
 
 
 /* --- Main Headline --- */
 .hero-title {
-    font-size: 5.5rem; /* Kích thước chữ lớn */
-    font-weight: 800; /* Rất đậm */
+    font-size: 5.5rem;
+    font-weight: 800;
     line-height: 1.1;
     text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
     letter-spacing: 2px;
@@ -54,8 +52,8 @@ body {
 .stat-card {
     position: absolute;
     z-index: 3;
-    background-color: rgba(43, 43, 43, 0.5); /* Màu nền bán trong suốt */
-    backdrop-filter: blur(10px); /* Hiệu ứng mờ kính */
+    background-color: rgba(43, 43, 43, 0.5);
+    backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-radius: 20px;
     padding: 1.2rem 1.5rem;
@@ -63,21 +61,21 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-    .stat-card .icon {
-        font-size: 1.5rem;
-        color: #a5ff36; /* Màu xanh lá cây neon */
-        margin-bottom: 0.5rem;
-    }
+.stat-card .icon {
+    font-size: 1.5rem;
+    color: #a5ff36;
+    margin-bottom: 0.5rem;
+}
 
-    .stat-card .value {
-        font-size: 1.5rem;
-        font-weight: 700;
-    }
+.stat-card .value {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
 
-    .stat-card .label {
-        font-size: 1rem;
-        margin: 0;
-    }
+.stat-card .label {
+    font-size: 1rem;
+    margin: 0;
+}
 
 /* Định vị cho từng card */
 .card-hours {
@@ -107,19 +105,19 @@ body {
     z-index: 3;
     top: 50%;
     transform: translateY(-50%);
-    writing-mode: vertical-rl; /* Xoay chữ dọc */
+    writing-mode: vertical-rl;
     text-orientation: mixed;
     font-size: 1rem;
     letter-spacing: 0.3em;
 }
 
-    .side-nav.prev {
-        left: 40px;
-    }
+.side-nav.prev {
+    left: 40px;
+}
 
-    .side-nav.next {
-        right: 40px;
-    }
+.side-nav.next {
+    right: 40px;
+}
 
 /* --- Bottom Elements --- */
 .bottom-left-info, .bottom-right-action {
@@ -146,9 +144,9 @@ body {
     margin-left: -15px;
 }
 
-    .avatar:first-child {
-        margin-left: 0;
-    }
+.avatar:first-child {
+    margin-left: 0;
+}
 
 .happy-spirits-text {
     margin-left: 15px;
@@ -159,7 +157,7 @@ body {
 }
 
 .btn-start {
-    background-color: #a5ff36; /* Màu xanh lá cây neon */
+    background-color: #a5ff36;
     color: #000;
     font-weight: 700;
     border-radius: 50px;
@@ -168,11 +166,11 @@ body {
     transition: all 0.3s ease;
 }
 
-    .btn-start:hover {
-        background-color: #fff;
-        color: #000;
-        transform: scale(1.05);
-    }
+.btn-start:hover {
+    background-color: #fff;
+    color: #000;
+    transform: scale(1.05);
+}
 
 /* --- Navbar Customization --- */
 .navbar-transparent {
@@ -199,10 +197,10 @@ body {
     color: #a5ff36;
 }
 
-    .btn-outline-custom:hover {
-        background-color: #a5ff36;
-        color: #000;
-    }
+.btn-outline-custom:hover {
+    background-color: #a5ff36;
+    color: #000;
+}
 
 .btn-custom-green {
     background-color: #a5ff36;
@@ -211,17 +209,17 @@ body {
     border-radius: 50px;
 }
 
-    .btn-custom-green:hover {
-        background-color: #fff;
-        color: #000;
-    }
+.btn-custom-green:hover {
+    background-color: #fff;
+    color: #000;
+}
 
 .main-content-padding {
-    padding-top: 80px; /* Tạo khoảng trống phía trên, bạn có thể điều chỉnh giá trị này */
+    padding-top: 80px;
 }
 
 .table {
-    color: #dee2e6; /* Đổi màu chữ trong bảng thành màu sáng */
+    color: #dee2e6;
 }
 
 .table-striped > tbody > tr:nth-of-type(odd) > * {
@@ -230,7 +228,7 @@ body {
 }
 
 h2, h3, h4 {
-    color: #fff; /* Đảm bảo các tiêu đề cũng có màu trắng */
+    color: #fff;
 }
 
 /* --- Responsive Adjustments --- */
@@ -242,11 +240,10 @@ h2, h3, h4 {
     .stat-card {
         display: none;
     }
-    /* Ẩn các card trên màn hình nhỏ */
+
     .side-nav {
         display: none;
     }
-    /* Ẩn prev/next */
 }
 
 @media (max-width: 768px) {
@@ -263,3 +260,106 @@ h2, h3, h4 {
     }
 }
 
+/* =================================================== */
+/* --- NAVBAR DROPDOWN STYLING (UPGRADED THEME) --- */
+/* =================================================== */
+
+/* Ghi đè style mặc định của Bootstrap cho dropdown trong navbar */
+.navbar .dropdown-menu {
+    background-color: #1c1c1c;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 0.75rem; /* Tăng padding tổng thể */
+    margin-top: 0.5rem;
+    /* Hiệu ứng hào quang tím đặc trưng */
+    box-shadow: 0 10px 30px var(--glow-purple);
+    /* Hiệu ứng xuất hiện */
+    animation: fadeIn 0.3s ease-out;
+    min-width: 220px; /* Đảm bảo dropdown đủ rộng */
+}
+
+/* Style cho từng mục trong dropdown */
+.navbar .dropdown-item {
+    color: #ccc;
+    padding: 0.75rem 1.25rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border-radius: 8px; /* Bo tròn từng mục */
+    display: flex; /* Dùng flexbox để tạo layout cho chữ */
+    align-items: center;
+    gap: 0.75rem; /* Khoảng cách giữa các phần tử con */
+}
+
+    /* Hiệu ứng khi di chuột qua một mục */
+    .navbar .dropdown-item:hover,
+    .navbar .dropdown-item:focus {
+        color: #000; /* Đổi chữ thành màu đen */
+        background-color: var(--neon-green); /* Nền xanh neon */
+        transform: translateX(5px); /* Trượt nhẹ sang phải */
+    }
+
+    /* --- LÀM NỔI BẬT CHỮ - THEO YÊU CẦU --- */
+
+    /* Thêm icon vào trước mỗi mục để tạo điểm nhấn */
+    .navbar .dropdown-item::before {
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        display: inline-block;
+        width: 20px; /* Đảm bảo các icon thẳng hàng */
+        text-align: center;
+        opacity: 0.6;
+    }
+
+    /* Gán icon cụ thể cho từng link (dựa trên href) */
+    .navbar .dropdown-item[href*="/HoaDons"]::before {
+        content: "\f570";
+    }
+    /* Icon hóa đơn */
+    .navbar .dropdown-item[href*="/GoiTaps"]::before {
+        content: "\f44b";
+    }
+    /* Icon thẻ tag */
+    .navbar .dropdown-item[href*="/KhuyenMais"]::before {
+        content: "\f06b";
+    }
+    /* Icon quà tặng */
+
+    /* Khi hover, icon sẽ hiện rõ hơn */
+    .navbar .dropdown-item:hover::before {
+        opacity: 1;
+    }
+
+
+/* Đảm bảo mũi tên dropdown có màu trắng để dễ nhìn */
+.navbar .dropdown-toggle::after {
+    border-top-color: #fff;
+    border-bottom-color: #fff;
+}
+
+/* Animation cho dropdown */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+:root {
+    /* Màu Xanh Neon */
+    --neon-green: #a5ff36;
+    --glow-green: rgba(165, 255, 54, 0.5);
+    /* Màu Tím Huyền Bí */
+    --mystic-purple: #8a2be2;
+    --glow-purple: rgba(138, 43, 226, 0.3);
+    /* Màu Vàng VIP */
+    --vip-gold: #f0e6d2;
+    --glow-gold: rgba(240, 230, 210, 0.5);
+    /* Màu Hồng MoMo */
+    --momo-pink: #ae2070;
+    --glow-pink: rgba(174, 32, 112, 0.6);
+}

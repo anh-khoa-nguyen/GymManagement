@@ -16,42 +16,30 @@ namespace GymManagementSystem.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-         //GET: KhuyenMais
+        // GET: KhuyenMais
         public async Task<ActionResult> Index(string searchString)
         {
-            //return View(await db.KhuyenMais.ToListAsync());
             var khuyenMais = db.KhuyenMais.AsQueryable();
 
-            // Nếu có chuỗi tìm kiếm, lọc kết quả
             if (!String.IsNullOrWhiteSpace(searchString))
             {
                 khuyenMais = khuyenMais.Where(k => k.TenKhuyenMai.Contains(searchString) ||
                                                    k.MaKhuyenMai.Contains(searchString));
             }
 
-            // Truyền lại chuỗi tìm kiếm về View để hiển thị trong ô input
             ViewBag.CurrentFilter = searchString;
 
-            return View(khuyenMais.ToList());
+            // Sửa lại để dùng ToListAsync cho nhất quán
+            return View(await khuyenMais.ToListAsync());
         }
-
-        //public ActionResult Index(string searchString)
-        //{
-            
-        //}
 
         // GET: KhuyenMais/Details/5
         public async Task<ActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
             KhuyenMai khuyenMai = await db.KhuyenMais.FindAsync(id);
-            if (khuyenMai == null)
-            {
-                return HttpNotFound();
-            }
+            if (khuyenMai == null) return HttpNotFound();
 
             if (Request.IsAjaxRequest())
             {
@@ -64,32 +52,40 @@ namespace GymManagementSystem.Controllers
         // GET: KhuyenMais/Create
         public ActionResult Create()
         {
+            // Gán giá trị mặc định mới
             var model = new KhuyenMai
             {
-                NgayBatDau = DateTime.Now,
-                NgayKetThuc = DateTime.Now.AddMonths(1),
-                IsActive = true
+                IsActive = true,
+                SoNgayHieuLuc = 30 // Mặc định là 30 ngày
             };
 
             if (Request.IsAjaxRequest())
             {
-                return PartialView("Create");
+                return PartialView("Create", model);
             }
             return View(model);
         }
 
         // POST: KhuyenMais/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,TenKhuyenMai,MoTa,MaKhuyenMai,PhanTramGiamGia,SoTienGiamGia,NgayBatDau,NgayKetThuc,IsActive")] KhuyenMai khuyenMai)
+        // SỬA LẠI THUỘC TÍNH BIND
+        public async Task<ActionResult> Create([Bind(Include = "Id,TenKhuyenMai,MoTa,MaKhuyenMai,PhanTramGiamGia,SoTienGiamToiDa,SoNgayHieuLuc,IsActive")] KhuyenMai khuyenMai)
         {
             if (ModelState.IsValid)
             {
                 db.KhuyenMais.Add(khuyenMai);
                 await db.SaveChangesAsync();
+                if (Request.IsAjaxRequest())
+                {
+                    return Json(new { success = true });
+                }
                 return RedirectToAction("Index");
+            }
+
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("_Create", khuyenMai);
             }
 
             return View(khuyenMai);
@@ -98,15 +94,11 @@ namespace GymManagementSystem.Controllers
         // GET: KhuyenMais/Edit/5
         public async Task<ActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
             KhuyenMai khuyenMai = await db.KhuyenMais.FindAsync(id);
-            if (khuyenMai == null)
-            {
-                return HttpNotFound();
-            }
+            if (khuyenMai == null) return HttpNotFound();
+
             if (Request.IsAjaxRequest())
             {
                 return PartialView("Edit", khuyenMai);
@@ -115,17 +107,25 @@ namespace GymManagementSystem.Controllers
         }
 
         // POST: KhuyenMais/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,TenKhuyenMai,MoTa,MaKhuyenMai,PhanTramGiamGia,SoTienGiamGia,NgayBatDau,NgayKetThuc,IsActive")] KhuyenMai khuyenMai)
+        // SỬA LẠI THUỘC TÍNH BIND
+        public async Task<ActionResult> Edit([Bind(Include = "Id,TenKhuyenMai,MoTa,MaKhuyenMai,PhanTramGiamGia,SoTienGiamToiDa,SoNgayHieuLuc,IsActive")] KhuyenMai khuyenMai)
         {
             if (ModelState.IsValid)
             {
                 db.Entry(khuyenMai).State = EntityState.Modified;
                 await db.SaveChangesAsync();
+                if (Request.IsAjaxRequest())
+                {
+                    return Json(new { success = true });
+                }
                 return RedirectToAction("Index");
+            }
+
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("Edit", khuyenMai);
             }
             return View(khuyenMai);
         }
@@ -133,19 +133,16 @@ namespace GymManagementSystem.Controllers
         // GET: KhuyenMais/Delete/5
         public async Task<ActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
             KhuyenMai khuyenMai = await db.KhuyenMais.FindAsync(id);
-            if (khuyenMai == null)
-            {
-                return HttpNotFound();
-            }
+            if (khuyenMai == null) return HttpNotFound();
+
             if (Request.IsAjaxRequest())
             {
                 return PartialView("Delete", khuyenMai);
             }
+
             return View(khuyenMai);
         }
 
@@ -157,36 +154,33 @@ namespace GymManagementSystem.Controllers
             KhuyenMai khuyenMai = await db.KhuyenMais.FindAsync(id);
             db.KhuyenMais.Remove(khuyenMai);
             await db.SaveChangesAsync();
+            if (Request.IsAjaxRequest())
+            {
+                return Json(new { success = true });
+            }
             return RedirectToAction("Index");
         }
-
 
         // POST: KhuyenMais/DeleteMultiple
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteMultiple(int[] idsToDelete)
+        public async Task<ActionResult> DeleteMultiple(int[] idsToDelete)
         {
             if (idsToDelete != null && idsToDelete.Length > 0)
             {
-                // Tìm tất cả các khuyến mãi có ID trong danh sách
-                var khuyenMais = db.KhuyenMais.Where(k => idsToDelete.Contains(k.Id)).ToList();
-
+                var khuyenMais = await db.KhuyenMais.Where(k => idsToDelete.Contains(k.Id)).ToListAsync();
                 if (khuyenMais.Any())
                 {
                     db.KhuyenMais.RemoveRange(khuyenMais);
-                    db.SaveChanges();
+                    await db.SaveChangesAsync();
                 }
             }
-
             return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                db.Dispose();
-            }
+            if (disposing) db.Dispose();
             base.Dispose(disposing);
         }
     }

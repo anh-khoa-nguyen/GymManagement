@@ -1,0 +1,29 @@
+﻿@model GymManagementSystem.Models.HangHoiVien
+@{ var culture = new System.Globalization.CultureInfo("vi-VN"); }
+
+<h4>Chi tiết: @Model.TenHang</h4>
+<dl>
+    <dt class="text-muted">Ngưỡng Chi Tiêu</dt>
+    <dd class="mb-3">@Model.NguongChiTieu.ToString("N0", culture) đ</dd>
+    <dt class="text-muted">Đặc Quyền</dt>
+    <dd class="mb-3">@Model.DacQuyen</dd>
+    <dt class="text-muted">Khuyến Mãi Kèm Theo</dt>
+    <dd class="mb-3">
+        @if (Model.KhuyenMaiDacQuyen != null && Model.KhuyenMaiDacQuyen.Any())
+        {
+            <ul>
+                @foreach (var km in Model.KhuyenMaiDacQuyen)
+                {
+                    <li>@km.KhuyenMai.TenKhuyenMai</li>
+                }
+            </ul>
+        }
+        else
+        {
+            <span>Không có.</span>
+        }
+    </dd>
+</dl>
+<div class="offcanvas-footer">
+    <button type="button" class="btn btn-offcanvas-secondary" data-bs-dismiss="offcanvas">Đóng</button>
+</div>

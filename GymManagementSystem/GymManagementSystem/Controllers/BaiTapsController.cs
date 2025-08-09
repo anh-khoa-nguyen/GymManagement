@@ -1,105 +1,172 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using GymManagementSystem.Models;
+using GymManagementSystem.Models.ViewModels;
 
 namespace GymManagementSystem.Controllers
 {
+    [Authorize(Roles = "QuanLy")]
     public class BaiTapsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: BaiTaps
-        public ActionResult Index()
+        public async Task<ActionResult> Index(string searchString)
         {
-            return View(db.BaiTaps.ToList());
+            var baiTapsQuery = db.BaiTaps.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                baiTapsQuery = baiTapsQuery.Where(b => b.TenBaiTap.Contains(searchString) || b.NhomCoChinh.Contains(searchString));
+            }
+            ViewBag.CurrentFilter = searchString;
+            return View(await baiTapsQuery.OrderBy(b => b.TenBaiTap).ToListAsync());
         }
 
         // GET: BaiTaps/Details/5
-        public ActionResult Details(int? id)
+        public async Task<ActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            var baiTap = await db.BaiTaps.Include(b => b.CacBuocThucHien).FirstOrDefaultAsync(b => b.Id == id);
+            if (baiTap == null) return HttpNotFound();
+
+            if (Request.IsAjaxRequest())
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            BaiTap baiTap = db.BaiTaps.Find(id);
-            if (baiTap == null)
-            {
-                return HttpNotFound();
+                return PartialView("Details", baiTap);
             }
             return View(baiTap);
         }
 
         // GET: BaiTaps/Create
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
-            return View();
+            var viewModel = new BaiTapViewModel();
+            ViewBag.AvailableDungCu = await GetAvailableThietBiList();
+
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("CreateOrEdit", viewModel);
+            }
+            return View(viewModel);
         }
 
         // POST: BaiTaps/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,TenBaiTap,MoTa,NhomCoChinh,NhomCoPhu,DungCu,MucDo,ImageUrl,VideoUrl")] BaiTap baiTap)
+        public async Task<ActionResult> Create(BaiTapViewModel viewModel, HttpPostedFileBase imageFile)
         {
             if (ModelState.IsValid)
             {
-                db.BaiTaps.Add(baiTap);
-                db.SaveChanges();
+                if (imageFile != null && imageFile.ContentLength > 0)
+                {
+                    var cloudinaryService = new CloudinaryService();
+                    var imageUrl = await cloudinaryService.UploadImageAsync(imageFile);
+                    if (!string.IsNullOrEmpty(imageUrl))
+                    {
+                        viewModel.BaiTap.ImageUrl = imageUrl;
+                    }
+                }
+
+                db.BaiTaps.Add(viewModel.BaiTap);
+                await db.SaveChangesAsync();
+
+                if (Request.IsAjaxRequest())
+                {
+                    return Json(new { success = true });
+                }
                 return RedirectToAction("Index");
             }
 
-            return View(baiTap);
+            ViewBag.AvailableDungCu = await GetAvailableThietBiList();
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("CreateOrEdit", viewModel);
+            }
+            return View(viewModel);
         }
 
         // GET: BaiTaps/Edit/5
-        public ActionResult Edit(int? id)
+        public async Task<ActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            var baiTap = await db.BaiTaps.Include(b => b.CacBuocThucHien).FirstOrDefaultAsync(b => b.Id == id);
+            if (baiTap == null) return HttpNotFound();
+
+            var viewModel = new BaiTapViewModel { BaiTap = baiTap };
+            ViewBag.AvailableDungCu = await GetAvailableThietBiList();
+
+            if (Request.IsAjaxRequest())
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return PartialView("CreateOrEdit", viewModel);
             }
-            BaiTap baiTap = db.BaiTaps.Find(id);
-            if (baiTap == null)
-            {
-                return HttpNotFound();
-            }
-            return View(baiTap);
+            return View(viewModel);
         }
 
         // POST: BaiTaps/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,TenBaiTap,MoTa,NhomCoChinh,NhomCoPhu,DungCu,MucDo,ImageUrl,VideoUrl")] BaiTap baiTap)
+        public async Task<ActionResult> Edit(BaiTapViewModel viewModel, HttpPostedFileBase imageFile)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(baiTap).State = EntityState.Modified;
-                db.SaveChanges();
+                if (imageFile != null && imageFile.ContentLength > 0)
+                {
+                    var cloudinaryService = new CloudinaryService();
+                    var imageUrl = await cloudinaryService.UploadImageAsync(imageFile);
+                    if (!string.IsNullOrEmpty(imageUrl))
+                    {
+                        viewModel.BaiTap.ImageUrl = imageUrl;
+                    }
+                }
+
+                var baiTapInDb = await db.BaiTaps.Include(b => b.CacBuocThucHien).FirstOrDefaultAsync(b => b.Id == viewModel.BaiTap.Id);
+                if (baiTapInDb == null) return HttpNotFound();
+
+                db.Entry(baiTapInDb).CurrentValues.SetValues(viewModel.BaiTap);
+                db.BuocThucHiens.RemoveRange(baiTapInDb.CacBuocThucHien);
+
+                if (viewModel.BaiTap.CacBuocThucHien != null)
+                {
+                    foreach (var buoc in viewModel.BaiTap.CacBuocThucHien)
+                    {
+                        baiTapInDb.CacBuocThucHien.Add(buoc);
+                    }
+                }
+
+                await db.SaveChangesAsync();
+
+                if (Request.IsAjaxRequest())
+                {
+                    return Json(new { success = true });
+                }
                 return RedirectToAction("Index");
             }
-            return View(baiTap);
+
+            ViewBag.AvailableDungCu = await GetAvailableThietBiList();
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("CreateOrEdit", viewModel);
+            }
+            return View(viewModel);
         }
 
         // GET: BaiTaps/Delete/5
-        public ActionResult Delete(int? id)
+        public async Task<ActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            var baiTap = await db.BaiTaps.FindAsync(id);
+            if (baiTap == null) return HttpNotFound();
+
+            if (Request.IsAjaxRequest())
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            BaiTap baiTap = db.BaiTaps.Find(id);
-            if (baiTap == null)
-            {
-                return HttpNotFound();
+                return PartialView("Delete", baiTap);
             }
             return View(baiTap);
         }
@@ -107,31 +174,33 @@ namespace GymManagementSystem.Controllers
         // POST: BaiTaps/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            BaiTap baiTap = db.BaiTaps.Find(id);
-            db.BaiTaps.Remove(baiTap);
-            db.SaveChanges();
+            var baiTap = await db.BaiTaps.FindAsync(id);
+            if (baiTap != null)
+            {
+                db.BaiTaps.Remove(baiTap);
+                await db.SaveChangesAsync();
+            }
+
+            if (Request.IsAjaxRequest())
+            {
+                return Json(new { success = true });
+            }
             return RedirectToAction("Index");
         }
 
-        public ActionResult Practice(int? id)
+        private async Task<List<string>> GetAvailableThietBiList()
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            BaiTap baiTap = db.BaiTaps.Find(id);
-            if (baiTap == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.RepGoal = 10;
-
-            // TRUYỀN TÊN LOGIC ĐẾM SANG VIEW
-            ViewBag.RepCountingLogicName = baiTap.RepCountingLogic;
-
-            return View(baiTap);
+            var tenThietBiList = await db.ThietBis
+                                         .Where(t => t.TinhTrang == TinhTrangThietBi.HoatDongTot)
+                                         .Select(t => t.TenThietBi)
+                                         .ToListAsync();
+            var distinctTenThietBi = tenThietBiList
+                                        .Select(name => name.Trim())
+                                        .Distinct(System.StringComparer.CurrentCultureIgnoreCase)
+                                        .OrderBy(name => name);
+            return distinctTenThietBi.ToList();
         }
 
         protected override void Dispose(bool disposing)

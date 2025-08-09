@@ -18,11 +18,9 @@ namespace GymManagementSystem.Models
         [StringLength(1000)]
         public string KinhNghiem { get; set; }
 
-        // Foreign Key tới bảng AspNetUsers
         [Required]
         public string ApplicationUserId { get; set; }
 
-        // Navigation property
         [ForeignKey("ApplicationUserId")]
         public virtual ApplicationUser ApplicationUser { get; set; }
         public virtual ICollection<LichTap> LichTaps { get; set; }

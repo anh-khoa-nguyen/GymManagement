@@ -6,9 +6,9 @@ namespace GymManagementSystem.Models.ViewModels
     public class NgayTapLuyenItem
     {
         public int NgayTrongKeHoach { get; set; }
-        public ChiTietKeHoach ChiTietBaiTap { get; set; }
-        public bool DaHoanThanh { get; set; }
-        public bool CoTheTap { get; set; }
+        public ChiTietKeHoach ChiTietBaiTap { get; set; } //1 bài tập
+        public bool DaHoanThanh { get; set; } //Dựa vào model: TienDoBaiTap
+        public bool CoTheTap { get; set; } //Dựa vào model: TienDoBaiTap
     }
 
     // ViewModel chính cho cả trang
@@ -16,6 +16,6 @@ namespace GymManagementSystem.Models.ViewModels
     {
         public DangKyKeHoach DangKyKeHoach { get; set; }
         public List<NgayTapLuyenItem> DanhSachNgayTap { get; set; }
-        public int PhanTramHoanThanh { get; set; }
+        public int PhanTramHoanThanh { get; set; } //% Toàn bộ kế hoạch
     }
 }

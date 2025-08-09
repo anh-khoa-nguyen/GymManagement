@@ -1,0 +1,206 @@
+﻿@model GymManagementSystem.Models.ViewModels.BaiTapViewModel
+@{
+    bool isEditing = Model.BaiTap != null && Model.BaiTap.Id > 0;
+    ViewBag.Title = isEditing ? "Chỉnh Sửa Bài Tập" : "Tạo Bài Tập Mới";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm(isEditing ? "Edit" : "Create", "BaiTaps", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    if (isEditing)
+    { @Html.HiddenFor(model => model.BaiTap.Id) }
+
+<h5 class="text-muted">Thông tin chung</h5>
+<hr class="mt-0 mb-3" />
+
+<div class="mb-3">
+    @Html.LabelFor(model => model.BaiTap.TenBaiTap, htmlAttributes: new { @class = "form-label" })
+    @Html.EditorFor(model => model.BaiTap.TenBaiTap, new { htmlAttributes = new { @class = "form-control" } })
+    @Html.ValidationMessageFor(model => model.BaiTap.TenBaiTap, "", new { @class = "text-danger" })
+</div>
+<div class="mb-3">
+    @Html.LabelFor(model => model.BaiTap.MoTa, htmlAttributes: new { @class = "form-label" })
+    @Html.TextAreaFor(model => model.BaiTap.MoTa, 3, 40, new { @class = "form-control" })
+</div>
+<div class="row mb-3">
+    <div class="col">
+        @Html.LabelFor(model => model.BaiTap.NhomCoChinh, htmlAttributes: new { @class = "form-label" })
+        @Html.EditorFor(model => model.BaiTap.NhomCoChinh, new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+    <div class="col">
+        @Html.LabelFor(model => model.BaiTap.NhomCoPhu, htmlAttributes: new { @class = "form-label" })
+        @Html.EditorFor(model => model.BaiTap.NhomCoPhu, new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+</div>
+<div class="mb-3">
+    @Html.LabelFor(model => model.BaiTap.DungCu, htmlAttributes: new { @class = "form-label" })
+
+    <!-- Input ẩn này sẽ lưu chuỗi cuối cùng để gửi về server -->
+    @Html.HiddenFor(model => model.BaiTap.DungCu, new { id = "DungCuHidden" })
+
+    <!-- Dropdown này dùng cho giao diện, cho phép chọn nhiều và thêm mới -->
+    <select id="DungCuSelect" class="form-control" multiple="multiple">
+        @* Tải các dụng cụ đã có từ ViewBag *@
+        @foreach (var dungCu in (List<string>)ViewBag.AvailableDungCu)
+        {
+            <option value="@dungCu">@dungCu</option>
+        }
+    </select>
+</div>
+<div class="mb-3">
+    @Html.LabelFor(model => model.BaiTap.MucDo, htmlAttributes: new { @class = "form-label" })
+    @Html.EditorFor(model => model.BaiTap.MucDo, new { htmlAttributes = new { @class = "form-control" } })
+</div>
+<div class="mb-3">
+    @Html.LabelFor(model => model.BaiTap.ImageUrl, "Ảnh Minh Họa", htmlAttributes: new { @class = "form-label" })
+
+    <!-- Input ẩn để lưu URL hiện tại (quan trọng cho form Edit) -->
+    @Html.HiddenFor(model => model.BaiTap.ImageUrl)
+
+    <!-- Ô chọn file mới -->
+    <input type="file" name="imageFile" id="imageFile" class="form-control" accept="image/*" />
+
+    <!-- Hiển thị ảnh hiện tại (nếu có, trong form Edit) -->
+    @if (isEditing && !string.IsNullOrEmpty(Model.BaiTap.ImageUrl))
+    {
+        <div class="mt-2">
+            <img src="@Model.BaiTap.ImageUrl" alt="Ảnh hiện tại" style="max-width: 200px; border-radius: 8px;" />
+        </div>
+    }
+</div>
+<div class="mb-3">
+    @Html.LabelFor(model => model.BaiTap.VideoUrl, htmlAttributes: new { @class = "form-label" })
+    @Html.EditorFor(model => model.BaiTap.VideoUrl, new { htmlAttributes = new { @class = "form-control", placeholder = "Dán link YouTube vào đây..." } })
+</div>
+<div class="mb-3">
+    @Html.LabelFor(model => model.BaiTap.RepCountingLogic, htmlAttributes: new { @class = "form-label" })
+    @Html.EditorFor(model => model.BaiTap.RepCountingLogic, new { htmlAttributes = new { @class = "form-control" } })
+</div>
+
+<h5 class="text-muted mt-4">Các Bước Thực Hiện</h5>
+<hr class="mt-0 mb-3" />
+
+<table id="stepsTable" class="modern-table mb-3">
+    <thead>
+        <tr>
+            <th style="width: 15%;">Bước #</th>
+            <th style="width: 75%;">Nội Dung Hướng Dẫn</th>
+            <th style="width: 10%;"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (isEditing && Model.BaiTap.CacBuocThucHien != null)
+        {
+            foreach (var buoc in Model.BaiTap.CacBuocThucHien.OrderBy(b => b.ThuTuBuoc))
+            {
+                <tr>
+                    <td><input type="number" class="form-control step-number" value="@buoc.ThuTuBuoc" readonly /></td>
+                    <td>@Html.TextAreaFor(m => buoc.NoiDung, new { @class = "form-control step-content", rows = "2" })</td>
+                    <td class="text-end"><button type="button" class="btn-crud remove-step"><i class="fas fa-trash"></i></button></td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+<button type="button" id="addStep" class="btn btn-outline-success btn-sm">
+    <i class="fas fa-plus"></i> Thêm bước
+</button>
+
+<div class="offcanvas-footer">
+    <div class="d-grid gap-2">
+        <input type="submit" value="@(isEditing ? "Lưu Thay Đổi" : "Tạo Bài Tập")" class="btn btn-offcanvas-primary" />
+    </div>
+</div>
+}
+
+<!-- Hàng mẫu để clone -->
+<table style="display:none;">
+    <tr id="newStepRow">
+        <td><input type="number" class="form-control step-number" readonly /></td>
+        <td><textarea class="form-control step-content" rows="2"></textarea></td>
+        <td class="text-end"><button type="button" class="btn-crud remove-step"><i class="fas fa-trash"></i></button></td>
+    </tr>
+</table>
+
+
+<script>
+    (function () {
+        // Hàm cập nhật lại name của các input cho đúng với model binding của list
+        function updateStepIndices() {
+            $('#stepsTable tbody tr').each(function (index, row) {
+                // Cập nhật số thứ tự bước
+                $(row).find('.step-number').val(index + 1);
+
+                // Xóa input ẩn cũ
+                $(row).find('.step-hidden-input').remove();
+                // Thêm input ẩn chứa số thứ tự để gửi về server
+                $(row).append('<input type="hidden" class="step-hidden-input" name="BaiTap.CacBuocThucHien[' + index + '].ThuTuBuoc" value="' + (index + 1) + '" />');
+
+                // Cập nhật name cho textarea nội dung
+                $(row).find('.step-content').attr('name', 'BaiTap.CacBuocThucHien[' + index + '].NoiDung');
+            });
+        }
+
+        // Sự kiện khi nhấn nút "Thêm bước"
+        $('#addStep').click(function () {
+            var newRow = $('#newStepRow').clone().removeAttr('id');
+            $('#stepsTable tbody').append(newRow);
+            updateStepIndices();
+        });
+
+        // Sự kiện khi nhấn nút xóa một dòng
+        $('#stepsTable').on('click', '.remove-step', function () {
+            $(this).closest('tr').remove();
+            updateStepIndices();
+        });
+
+        // Chạy lần đầu để đảm bảo các name là đúng
+        updateStepIndices();
+    })();
+</script>
+
+<script>
+    // Bọc trong một hàm IIFE để tránh xung đột biến
+    (function () {
+        // Khởi tạo Select2 cho dropdown
+        $('#DungCuSelect').select2({
+            tags: true, // Cho phép người dùng tạo tag mới (dụng cụ mới)
+            tokenSeparators: [','], // Dùng dấu phẩy để tách các tag
+            placeholder: 'Chọn hoặc nhập dụng cụ mới...',
+            theme: "bootstrap-5", // Đảm bảo theme này khớp với phiên bản Bootstrap của bạn
+            width: 'resolve' // Tự động điều chỉnh chiều rộng
+        });
+
+        // Lấy giá trị ban đầu từ input ẩn và điền vào Select2 (cho form Edit)
+        var initialDungCu = $('#DungCuHidden').val();
+        if (initialDungCu) {
+            // Tách chuỗi thành mảng, trim khoảng trắng và loại bỏ các phần tử rỗng
+            var selectedItems = initialDungCu.split(',').map(item => item.trim()).filter(item => item);
+
+            // Cần đảm bảo các option này tồn tại trước khi set value
+            selectedItems.forEach(function (item) {
+                if ($('#DungCuSelect').find("option[value='" + item + "']").length === 0) {
+                    // Nếu option chưa có, tạo mới nó
+                    var newOption = new Option(item, item, true, true);
+                    $('#DungCuSelect').append(newOption);
+                }
+            });
+
+            // Set giá trị và trigger change để cập nhật giao diện
+            $('#DungCuSelect').val(selectedItems).trigger('change');
+        }
+
+        // Sự kiện khi người dùng thay đổi lựa chọn trong Select2
+        $('#DungCuSelect').on('change', function () {
+            var selectedData = $(this).select2('data');
+            var selectedTexts = selectedData.map(item => item.text);
+            var finalString = selectedTexts.join(', ');
+            $('#DungCuHidden').val(finalString);
+        });
+
+        // ... script xử lý thêm/xóa bước giữ nguyên ...
+    })();
+</script>

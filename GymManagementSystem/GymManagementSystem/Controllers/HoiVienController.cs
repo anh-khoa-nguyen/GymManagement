@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using GymManagementSystem.Models;
+using GymManagementSystem.Models.ViewModels;
 using Microsoft.AspNet.Identity;
 
 namespace GymManagementSystem.Controllers
@@ -179,11 +181,11 @@ namespace GymManagementSystem.Controllers
 
         // GET: /HoiVien/DanhSachGoiTap
         // Hiển thị danh sách các gói tập cho hội viên chọn
-        public async Task<ActionResult> DanhSachGoiTap()
-        {
-            var goiTaps = await db.GoiTaps.ToListAsync();
-            return View(goiTaps);
-        }
+        //public async Task<ActionResult> DanhSachGoiTap()
+        //{
+        //    var goiTaps = await db.GoiTaps.ToListAsync();
+        //    return View(goiTaps);
+        //}
 
         // POST: /HoiVien/DangKyGoiTap
         // Action này được gọi khi hội viên nhấn nút "Chọn Gói này"
@@ -224,38 +226,148 @@ namespace GymManagementSystem.Controllers
         public async Task<ActionResult> XacNhanThanhToan(int hoaDonId)
         {
             var hoaDon = await db.HoaDons
-                                 .Include(h => h.GoiTap)
-                                 .FirstOrDefaultAsync(h => h.Id == hoaDonId);
+                         .Include(h => h.GoiTap)
+                         .FirstOrDefaultAsync(h => h.Id == hoaDonId);
 
-            if (hoaDon == null || hoaDon.HoiVienId != User.Identity.GetUserId())
+            if (hoaDon == null || hoaDon.HoiVienId != User.Identity.GetUserId()) return HttpNotFound();
+
+            // Lấy hồ sơ hội viên để tìm các voucher
+            var hoivienProfile = await db.HoiViens.FirstOrDefaultAsync(h => h.ApplicationUserId == hoaDon.HoiVienId);
+
+            // Lấy danh sách các voucher CHƯA SỬ DỤNG và CÒN HẠN của hội viên
+            var danhSachVoucher = await db.KhuyenMaiCuaHoiViens
+                .Include(km => km.KhuyenMai)
+                .Where(km => km.HoiVienId == hoivienProfile.Id &&
+                             km.TrangThai == TrangThaiKhuyenMaiHV.ChuaSuDung &&
+                             km.NgayHetHan >= DateTime.Today)
+                .Select(km => new SelectListItem
+                {
+                    Value = km.Id.ToString(),
+                    Text = km.KhuyenMai.TenKhuyenMai
+                })
+                .ToListAsync();
+
+            danhSachVoucher.Insert(0, new SelectListItem { Value = "", Text = "-- Không áp dụng --" });
+
+            KhuyenMai khuyenMaiDaApDung = null;
+            if (hoaDon.KhuyenMaiId.HasValue)
             {
-                return HttpNotFound(); // Đảm bảo người dùng chỉ xem được hóa đơn của chính mình
+                khuyenMaiDaApDung = await db.KhuyenMais.FindAsync(hoaDon.KhuyenMaiId.Value);
             }
 
-            return View(hoaDon);
+            var viewModel = new XacNhanThanhToanViewModel
+            {
+                HoaDon = hoaDon,
+                DanhSachKhuyenMai = danhSachVoucher,
+                KhuyenMaiDaApDung = khuyenMaiDaApDung // Gán vào ViewModel
+            };
+
+            return View(viewModel);
         }
 
-        public async Task<ActionResult> GoiTapCuaToi()
+        public async Task<ActionResult> DanhSachGoiTap()
         {
-            var userId = User.Identity.GetUserId();
+            var userIdString = User.Identity.GetUserId(); // Lấy ID dạng chuỗi
 
-            // Tìm hồ sơ HoiVien của người dùng đang đăng nhập
-            var hoivienProfile = await db.HoiViens.FirstOrDefaultAsync(h => h.ApplicationUserId == userId);
-            if (hoivienProfile == null)
+            var hoiVien = await db.HoiViens.FirstOrDefaultAsync(h => h.ApplicationUserId == userIdString);
+            if (hoiVien == null)
             {
-                // Nếu không có hồ sơ, trả về danh sách rỗng
-                return View(new List<DangKyGoiTap>());
+                // Xử lý trường hợp không tìm thấy hội viên tương ứng
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+            var hoiVienIdInt = hoiVien.Id; // Đây là ID kiểu int mà chúng ta cần
 
-            // Lấy danh sách đăng ký dựa trên HoiVienId
-            var danhSachDangKy = await db.DangKyGoiTaps
+            // Lấy danh sách các gói tập đã đăng ký bằng ID kiểu int
+            var goiTapDaDangKy = await db.DangKyGoiTaps
+                                         .Where(d => d.HoiVienId == hoiVienIdInt) // So sánh int với int
                                          .Include(d => d.GoiTap)
-                                         .Where(d => d.HoiVienId == hoivienProfile.Id)
-                                         .OrderByDescending(d => d.NgayDangKy)
+                                         .OrderByDescending(d => d.NgayHetHan)
                                          .ToListAsync();
 
-            return View(danhSachDangKy);
+
+            // --- Phần còn lại của Action ---
+            var daDangKyIds = goiTapDaDangKy.Select(d => d.GoiTapId).ToList();
+
+            var goiTapChuaDangKy = await db.GoiTaps
+                                           .Where(g => !daDangKyIds.Contains(g.Id))
+                                           .ToListAsync();
+
+            var viewModel = new GoiTapViewModel
+            {
+                GoiTapDaDangKy = goiTapDaDangKy,
+                GoiTapChuaDangKy = goiTapChuaDangKy
+            };
+
+            return View(viewModel);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ApDungKhuyenMai(XacNhanThanhToanViewModel viewModel)
+        {
+            var hoaDon = await db.HoaDons.FindAsync(viewModel.HoaDon.Id);
+            var userId = User.Identity.GetUserId();
+
+            if (hoaDon == null || hoaDon.HoiVienId != userId) return HttpNotFound();
+
+            // Nếu người dùng chọn "Không áp dụng"
+            if (!viewModel.KhuyenMaiCuaHoiVienId.HasValue)
+            {
+                // Reset lại hóa đơn về giá gốc
+                hoaDon.KhuyenMaiId = null;
+                hoaDon.SoTienGiam = 0;
+                hoaDon.ThanhTien = hoaDon.GiaGoc;
+                await db.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Đã gỡ bỏ khuyến mãi.";
+                return RedirectToAction("XacNhanThanhToan", new { hoaDonId = hoaDon.Id });
+            }
+
+            var hoivienProfile = await db.HoiViens.FirstOrDefaultAsync(h => h.ApplicationUserId == userId);
+
+            // Tìm chính xác voucher mà người dùng đã chọn
+            var voucher = await db.KhuyenMaiCuaHoiViens
+                                .Include(v => v.KhuyenMai) // Lấy cả thông tin của loại khuyến mãi
+                                .FirstOrDefaultAsync(v => v.Id == viewModel.KhuyenMaiCuaHoiVienId.Value &&
+                                                          v.HoiVienId == hoivienProfile.Id &&
+                                                          v.TrangThai == TrangThaiKhuyenMaiHV.ChuaSuDung);
+
+            if (voucher != null)
+            {
+                var khuyenMai = voucher.KhuyenMai;
+
+                // === LOGIC TÍNH TOÁN GIẢM GIÁ MỚI ===
+
+                // 1. Tính số tiền giảm theo phần trăm
+                decimal soTienGiamTheoPhanTram = (decimal)khuyenMai.PhanTramGiamGia * hoaDon.GiaGoc / 100;
+
+                // 2. Lấy số tiền giảm tối đa từ khuyến mãi
+                decimal soTienGiamToiDa = khuyenMai.SoTienGiamToiDa;
+
+                // 3. So sánh và chọn ra số tiền giảm cuối cùng
+                // Nếu số tiền giảm tối đa > 0 và số tiền giảm theo % lớn hơn nó, thì chỉ giảm tối đa
+                decimal soTienGiamCuoiCung = soTienGiamTheoPhanTram;
+                if (soTienGiamToiDa > 0 && soTienGiamTheoPhanTram > soTienGiamToiDa)
+                {
+                    soTienGiamCuoiCung = soTienGiamToiDa;
+                }
+
+                // Cập nhật hóa đơn với số tiền giảm đã được tính toán chính xác
+                hoaDon.KhuyenMaiId = khuyenMai.Id;
+                hoaDon.SoTienGiam = soTienGiamCuoiCung;
+                hoaDon.ThanhTien = hoaDon.GiaGoc - soTienGiamCuoiCung;
+                if (hoaDon.ThanhTien < 0) hoaDon.ThanhTien = 0;
+
+                await db.SaveChangesAsync();
+                TempData["SuccessMessage"] = $"Đã áp dụng thành công khuyến mãi!";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Khuyến mãi không hợp lệ hoặc đã được sử dụng.";
+            }
+
+            return RedirectToAction("XacNhanThanhToan", new { hoaDonId = hoaDon.Id });
+        }
+
 
         // Hàm helper để quyết định màu sắc dựa trên trạng thái
         private string GetEventColor(TrangThaiLichTap trangThai)

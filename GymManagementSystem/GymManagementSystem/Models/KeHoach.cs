@@ -12,20 +12,23 @@ namespace GymManagementSystem.Models
 
         [Required]
         [StringLength(200)]
-        public string TenKeHoach { get; set; } // Ví dụ: "30 Ngày Khởi Động Cùng Gymer"
+        public string TenKeHoach { get; set; }
 
         public string MoTa { get; set; }
 
-        public int ThoiGianThucHien { get; set; } // Số ngày để hoàn thành, ví dụ: 30
+        public int ThoiGianThucHien { get; set; }
 
         public int? KhuyenMaiId { get; set; }
+
+        public bool IsActive { get; set; }
+
+        [Display(Name = "Ảnh Bìa")]
+        [DataType(DataType.Url)]
+        public string ImageUrl { get; set; }
+
         [ForeignKey("KhuyenMaiId")]
         public virtual KhuyenMai KhuyenMai { get; set; }
 
-        public bool IsActive { get; set; } // Kế hoạch này có đang được áp dụng không?
-
-        // Navigation property: Một kế hoạch sẽ có nhiều chi tiết (bài tập)
         public virtual ICollection<ChiTietKeHoach> ChiTietKeHoachs { get; set; }
-
     }
 }

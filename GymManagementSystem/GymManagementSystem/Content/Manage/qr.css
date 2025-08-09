@@ -1,0 +1,163 @@
+﻿/* =================================================== */
+/* --- QR SCANNER PAGE STYLING (SCANNING STATION THEME) --- */
+/* =================================================== */
+
+.qr-scanner-wrapper {
+    max-width: 700px; /* Giới hạn chiều rộng của trạm quét */
+    margin: 2rem auto; /* Căn giữa và tạo khoảng cách */
+}
+
+/* --- Khung hiển thị camera --- */
+#qr-reader {
+    background-color: #000;
+    border: 1px solid #333;
+    border-radius: 16px;
+    padding: 1rem;
+    box-shadow: 0 0 60px var(--glow-purple), inset 0 0 15px rgba(0,0,0,0.5);
+    overflow: hidden;
+    position: relative; /* Cần thiết cho hiệu ứng laser */
+}
+
+#qr-reader::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 16px; /* Phải khớp với border-radius của #qr-reader */
+    z-index: 2; /* Nằm trên video nhưng dưới các lớp khác */
+    /* Tạo hiệu ứng viền tối (vignette) và hào quang tím từ bên trong */
+    box-shadow: inset 0 0 100px rgba(138, 43, 226, 0.4);
+    /* Quan trọng: Cho phép click và quét xuyên qua lớp hiệu ứng này */
+    pointer-events: none;
+}
+
+    /* --- Lớp hiệu ứng 2: Scanlines & Flicker (Tạo cảm giác công nghệ) --- */
+#qr-reader::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+    z-index: 3; /* Nằm trên cùng */
+    /* Tạo các đường kẻ ngang mờ */
+    background: repeating-linear-gradient( to bottom, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05) 1px, transparent 1px, transparent 4px );
+    /* Thêm hiệu ứng nhấp nháy nhẹ */
+    animation: flicker 0.15s infinite;
+    pointer-events: none;
+}
+
+@keyframes flicker {
+0% {
+    opacity: 0.6;
+}
+
+20% {
+    opacity: 0.8;
+}
+
+40% {
+    opacity: 0.5;
+}
+
+60% {
+    opacity: 0.9;
+}
+
+80% {
+    opacity: 0.4;
+}
+
+100% {
+    opacity: 0.7;
+}
+}
+
+/* Tùy chỉnh lại vùng quét của thư viện */
+#qr-reader__scan_region {
+    border: 3px solid rgba(255, 255, 255, 0.5) !important;
+    border-radius: 12px;
+    transform: scaleX(-1); /* LẬT NGƯỢC CAMERA CHO GIỐNG GƯƠNG */
+}
+
+#qr-reader__dashboard_section_csr button {
+    background-color: #333 !important;
+    color: #fff !important;
+    border: 1px solid #555 !important;
+}
+
+/* --- HIỆU ỨNG LASER QUÉT --- */
+#qr-reader__scan_region::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--neon-green);
+    box-shadow: 0 0 15px var(--glow-green);
+    border-radius: 2px;
+    animation: scan-laser 2.5s infinite;
+}
+
+@keyframes scan-laser {
+    0% {
+        top: 0;
+    }
+
+    50% {
+        top: 98%;
+    }
+
+    100% {
+        top: 0;
+    }
+}
+
+
+/* --- Khu vực hiển thị kết quả --- */
+#scan-result {
+    margin-top: 2rem;
+}
+
+/* Tùy chỉnh lại alert của Bootstrap cho đồng bộ */
+.alert-scan {
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: left;
+    border-width: 2px;
+}
+
+    .alert-scan h4 {
+        margin-top: 0;
+        font-weight: 700;
+    }
+
+    .alert-scan.alert-success {
+        background-color: rgba(165, 255, 54, 0.1);
+        border-color: rgba(165, 255, 54, 0.3);
+        color: #fff;
+    }
+
+    .alert-scan.alert-danger {
+        background-color: rgba(220, 53, 69, 0.1);
+        border-color: rgba(220, 53, 69, 0.3);
+        color: #fff;
+    }
+
+    .alert-scan.alert-info {
+        background-color: rgba(37, 117, 252, 0.1);
+        border-color: rgba(37, 117, 252, 0.3);
+        color: #fff;
+    }
+
+.text-muted {
+    color: #888 !important;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}

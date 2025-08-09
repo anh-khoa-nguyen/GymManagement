@@ -13,7 +13,7 @@
         <p class="text-muted">Gia nhập cộng đồng GYM của chúng tôi!</p>
     </div>
 
-    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form" }))
+    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form", enctype = "multipart/form-data" }))
     {
         @Html.AntiForgeryToken()
         @Html.ValidationSummary("", new { @class = "text-danger" })
@@ -41,7 +41,7 @@
         <div class="form-group">
             @Html.LabelFor(m => m.VaiTro)
             @Html.DropDownListFor(m => m.VaiTro,
-                new SelectList(new[] { "HoiVien", "PT", "QuanLy"}.Select(r => new { Value = r, Text = RoleHelper.GetVietnameseRoleName(r) }), "Value", "Text"),
+                new SelectList(new[] { "HoiVien", "PT", "QuanLy" }.Select(r => new { Value = r, Text = RoleHelper.GetVietnameseRoleName(r) }), "Value", "Text"),
                 "--- Vui lòng chọn vai trò ---",
                 new { @class = "form-control", id = "vaiTroDropdown" })
         </div>
@@ -59,6 +59,10 @@
             <div class="form-group">
                 @Html.LabelFor(m => m.MucTieuTapLuyen)
                 @Html.TextAreaFor(m => m.MucTieuTapLuyen, 3, 40, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label for="avatarFile" class="form-label">Ảnh Đại Diện (Tùy chọn)</label>
+                <input type="file" name="avatarFile" id="avatarFile" class="form-control" accept="image/*" />
             </div>
         </div>
 

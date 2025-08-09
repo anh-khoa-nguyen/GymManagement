@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿// Trong file Controllers/GoiTapsController.cs
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using GymManagementSystem.Models;
@@ -16,22 +15,28 @@ namespace GymManagementSystem.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: GoiTaps
-        public ActionResult Index()
+        public async Task<ActionResult> Index(string searchString)
         {
-            return View(db.GoiTaps.ToList());
+            var goiTaps = db.GoiTaps.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                goiTaps = goiTaps.Where(g => g.TenGoi.Contains(searchString));
+            }
+            ViewBag.CurrentFilter = searchString;
+            return View(await goiTaps.OrderBy(g => g.GiaTien).ToListAsync());
         }
 
         // GET: GoiTaps/Details/5
-        public ActionResult Details(int? id)
+        public async Task<ActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            GoiTap goiTap = await db.GoiTaps.FindAsync(id);
+            if (goiTap == null) return HttpNotFound();
+
+            // KIỂM TRA AJAX REQUEST
+            if (Request.IsAjaxRequest())
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            GoiTap goiTap = db.GoiTaps.Find(id);
-            if (goiTap == null)
-            {
-                return HttpNotFound();
+                return PartialView("Details", goiTap);
             }
             return View(goiTap);
         }
@@ -39,68 +44,96 @@ namespace GymManagementSystem.Controllers
         // GET: GoiTaps/Create
         public ActionResult Create()
         {
-            return View();
+            var model = new GoiTap();
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("CreateOrEdit", model);
+            }
+            return View(model);
         }
 
         // POST: GoiTaps/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,TenGoi,GiaTien,MoTaQuyenLoi,SoBuoiTapVoiPT")] GoiTap goiTap)
+        public async Task<ActionResult> Create([Bind(Include = "Id,TenGoi,GiaTien,MoTaQuyenLoi,SoBuoiTapVoiPT,SoThang")] GoiTap goiTap, HttpPostedFileBase imageFile)
         {
             if (ModelState.IsValid)
             {
+                if (imageFile != null && imageFile.ContentLength > 0)
+                {
+                    var cloudinaryService = new CloudinaryService();
+                    goiTap.ImageUrl = await cloudinaryService.UploadImageAsync(imageFile);
+                }
                 db.GoiTaps.Add(goiTap);
-                db.SaveChanges();
+                await db.SaveChangesAsync();
+
+                if (Request.IsAjaxRequest())
+                {
+                    return Json(new { success = true });
+                }
                 return RedirectToAction("Index");
             }
 
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("CreateOrEdit", goiTap);
+            }
             return View(goiTap);
         }
 
         // GET: GoiTaps/Edit/5
-        public ActionResult Edit(int? id)
+        public async Task<ActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            GoiTap goiTap = await db.GoiTaps.FindAsync(id);
+            if (goiTap == null) return HttpNotFound();
+
+            if (Request.IsAjaxRequest())
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            GoiTap goiTap = db.GoiTaps.Find(id);
-            if (goiTap == null)
-            {
-                return HttpNotFound();
+                return PartialView("CreateOrEdit", goiTap);
             }
             return View(goiTap);
         }
 
         // POST: GoiTaps/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,TenGoi,GiaTien,MoTaQuyenLoi,SoBuoiTapVoiPT")] GoiTap goiTap)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,TenGoi,GiaTien,MoTaQuyenLoi,SoBuoiTapVoiPT,SoThang")] GoiTap goiTap, HttpPostedFileBase imageFile)
         {
             if (ModelState.IsValid)
             {
+                if (imageFile != null && imageFile.ContentLength > 0)
+                {
+                    var cloudinaryService = new CloudinaryService();
+                    goiTap.ImageUrl = await cloudinaryService.UploadImageAsync(imageFile);
+                }
                 db.Entry(goiTap).State = EntityState.Modified;
-                db.SaveChanges();
+                await db.SaveChangesAsync();
+
+                if (Request.IsAjaxRequest())
+                {
+                    return Json(new { success = true });
+                }
                 return RedirectToAction("Index");
+            }
+
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("CreateOrEdit", goiTap);
             }
             return View(goiTap);
         }
 
         // GET: GoiTaps/Delete/5
-        public ActionResult Delete(int? id)
+        public async Task<ActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            GoiTap goiTap = await db.GoiTaps.FindAsync(id);
+            if (goiTap == null) return HttpNotFound();
+
+            if (Request.IsAjaxRequest())
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            GoiTap goiTap = db.GoiTaps.Find(id);
-            if (goiTap == null)
-            {
-                return HttpNotFound();
+                return PartialView("Delete", goiTap);
             }
             return View(goiTap);
         }
@@ -108,20 +141,25 @@ namespace GymManagementSystem.Controllers
         // POST: GoiTaps/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            GoiTap goiTap = db.GoiTaps.Find(id);
-            db.GoiTaps.Remove(goiTap);
-            db.SaveChanges();
+            GoiTap goiTap = await db.GoiTaps.FindAsync(id);
+            if (goiTap != null)
+            {
+                db.GoiTaps.Remove(goiTap);
+                await db.SaveChangesAsync();
+            }
+
+            if (Request.IsAjaxRequest())
+            {
+                return Json(new { success = true });
+            }
             return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                db.Dispose();
-            }
+            if (disposing) db.Dispose();
             base.Dispose(disposing);
         }
     }

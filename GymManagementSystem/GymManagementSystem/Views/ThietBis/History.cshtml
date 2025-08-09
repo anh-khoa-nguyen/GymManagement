@@ -1,0 +1,65 @@
+﻿<head>
+    <link href="@Url.Content("~/Content/CRUD/crud.css")" rel="stylesheet" type="text/css" />
+</head>
+@model IEnumerable<GymManagementSystem.Models.LichSuThietBi>
+@{
+    ViewBag.Title = "Lịch Sử Thay Đổi Thiết Bị";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-white">@ViewBag.Title</h2>
+</div>
+
+<!-- Form lọc theo ngày -->
+@using (Html.BeginForm("History", "ThietBis", FormMethod.Get, new { @class = "filter-section" }))
+{
+    <input type="date" name="ngayLoc" id="ngayLoc" class="form-control-dark"
+           value="@(ViewBag.NgayLoc != null ? ((DateTime)ViewBag.NgayLoc).ToString("yyyy-MM-dd") : "")" />
+
+    <button type="submit" class="btn-filter-primary">Lọc</button>
+
+    @Html.ActionLink("Xóa bộ lọc", "History", null, new { @class = "btn-filter-secondary" })
+}
+
+
+<table class="modern-table">
+    <thead>
+        <tr>
+            <th>Ngày Thực Hiện</th>
+            <th>ID Thiết Bị</th>
+            <th>Hành Động</th>
+            <th>Mô Tả Thay Đổi</th>
+            <th>Người Thực Hiện</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.NgayThucHien.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                <td>@item.ThietBiId</td>
+                <td>
+                    @* --- LOGIC HIỂN THỊ HUY HIỆU HÀNH ĐỘNG --- *@
+                    @if (item.HanhDong == GymManagementSystem.Models.LoaiHanhDong.TaoMoi)
+                    {
+                        <span class="action-badge create">Tạo mới</span>
+                    }
+                    else if (item.HanhDong == GymManagementSystem.Models.LoaiHanhDong.CapNhat)
+                    {
+                        <span class="action-badge update">Cập nhật</span>
+                    }
+                    else if (item.HanhDong == GymManagementSystem.Models.LoaiHanhDong.Xoa)
+                    {
+                        <span class="action-badge delete">Xóa</span>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.HanhDong)
+                    }
+                </td>
+                <td>@item.MoTaThayDoi</td>
+                <td>@item.NguoiThucHien.HoTen</td>
+            </tr>
+        }
+    </tbody>
+</table>

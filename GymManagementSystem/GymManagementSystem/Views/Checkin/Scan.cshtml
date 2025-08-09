@@ -1,38 +1,18 @@
-﻿@{
+﻿<head>
+    <link href="@Url.Content("~/Content/Manage/qr.css")" rel="stylesheet" type="text/css" />
+</head>
+
+@{
     ViewBag.Title = "Quét mã QR Check-in";
 }
+<link href="@Url.Content("~/Content/qr-scanner.css")" rel="stylesheet" type="text/css" />
 
-<style>
-    .scan-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-    }
+<div class="qr-scanner-wrapper">
+    <div class="page-header text-center mb-4">
+        <h2 class="text-white">@ViewBag.Title</h2>
+        <p class="text-muted">Đặt mã QR của hội viên vào trong vùng quét</p>
+    </div>
 
-    #qr-reader {
-        width: 90%;
-        max-width: 600px;
-        border: 3px solid #007bff;
-        border-radius: 10px;
-        overflow: hidden;
-        margin-top: 20px;
-    }
-
-    #scan-result {
-        width: 90%;
-        max-width: 600px;
-        margin-top: 20px;
-        font-size: 1.2em;
-        text-align: center;
-    }
-</style>
-
-<h2>@ViewBag.Title</h2>
-
-<!-- 2. Bọc các phần tử trong vùng chứa mới -->
-<div class="scan-container">
-    <!-- 3. Xóa style="width: 500px;" cũ đi -->
     <div id="qr-reader"></div>
 
     <div id="scan-result"></div>
@@ -43,24 +23,26 @@
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
     <script>
-        // Hàm này sẽ được gọi khi quét thành công
         function onScanSuccess(decodedText, decodedResult) {
-            // ... (toàn bộ code JavaScript của bạn giữ nguyên, không cần thay đổi)
-            console.log(`Scan result: ${decodedText}`);
-            html5QrcodeScanner.clear();
+            // Dừng camera và bộ quét
+            html5QrcodeScanner.clear().catch(error => {
+                console.error("Failed to clear html5QrcodeScanner.", error);
+            });
+
             const resultDiv = document.getElementById('scan-result');
-            resultDiv.innerHTML = `<div class="alert alert-info">Đã quét được mã. Đang xác thực...</div>`;
+            resultDiv.innerHTML = `<div class="alert-scan alert-info">Đã quét được mã. Đang xác thực...</div>`;
+
             fetch(`/api/checkin/verify?id=${decodedText}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
                         resultDiv.innerHTML = `
-                                <div class="alert alert-success">
-                                    <h4>Xác thực thành công!</h4>
+                                <div class="alert-scan alert-success">
+                                    <h4><i class="fas fa-check-circle me-2"></i>Xác thực thành công!</h4>
                                     <p><strong>Họ Tên:</strong> ${data.hoTen}</p>
                                     <p><strong>Email:</strong> ${data.email}</p>
-                                    <p><strong>Trạng thái:</strong> <span class="text-success">Hợp lệ</span></p>
-                                    <hr>
+                                    <p><strong>Trạng thái:</strong> <span style="color: var(--neon-green);">Hợp lệ</span></p>
+                                    <hr style="border-color: #333;">
                                     <p class="mb-0"><i>Trang sẽ tự động làm mới sau 5 giây...</i></p>
                                 </div>`;
                         setTimeout(() => {
@@ -68,23 +50,34 @@
                         }, 5000);
                     } else {
                         resultDiv.innerHTML = `
-                                <div class="alert alert-danger">
-                                    <h4>Xác thực thất bại!</h4>
+                                <div class="alert-scan alert-danger">
+                                    <h4><i class="fas fa-times-circle me-2"></i>Xác thực thất bại!</h4>
                                     <p>${data.message}</p>
-                                    <hr>
-                                    <button onclick="location.reload()" class="btn btn-primary">Thử lại</button>
+                                    <hr style="border-color: #333;">
+                                    <button onclick="location.reload()" class="btn-start" style="background: #dc3545; color: #fff; box-shadow: none;">Thử lại</button>
                                 </div>`;
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    resultDiv.innerHTML = `<div class="alert alert-danger">Có lỗi xảy ra khi kết nối tới server.</div>`;
+                    resultDiv.innerHTML = `<div class="alert-scan alert-danger">Có lỗi xảy ra khi kết nối tới server.</div>`;
                 });
         }
 
-        var html5QrcodeScanner = new Html5QrcodeScanner(
-            "qr-reader", { fps: 10, qrbox: 250 });
+        function onScanFailure(error) {
+            // Xử lý lỗi quét (thường là không tìm thấy QR code)
+            // console.warn(`QR error = ${error}`);
+        }
 
-        html5QrcodeScanner.render(onScanSuccess);
+        var html5QrcodeScanner = new Html5QrcodeScanner(
+            "qr-reader",
+            {
+                fps: 10,
+                qrbox: { width: 250, height: 250 } // Định nghĩa vùng quét hình vuông
+            },
+            false // verbose
+        );
+
+        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
     </script>
 }

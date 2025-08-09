@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -20,22 +20,21 @@ namespace GymManagementSystem.Models
         public string MucTieuTapLuyen { get; set; }
 
         [StringLength(6)]
-        [Index(IsUnique = true)] // Rất quan trọng: Đảm bảo mã này là duy nhất
+        [Index(IsUnique = true)]
         public string MaGioiThieu { get; set; }
+        public int? HangHoiVienId { get; set; } = 1;
+        [ForeignKey("HangHoiVienId")]
+        public virtual HangHoiVien HangHoiVien { get; set; } 
 
-        // Foreign Key tới bảng AspNetUsers
         [Required]
         public string ApplicationUserId { get; set; }
 
-        // Navigation properties
         [ForeignKey("ApplicationUserId")]
         public virtual ApplicationUser ApplicationUser { get; set; }
 
         public virtual ICollection<DangKyGoiTap> DangKyGoiTaps { get; set; }
         public virtual ICollection<LichTap> LichTaps { get; set; }
         public virtual ICollection<ChiSoSucKhoe> ChiSoSucKhoes { get; set; }
-
-
 
     }
 }

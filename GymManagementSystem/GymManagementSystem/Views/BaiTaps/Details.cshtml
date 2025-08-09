@@ -1,83 +1,37 @@
 ﻿@model GymManagementSystem.Models.BaiTap
+@using GymManagementSystem.Helpers
 
-@{
-    ViewBag.Title = "Details";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+<h4>Chi tiết: @Model.TenBaiTap</h4>
+<dl>
+    <dt class="text-muted">Nhóm cơ chính</dt>
+    <dd class="mb-3">@Model.NhomCoChinh</dd>
 
-<h2>Details</h2>
+    <dt class="text-muted">Các bước thực hiện</dt>
+    <dd class="mb-3">
+        <ol>
+            @foreach (var buoc in Model.CacBuocThucHien.OrderBy(b => b.ThuTuBuoc))
+            {
+                <li>@buoc.NoiDung</li>
+            }
+        </ol>
+    </dd>
 
-<div>
-    <h4>BaiTap</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.TenBaiTap)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TenBaiTap)
+    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+    {
+        <dt class="text-muted">Ảnh Minh Họa</dt>
+        <dd class="mb-3">
+            <img src="@Model.ImageUrl" alt="@Model.TenBaiTap" class="img-responsive" style="max-width: 300px; border-radius: 8px;" />
         </dd>
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.MoTa)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.MoTa)
+    @if (!string.IsNullOrEmpty(Model.VideoUrl))
+    {
+        <dt class="text-muted">Video Hướng Dẫn</dt>
+        <dd class="mb-3">
+            @VideoHelper.EmbedYouTubeVideo(Model.VideoUrl)
         </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.NhomCoChinh)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.NhomCoChinh)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.NhomCoPhu)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.NhomCoPhu)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.DungCu)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.DungCu)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.MucDo)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.MucDo)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ImageUrl)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ImageUrl)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.VideoUrl)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.VideoUrl)
-        </dd>
-
-    </dl>
+    }
+</dl>
+<div class="offcanvas-footer">
+    <button type="button" class="btn btn-offcanvas-secondary" data-bs-dismiss="offcanvas">Đóng</button>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>

@@ -1,0 +1,79 @@
+﻿<head>
+    <link href="@Url.Content("~/Content/CRUD/crud.css")" rel="stylesheet" type="text/css" />
+</head>
+@model IEnumerable<GymManagementSystem.Models.ViewModels.UserManagement.UserListViewModel>
+@using GymManagementSystem.Models.ViewModels
+
+@{
+    ViewBag.Title = "Quản lý Người Dùng";
+    var headerViewModel = new AdminPageHeaderViewModel
+    {
+        Title = ViewBag.Title,
+        CreateActionUrl = Url.Action("Create"),
+        SearchAction = "Index",
+        SearchController = "UserManagement",
+        CurrentFilter = ViewBag.CurrentFilter
+    };
+}
+
+<!-- Header vẫn được giữ lại để có nút Tạo mới và Tìm kiếm -->
+@Html.Partial("_AdminPageHeader", headerViewModel)
+
+<!-- Bảng hiển thị thông tin, không còn được bao bọc bởi form nào -->
+<table class="modern-table">
+    <thead>
+        <tr>
+            <!-- Xóa cột checkbox -->
+            <th>Họ Tên</th>
+            <th>Email</th>
+            <th>Vai Trò</th>
+            <th>Trạng Thái</th>
+            <th class="text-end">Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <!-- Xóa ô checkbox -->
+                <td>@item.HoTen</td>
+                <td>@item.Email</td>
+                <td>@item.VaiTro</td>
+                <td>
+                    @if (item.IsLockedOut)
+                    {<span class="status-badge status-inactive">Vô hiệu hóa</span> }
+                    else
+                    { <span class="status-badge status-active">Hoạt động</span>}
+                </td>
+                <td class="text-end">
+                    <!-- Nút Sửa -->
+                    <a href="#" class="btn-crud js-open-offcanvas" data-url="@Url.Action("Edit", new { id = item.Id })" title="Sửa">
+                        <i class="fas fa-pencil-alt"></i>
+                    </a>
+                    <!-- Nút Chi tiết -->
+                    <a href="#" class="btn-crud js-open-offcanvas" data-url="@Url.Action("Details", new { id = item.Id })" title="Chi tiết">
+                        <i class="fas fa-eye"></i>
+                    </a>
+
+                    <!-- Nút Vô hiệu hóa/Kích hoạt cho từng dòng (vẫn hoạt động bình thường) -->
+                    @using (Html.BeginForm("ToggleLockout", "UserManagement", new { id = item.Id }, FormMethod.Post, new { @style = "display:inline;" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        if (item.IsLockedOut)
+                        {
+                            <button type="submit" class="btn-crud" title="Kích hoạt tài khoản">
+                                <i class="fas fa-user-check"></i>
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn-crud" title="Vô hiệu hóa tài khoản">
+                                <i class="fas fa-user-slash"></i>
+                            </button>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

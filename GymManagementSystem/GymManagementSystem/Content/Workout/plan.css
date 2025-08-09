@@ -51,64 +51,64 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-    .plan-card:hover {
-        transform: translateY(-10px) scale(1.02);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 40px var(--glow-purple);
-    }
+.plan-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 40px var(--glow-purple);
+}
 
-    .plan-card .illustration {
-        position: absolute;
-        right: -20px;
-        bottom: -10px;
-        width: 100%;
-        height: auto;
-        opacity: 0.15;
-        pointer-events: none;
-        transition: opacity 0.3s ease;
-    }
+.plan-card .illustration {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    width: 100%;
+    height: auto;
+    opacity: 0.15;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
 
-    .plan-card:hover .illustration {
-        opacity: 0.3;
-    }
+.plan-card:hover .illustration {
+    opacity: 0.3;
+}
 
 .plan-card-content {
     position: relative;
     z-index: 2;
 }
 
-    .plan-card-content h3 {
-        font-size: 2.2rem;
-        font-weight: 800;
-        margin-top: 0;
-        margin-bottom: 0.5rem;
-        line-height: 1.2;
-        color: #fff;
-    }
+.plan-card-content h3 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+    color: #fff;
+}
 
-    .plan-card-content .duration {
-        font-size: 1rem;
-        color: #ccc;
-        margin-bottom: 1rem;
-    }
+.plan-card-content .duration {
+    font-size: 1rem;
+    color: #ccc;
+    margin-bottom: 1rem;
+}
 
-    .plan-card-content .btn-start {
-        background: var(--neon-green);
-        color: #000;
-        border: none;
-        padding: 10px 24px;
-        border-radius: 20px;
-        font-weight: 700;
-        text-decoration: none;
-        display: inline-block;
-        margin-top: 1rem;
-        transition: all 0.2s ease;
-        box-shadow: 0 0 15px rgba(165, 255, 54, 0.4);
-    }
+.plan-card-content .btn-start {
+    background: var(--neon-green);
+    color: #000;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 20px;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 1rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 0 15px rgba(165, 255, 54, 0.4);
+}
 
-        .plan-card-content .btn-start:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 25px rgba(165, 255, 54, 0.7);
-        }
+.plan-card-content .btn-start:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px rgba(165, 255, 54, 0.7);
+}
 
 /* --- VÒNG TRÒN TIẾN ĐỘ (ĐƠN GIẢN HÓA BẰNG CSS) --- */
 .progress-circle {
@@ -118,8 +118,6 @@
     width: 70px;
     height: 70px;
     border-radius: 50%;
-    /* Dùng conic-gradient để vẽ vòng tròn */
-    /* var(--p) sẽ là phần trăm tiến độ, được truyền từ style inline */
     background: radial-gradient(closest-side, #2c3e50 79%, transparent 80% 100%), conic-gradient(var(--neon-green) calc(var(--p) * 1%), #444 0);
     display: flex;
     align-items: center;
@@ -136,28 +134,27 @@
 
 .plans-layout {
     display: grid;
-    grid-template-columns: 2fr 1fr; /* Cột trái rộng gấp đôi cột phải */
+    grid-template-columns: 2fr auto 1fr;
     gap: 2rem;
-    align-items: start; /* Căn các cột theo đỉnh */
+    align-items: start;
 }
 
 .plans-column {
-    /* Style cho từng cột */
 }
 
 .column-divider {
     width: 1px;
-    background-color: #333; /* Màu của đường kẻ phân cách */
-    align-self: stretch; /* Kéo dài đường kẻ theo chiều cao của grid */
+    background-color: #333;
+    align-self: stretch;
 }
 
 /* Responsive cho màn hình nhỏ */
 @media (max-width: 992px) {
     .plans-layout {
-        grid-template-columns: 1fr; /* Chuyển thành 1 cột */
+        grid-template-columns: 1fr;
     }
 
     .column-divider {
-        display: none; /* Ẩn đường kẻ đi */
+        display: none;
     }
 }

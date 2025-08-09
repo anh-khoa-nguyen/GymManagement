@@ -1,0 +1,57 @@
+﻿@model GymManagementSystem.Models.ViewModels.UserManagement.UserDetailsViewModel
+
+<h4>Chi tiết: @Model.UserAccount.HoTen</h4>
+
+<h5 class="text-muted mt-4">Thông Tin Tài Khoản</h5>
+<hr class="mt-0 mb-3" />
+<dl class="dl-horizontal">
+    <dt>ID</dt>
+    <dd>@Model.UserAccount.Id</dd>
+
+    <dt>Họ và Tên</dt>
+    <dd>@Model.UserAccount.HoTen</dd>
+
+    <dt>Email</dt>
+    <dd>@Model.UserAccount.Email</dd>
+
+    <dt>Email đã xác nhận</dt>
+    <dd>@(Model.UserAccount.EmailConfirmed ? "Đã xác nhận" : "Chưa xác nhận")</dd>
+
+    <dt>Vai Trò</dt>
+    <dd>@Model.UserAccount.VaiTro</dd>
+</dl>
+
+@if (Model.HoiVienProfile != null)
+{
+    <h5 class="text-muted mt-4">Thông Tin Hồ Sơ Hội Viên</h5>
+    <hr class="mt-0 mb-3" />
+    <dl class="dl-horizontal">
+        <dt>Chiều cao</dt>
+        <dd>@Model.HoiVienProfile.ChieuCao cm</dd>
+
+        <dt>Cân nặng</dt>
+        <dd>@Model.HoiVienProfile.CanNang kg</dd>
+
+        <dt>Hạng thành viên</dt>
+        <dd>@(Model.HoiVienProfile?.HangHoiVien != null ? Model.HoiVienProfile.HangHoiVien.TenHang : "Chưa có")</dd>
+
+        <dt>Mã giới thiệu</dt>
+        <dd>
+            @if (!string.IsNullOrEmpty(Model.HoiVienProfile.MaGioiThieu))
+            {
+                <span class="label label-success">@Model.HoiVienProfile.MaGioiThieu</span>
+            }
+            else
+            {
+                <span>Chưa có</span>
+            }
+        </dd>
+
+        <dt>Mục tiêu tập luyện</dt>
+        <dd>@Model.HoiVienProfile.MucTieuTapLuyen</dd>
+    </dl>
+}
+
+<div class="offcanvas-footer">
+    <button type="button" class="btn btn-offcanvas-secondary" data-bs-dismiss="offcanvas">Đóng</button>
+</div>

@@ -15,6 +15,8 @@ namespace GymManagementSystem
     {
         protected void Application_Start()
         {
+            Database.SetInitializer<ApplicationDbContext>(null);
+
             AreaRegistration.RegisterAllAreas();
             Database.SetInitializer<ApplicationDbContext>(null);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
@@ -23,7 +25,6 @@ namespace GymManagementSystem
 
              //Kiểm tra và tạo các vai trò nếu chưa tồn tại
             IdentityConfig.SeedRoles();
-
         }
     }
 }

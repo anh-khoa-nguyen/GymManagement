@@ -10,7 +10,6 @@ using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace GymManagementSystem.Models
 {
-    // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit https://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class ApplicationUser : IdentityUser
     {
         [Required]
@@ -20,23 +19,27 @@ namespace GymManagementSystem.Models
         [Required]
         public string VaiTro { get; set; } //  "QuanLy", "PT", "HoiVien"
 
-        // Các khóa ngoại để liên kết tới các bảng hồ sơ chi tiết
+        // FK
         public int? HoiVienId { get; set; }
+
         public int? HuanLuyenVienId { get; set; }
-        public virtual ICollection<ThongBao> ThongBaos { get; set; }
 
+        //public int? HangHoiVienId { get; set; }
 
+        //[ForeignKey("HangHoiVienId")]
+        //public virtual HangHoiVien HangHoiVien { get; set; }
 
-        public int? HangHoiVienId { get; set; }
-        [ForeignKey("HangHoiVienId")]
-        public virtual HangHoiVien HangHoiVien { get; set; }
         public string NguoiGioiThieuId { get; set; }
+
+        [Display(Name = "Ảnh Đại Diện")]
+        [DataType(DataType.Url)]
+        public string AvatarUrl { get; set; }
+
+        public virtual ICollection<ThongBao> ThongBaos { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
-            // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
-            // Add custom user claims here
             return userIdentity;
         }
     }
@@ -63,6 +66,9 @@ namespace GymManagementSystem.Models
         public DbSet<HoaDon> HoaDons { get; set; }
         public DbSet<KhuyenMai> KhuyenMais { get; set; }
         public DbSet<HangCoKhuyenMai> HangHoiVien_KhuyenMais { get; set; }
+        public DbSet<KhuyenMaiCuaHoiVien> KhuyenMaiCuaHoiViens { get; set; }
+        public DbSet<ThietBi> ThietBis { get; set; }
+        public DbSet<LichSuThietBi> LichSuThietBis { get; set; }
 
 
         public ApplicationDbContext()

@@ -31,6 +31,7 @@ namespace GymManagementSystem.Models
         [Required]
         [Display(Name = "Code")]
         public string Code { get; set; }
+
         public string ReturnUrl { get; set; }
 
         [Display(Name = "Remember this browser?")]
@@ -88,12 +89,12 @@ namespace GymManagementSystem.Models
         [Compare("Password", ErrorMessage = "Mật khẩu và mật khẩu xác nhận không trùng khớp.")]
         public string ConfirmPassword { get; set; }
 
-        // Các thuộc tính dành riêng cho Hội viên
+        // Thuộc tính dành riêng cho Hội viên
         [Display(Name = "Chiều cao (cm)")]
         public double? ChieuCao { get; set; } 
 
         [Display(Name = "Cân nặng (kg)")]
-        public double? CanNang { get; set; } // Dùng kiểu nullable
+        public double? CanNang { get; set; }
 
         [Display(Name = "Mục tiêu tập luyện")]
         public string MucTieuTapLuyen { get; set; }
@@ -119,7 +120,6 @@ namespace GymManagementSystem.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
-
         public string Code { get; set; }
     }
 
