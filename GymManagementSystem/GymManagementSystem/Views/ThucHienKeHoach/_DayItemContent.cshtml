@@ -1,0 +1,20 @@
+﻿@helper _DayItemContent(GymManagementSystem.Models.ViewModels.NgayTapLuyenItem ngayTap)
+{
+    string iconClass = "";
+    if (ngayTap.DaHoanThanh) { iconClass = "fas fa-check-circle"; }
+    else if (ngayTap.CoTheTap) { iconClass = "fas fa-play-circle"; }
+    else { iconClass = "fas fa-lock"; }
+
+    <div class="day-item-info">
+        <strong>Ngày @ngayTap.NgayTrongKeHoach</strong>
+        <p>@ngayTap.ChiTietBaiTap.BaiTap.TenBaiTap</p>
+    </div>
+    <div class="day-item-actions">
+        <span class="action-icon info-icon" data-bs-toggle="collapse" data-bs-target="#detail-@ngayTap.NgayTrongKeHoach" title="Xem thông tin">
+            <i class="fas fa-info-circle"></i>
+        </span>
+        <span class="action-icon @(ngayTap.CoTheTap ? "play-icon" : "status-icon")" title="@(ngayTap.CoTheTap ? "Bắt đầu tập" : "Trạng thái")">
+            <i class="@iconClass"></i>
+        </span>
+    </div>
+}

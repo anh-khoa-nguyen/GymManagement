@@ -7,9 +7,9 @@
 <h3>Bạn có chắc chắn muốn xóa?</h3>
 <p>Hành động này sẽ xóa vĩnh viễn khuyến mãi:</p>
 <h4 class="text-warning">@Html.DisplayFor(model => model.TenKhuyenMai)</h4>
-<hr/>
+<hr />
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Delete", "KhuyenMais", new { id = Model.Id }, FormMethod.Post))
 {
     @Html.AntiForgeryToken()
 

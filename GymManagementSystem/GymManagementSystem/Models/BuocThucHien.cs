@@ -17,7 +17,7 @@ namespace GymManagementSystem.Models
 
         [Required]
         [DisplayName("Thứ Tự Bước")]
-        public int ThuTuBuoc { get; set; } // Ví dụ: 1, 2, 3...
+        public int ThuTuBuoc { get; set; } // Ví dụ: 1, 2, 3
 
         [Required(ErrorMessage = "Nội dung bước thực hiện không được để trống")]
         [DisplayName("Nội Dung Hướng Dẫn")]

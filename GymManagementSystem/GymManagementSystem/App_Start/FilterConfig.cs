@@ -10,7 +10,6 @@ namespace GymManagementSystem
         {
             filters.Add(new HandleErrorAttribute());
             filters.Add(new HandleAntiForgeryErrorAttribute());
-
         }
     }
 }

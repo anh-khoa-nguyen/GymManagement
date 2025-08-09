@@ -97,5 +97,13 @@ namespace GymManagementSystem.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        [Authorize] // Quan trọng: Chỉ người đã đăng nhập mới gọi được
+        [HttpGet]
+        public JsonResult CheckAuthentication()
+        {
+            // Nếu người dùng có thể gọi được đến đây, nghĩa là họ vẫn đang đăng nhập
+            return Json(new { isAuthenticated = true }, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }

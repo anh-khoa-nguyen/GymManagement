@@ -1,0 +1,43 @@
+﻿@model GymManagementSystem.Models.RegisterViewModel
+
+<h2>Tạo Người Dùng Mới</h2>
+
+@using (Html.BeginForm("Create", "UserManagement", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="mb-3">
+        @Html.LabelFor(m => m.HoTen, new { @class = "form-label" })
+        @Html.TextBoxFor(m => m.HoTen, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.HoTen, "", new { @class = "text-danger" })
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(m => m.Email, new { @class = "form-label" })
+        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(m => m.Password, new { @class = "form-label" })
+        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "form-label" })
+        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(m => m.VaiTro, new { @class = "form-label" })
+        @Html.DropDownListFor(m => m.VaiTro, new SelectList(new[] { "HoiVien", "PT", "QuanLy" }), "--- Chọn vai trò ---", new { @class = "form-select" })
+        @Html.ValidationMessageFor(m => m.VaiTro, "", new { @class = "text-danger" })
+    </div>
+
+
+    <div class="offcanvas-footer">
+        <div class="d-grid gap-2">
+            <input type="submit" class="btn btn-offcanvas-primary" value="Tạo người dùng" />
+        </div>
+    </div>
+}

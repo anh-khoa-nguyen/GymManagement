@@ -22,17 +22,17 @@ namespace GymManagementSystem
 
             string[] roles = { "QuanLy", "PT", "HoiVien" };
 
-            foreach (var roleName in roles)
-            {
-                if (!context.Roles.Any(r => r.Name == roleName))
-                {
-                    var store = new RoleStore<IdentityRole>(context);
-                    var manager = new RoleManager<IdentityRole>(store);
-                    var role = new IdentityRole { Name = roleName };
+            //foreach (var roleName in roles)
+            //{
+            //    if (!context.Roles.Any(r => r.Name == roleName))
+            //    {
+            //        var store = new RoleStore<IdentityRole>(context);
+            //        var manager = new RoleManager<IdentityRole>(store);
+            //        var role = new IdentityRole { Name = roleName };
 
-                    manager.Create(role);
-                }
-            }
+            //        manager.Create(role);
+            //    }
+            //}
         }
     }
     public class EmailService : IIdentityMessageService

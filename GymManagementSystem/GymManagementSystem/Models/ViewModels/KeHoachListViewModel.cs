@@ -4,16 +4,12 @@ namespace GymManagementSystem.Models.ViewModels
 {
     public class KeHoachListViewModel
     {
-        // Danh sách các kế hoạch người dùng ĐÃ ĐĂNG KÝ
-        public IEnumerable<KeHoach> DaDangKy { get; set; }
+        public IEnumerable<KeHoach> DaDangKy { get; set; } //Model: Đăng kí kế hoạch
 
-        // Danh sách các kế hoạch người dùng CHƯA ĐĂNG KÝ
-        public IEnumerable<KeHoach> ChuaDangKy { get; set; }
+        public IEnumerable<KeHoach> ChuaDangKy { get; set; } //Model: Kế hoạch
 
-        // Dictionary để lấy ID của bản ghi đăng ký
-        public Dictionary<int, int> DangKyIds { get; set; }
+        public Dictionary<int, int> DangKyIds { get; set; } //Dùng để truy cập vào trang Chi tiết kế hoạch
 
-        // Dictionary để lấy phần trăm tiến độ
-        public Dictionary<int, int> TienDoKeHoach { get; set; }
+        public Dictionary<int, int> TienDoKeHoach { get; set; } //Lặp lại bên Chi tiết kế hoạch
     }
 }

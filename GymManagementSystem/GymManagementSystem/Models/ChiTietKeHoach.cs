@@ -10,16 +10,15 @@ namespace GymManagementSystem.Models
         public int Id { get; set; }
 
         [Required]
-        public int KeHoachId { get; set; } // FK tới KeHoach
+        public int KeHoachId { get; set; }
 
         [Required]
-        public int BaiTapId { get; set; } // FK tới BaiTap
+        public int BaiTapId { get; set; }
 
-        // Quan trọng: Xác định bài tập này dành cho ngày thứ mấy trong kế hoạch
         public int NgayTrongKeHoach { get; set; } // Ví dụ: 1, 2, 3, ..., 30
+
         public int SoLanMucTieu { get; set; }
 
-        // Navigation properties
         [ForeignKey("KeHoachId")]
         public virtual KeHoach KeHoach { get; set; }
 

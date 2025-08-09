@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using GymManagementSystem.Models;
 using GymManagementSystem.Models.ViewModels;
 using Microsoft.AspNet.Identity;
+using GymManagementSystem.Attributes;
 
 [Authorize(Roles = "HoiVien")]
 public class ThucHienKeHoachController : Controller
@@ -79,54 +80,79 @@ public class ThucHienKeHoachController : Controller
     [ValidateAntiForgeryToken]
     public async Task<JsonResult> HoanThanhBaiTap(int dangKyKeHoachId, int baiTapId)
     {
-        var userId = User.Identity.GetUserId();
-        var dangKy = await db.DangKyKeHoachs.FirstOrDefaultAsync(d => d.Id == dangKyKeHoachId && d.HoiVienId == userId);
-
-        if (dangKy == null)
+        try
         {
-            return Json(new { success = false, message = "Không tìm thấy kế hoạch đăng ký." });
-        }
+            // --- TOÀN BỘ LOGIC CŨ CỦA BẠN NẰM TRONG KHỐI TRY ---
+            var userId = User.Identity.GetUserId();
+            var dangKy = await db.DangKyKeHoachs.FirstOrDefaultAsync(d => d.Id == dangKyKeHoachId && d.HoiVienId == userId);
 
-        // 1. Ghi nhận tiến độ vào CSDL
-        db.TienDoBaiTaps.Add(new TienDoBaiTap
-        {
-            DangKyKeHoachId = dangKyKeHoachId,
-            BaiTapId = baiTapId,
-            NgayHoanThanh = DateTime.Now
-        });
-        await db.SaveChangesAsync();
-
-        // 2. Kiểm tra xem đã hoàn thành toàn bộ kế hoạch chưa
-        int soBaiTapDaHoanThanh = await db.TienDoBaiTaps
-                                          .Where(td => td.DangKyKeHoachId == dangKyKeHoachId)
-                                          .Select(td => td.BaiTapId)
-                                          .Distinct()
-                                          .CountAsync();
-
-        int tongSoBaiTapCuaKeHoach = await db.ChiTietKeHoachs
-                                             .CountAsync(ct => ct.KeHoachId == dangKy.KeHoachId);
-
-        if (soBaiTapDaHoanThanh >= tongSoBaiTapCuaKeHoach)
-        {
-            // HOÀN THÀNH KẾ HOẠCH!
-            dangKy.TrangThai = "Đã hoàn thành";
-            dangKy.NgayHoanThanh = DateTime.Now;
-            db.Entry(dangKy).State = EntityState.Modified;
-
-            // 3. Tự động tặng khuyến mãi
-            var keHoach = await db.KeHoachs.FindAsync(dangKy.KeHoachId);
-            if (keHoach.KhuyenMaiId.HasValue)
+            if (dangKy == null)
             {
-                // TODO: Tạo một bản ghi trong bảng nối giữa Hội viên và Khuyến mãi
-                // để "gán" khuyến mãi này cho người dùng.
-                // Ví dụ: db.HoiVien_KhuyenMais.Add(new HoiVien_KhuyenMai { HoiVienId = userId, KhuyenMaiId = keHoach.KhuyenMaiId.Value });
+                return Json(new { success = false, message = "Không tìm thấy kế hoạch đăng ký." });
             }
+
+            // 1. Ghi nhận tiến độ vào CSDL
+            db.TienDoBaiTaps.Add(new TienDoBaiTap
+            {
+                DangKyKeHoachId = dangKyKeHoachId,
+                BaiTapId = baiTapId,
+                NgayHoanThanh = DateTime.Now
+            });
             await db.SaveChangesAsync();
 
-            return Json(new { success = true, message = "Chúc mừng bạn đã hoàn thành kế hoạch! Một phần thưởng đang chờ bạn." });
-        }
+            // 2. Kiểm tra xem đã hoàn thành toàn bộ kế hoạch chưa
+            int soBaiTapDaHoanThanh = await db.TienDoBaiTaps
+                                              .Where(td => td.DangKyKeHoachId == dangKyKeHoachId)
+                                              .Select(td => td.BaiTapId)
+                                              .Distinct()
+                                              .CountAsync();
 
-        return Json(new { success = true, message = "Hoàn thành bài tập hôm nay!" });
+            int tongSoBaiTapCuaKeHoach = await db.ChiTietKeHoachs
+                                                 .CountAsync(ct => ct.KeHoachId == dangKy.KeHoachId);
+
+            if (soBaiTapDaHoanThanh >= tongSoBaiTapCuaKeHoach)
+            {
+                // HOÀN THÀNH KẾ HOẠCH!
+                dangKy.TrangThai = "Đã hoàn thành";
+                dangKy.NgayHoanThanh = DateTime.Now;
+                db.Entry(dangKy).State = EntityState.Modified;
+
+                var keHoach = await db.KeHoachs.Include(k => k.KhuyenMai).FirstOrDefaultAsync(k => k.Id == dangKy.KeHoachId);
+                var hoivienProfile = await db.HoiViens.FirstOrDefaultAsync(h => h.ApplicationUserId == userId);
+
+                if (keHoach != null && keHoach.KhuyenMaiId.HasValue && hoivienProfile != null)
+                {
+                    var voucher = new KhuyenMaiCuaHoiVien
+                    {
+                        HoiVienId = hoivienProfile.Id,
+                        KhuyenMaiId = keHoach.KhuyenMaiId.Value,
+                        NgayNhan = DateTime.Now,
+                        NgayHetHan = DateTime.Now.AddDays(keHoach.KhuyenMai.SoNgayHieuLuc),
+                        TrangThai = TrangThaiKhuyenMaiHV.ChuaSuDung
+                    };
+                    db.KhuyenMaiCuaHoiViens.Add(voucher);
+                }
+                await db.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Chúc mừng bạn đã hoàn thành kế hoạch! Một phần thưởng đang chờ bạn." });
+            }
+
+            return Json(new { success = true, message = "Hoàn thành bài tập hôm nay!" });
+        }
+        catch (Exception ex)
+        {
+            // --- KHỐI CATCH SẼ BẮT LẠI MỌI LỖI XẢY RA ---
+
+            // Ghi log lỗi ra hệ thống (quan trọng cho việc debug sau này)
+            // Khi debug, lỗi sẽ hiện trong cửa sổ Output của Visual Studio
+            System.Diagnostics.Debug.WriteLine("LỖI TRONG HoanThanhBaiTap: " + ex.ToString());
+
+            // Set mã lỗi HTTP 500 (Internal Server Error) để JavaScript có thể nhận biết
+            Response.StatusCode = 500;
+
+            // Trả về một thông báo lỗi dạng JSON thân thiện với người dùng
+            return Json(new { success = false, message = "Đã có lỗi không mong muốn xảy ra phía máy chủ. Vui lòng thử lại." });
+        }
     }
 
     public async Task<ActionResult> BaiTapChiTiet(int chiTietKeHoachId, int dangKyKeHoachId)

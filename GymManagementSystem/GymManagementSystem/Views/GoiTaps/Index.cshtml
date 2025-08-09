@@ -1,47 +1,42 @@
-﻿@model IEnumerable<GymManagementSystem.Models.GoiTap>
+﻿<head>
+    <link href="@Url.Content("~/Content/CRUD/crud.css")" rel="stylesheet" type="text/css" />
+</head>
 
+@model IEnumerable<GymManagementSystem.Models.GoiTap>
+@using GymManagementSystem.Models.ViewModels
 @{
-    ViewBag.Title = "Quản Lý Gói Tập";
+    ViewBag.Title = "Quản lý Gói Tập";
     var culture = new System.Globalization.CultureInfo("vi-VN");
+    var headerViewModel = new AdminPageHeaderViewModel
+    {
+        Title = ViewBag.Title,
+        CreateActionUrl = Url.Action("Create"),
+        SearchAction = "Index",
+        SearchController = "GoiTaps",
+        CurrentFilter = ViewBag.CurrentFilter
+    };
 }
 
-<h2><i class="fas fa-dumbbell"></i> @ViewBag.Title</h2>
+@Html.Partial("_AdminPageHeader", headerViewModel)
 
-<p>
-    <a href="@Url.Action("Create")" class="btn btn-primary my-3">
-        <i class="fas fa-plus-circle"></i> Tạo Gói Tập Mới
-    </a>
-</p>
-
-<div class="row">
-    @foreach (var item in Model)
-    {
-        <div class="col-md-4 mb-4">
-            <div class="card border-primary h-100">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">@Html.DisplayFor(modelItem => item.TenGoi)</h5>
-                </div>
-                <div class="card-body">
-                    <h3 class="card-title text-success font-weight-bold">@item.GiaTien.ToString("C0", culture)</h3>
-                    <p class="card-text">
-                        <strong>Số buổi với PT:</strong> @Html.DisplayFor(modelItem => item.SoBuoiTapVoiPT) buổi
-                    </p>
-                    <p class="card-text text-muted">
-                        @Html.DisplayFor(modelItem => item.MoTaQuyenLoi)
-                    </p>
-                </div>
-                <div class="card-footer text-center bg-transparent border-top-0">
-                    <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-sm btn-warning" title="Sửa">
-                        <i class="fas fa-edit"></i>
-                    </a>
-                    <a href="@Url.Action("Details", new { id = item.Id })" class="btn btn-sm btn-info" title="Xem Chi tiết">
-                        <i class="fas fa-info-circle"></i>
-                    </a>
-                    <a href="@Url.Action("Delete", new { id = item.Id })" class="btn btn-sm btn-danger" title="Xóa">
-                        <i class="fas fa-trash-alt"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    }
-</div>
+<table class="modern-table">
+    <thead>
+        <tr>
+            <th>Tên Gói Tập</th>
+            <th>Giá Tiền</th>
+            <th>Buổi với PT</th>
+            <th class="text-end">Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.TenGoi</td>
+                <td>@item.GiaTien.ToString("N0", culture) đ</td>
+                <td>@item.SoBuoiTapVoiPT buổi</td>
+                <td>@Html.Partial("_CrudButtons", item.Id)</td>
+            </tr>
+        }
+    </tbody>
+</table>

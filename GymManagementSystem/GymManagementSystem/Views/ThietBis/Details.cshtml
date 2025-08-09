@@ -1,0 +1,31 @@
+﻿@model GymManagementSystem.Models.ThietBi
+<h4>Chi tiết: @Model.TenThietBi</h4>
+<dl>
+    <dt class="text-muted">Mô Tả</dt>
+    <dd class="mb-3">@Model.MoTa</dd>
+    <dt class="text-muted">Ngày Mua</dt>
+    <dd class="mb-3">@(Model.NgayMua.HasValue ? Model.NgayMua.Value.ToShortDateString() : "Không rõ")</dd>
+    <dt class="text-muted">Tình Trạng</dt>
+    <dd class="mb-3">
+        @* --- LOGIC HIỂN THỊ TRẠNG THÁI --- *@
+        @if (Model.TinhTrang == GymManagementSystem.Models.TinhTrangThietBi.CanBaoTri)
+        {
+            <span class="status-badge status-warning">Cần bảo trì</span>
+        }
+        else if (Model.TinhTrang == GymManagementSystem.Models.TinhTrangThietBi.HoatDongTot)
+        {
+            <span class="status-badge status-active">Hoạt động tốt</span>
+        }
+        else if (Model.TinhTrang == GymManagementSystem.Models.TinhTrangThietBi.Hong)
+        {
+            <span class="status-badge status-inactive">Hư hỏng</span>
+        }
+        else
+        {
+            <span class="status-badge">@Model.TinhTrang.ToString()</span>
+        }
+    </dd>
+</dl>
+<div class="offcanvas-footer">
+    <button type="button" class="btn btn-offcanvas-secondary" data-bs-dismiss="offcanvas">Đóng</button>
+</div>

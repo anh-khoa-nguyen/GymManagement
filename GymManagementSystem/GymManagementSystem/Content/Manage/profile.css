@@ -4,8 +4,8 @@
 
 /* --- NỀN ĐỘNG VÀ BONG BÓNG NỔI --- */
 .profile-dashboard-wrapper {
-    position: relative; /* Cần thiết để định vị các bong bóng */
-    overflow: hidden; /* Ngăn bong bóng tràn ra ngoài */
+    position: relative;
+    overflow: hidden;
     padding: 2rem;
     background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
     border-radius: 16px;
@@ -21,94 +21,93 @@
     z-index: 0;
 }
 
-    .background-bubbles li {
-        position: absolute;
-        list-style: none;
-        display: block;
-        width: 20px;
-        height: 20px;
-        background: rgba(165, 255, 54, 0.15); /* Màu xanh neon mờ */
-        animation: bubbles-rise 25s infinite;
-        bottom: -150px; /* Bắt đầu từ bên ngoài màn hình */
-    }
+.background-bubbles li {
+    position: absolute;
+    list-style: none;
+    display: block;
+    width: 20px;
+    height: 20px;
+    background: rgba(165, 255, 54, 0.15); /* Màu xanh neon mờ */
+    animation: bubbles-rise 25s infinite;
+    bottom: -150px; /* Bắt đầu từ bên ngoài màn hình */
+}
 
-        /* Tạo sự đa dạng cho các bong bóng */
-        .background-bubbles li:nth-child(1) {
-            left: 25%;
-            width: 80px;
-            height: 80px;
-            animation-delay: 0s;
-        }
+.background-bubbles li:nth-child(1) {
+    left: 25%;
+    width: 80px;
+    height: 80px;
+    animation-delay: 0s;
+}
 
-        .background-bubbles li:nth-child(2) {
-            left: 10%;
-            width: 20px;
-            height: 20px;
-            animation-delay: 2s;
-            animation-duration: 12s;
-        }
+.background-bubbles li:nth-child(2) {
+    left: 10%;
+    width: 20px;
+    height: 20px;
+    animation-delay: 2s;
+    animation-duration: 12s;
+}
 
-        .background-bubbles li:nth-child(3) {
-            left: 70%;
-            width: 20px;
-            height: 20px;
-            animation-delay: 4s;
-        }
+.background-bubbles li:nth-child(3) {
+    left: 70%;
+    width: 20px;
+    height: 20px;
+    animation-delay: 4s;
+}
 
-        .background-bubbles li:nth-child(4) {
-            left: 40%;
-            width: 60px;
-            height: 60px;
-            animation-delay: 0s;
-            animation-duration: 18s;
-        }
+.background-bubbles li:nth-child(4) {
+    left: 40%;
+    width: 60px;
+    height: 60px;
+    animation-delay: 0s;
+    animation-duration: 18s;
+}
 
-        .background-bubbles li:nth-child(5) {
-            left: 65%;
-            width: 20px;
-            height: 20px;
-            animation-delay: 0s;
-        }
+.background-bubbles li:nth-child(5) {
+    left: 65%;
+    width: 20px;
+    height: 20px;
+    animation-delay: 0s;
+}
 
-        .background-bubbles li:nth-child(6) {
-            left: 75%;
-            width: 110px;
-            height: 110px;
-            animation-delay: 3s;
-            background: rgba(138, 43, 226, 0.1);
-        }
-        /* Màu tím */
-        .background-bubbles li:nth-child(7) {
-            left: 35%;
-            width: 150px;
-            height: 150px;
-            animation-delay: 7s;
-        }
+.background-bubbles li:nth-child(6) {
+    left: 75%;
+    width: 110px;
+    height: 110px;
+    animation-delay: 3s;
+    background: rgba(138, 43, 226, 0.1);
+}
 
-        .background-bubbles li:nth-child(8) {
-            left: 50%;
-            width: 25px;
-            height: 25px;
-            animation-delay: 15s;
-            animation-duration: 45s;
-        }
+.background-bubbles li:nth-child(7) {
+    left: 35%;
+    width: 150px;
+    height: 150px;
+    animation-delay: 7s;
+}
 
-        .background-bubbles li:nth-child(9) {
-            left: 20%;
-            width: 15px;
-            height: 15px;
-            animation-delay: 2s;
-            animation-duration: 35s;
-            background: rgba(138, 43, 226, 0.15);
-        }
-        /* Màu tím */
-        .background-bubbles li:nth-child(10) {
-            left: 85%;
-            width: 150px;
-            height: 150px;
-            animation-delay: 0s;
-            animation-duration: 11s;
-        }
+.background-bubbles li:nth-child(8) {
+    left: 50%;
+    width: 25px;
+    height: 25px;
+    animation-delay: 15s;
+    animation-duration: 45s;
+}
+
+.background-bubbles li:nth-child(9) {
+    left: 20%;
+    width: 15px;
+    height: 15px;
+    animation-delay: 2s;
+    animation-duration: 35s;
+    background: rgba(138, 43, 226, 0.15);
+}
+
+.background-bubbles li:nth-child(10) {
+    left: 85%;
+    width: 150px;
+    height: 150px;
+    animation-delay: 0s;
+    animation-duration: 11s;
+}
 
 @keyframes bubbles-rise {
     0% {
@@ -122,20 +121,17 @@
     }
 }
 
-
 /* --- HIỆU ỨNG KÍNH MỜ & TỎA SÁNG (GLASSMORPHISM & GLOW) --- */
 .glassmorphic-card {
-    background: rgba(30, 30, 30, 0.45); /* Nền kính mờ tối */
+    background: rgba(30, 30, 30, 0.45);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-radius: 16px;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    /* Hào quang màu tím */
     box-shadow: 0 0 50px rgba(138, 43, 226, 0.25);
-    position: relative; /* Cần thiết cho các hiệu ứng con */
+    position: relative;
     z-index: 1;
 }
-
 
 /* --- CÁC THÀNH PHẦN GIAO DIỆN --- */
 .profile-header {
@@ -153,7 +149,6 @@
     border-radius: 50%;
     background-color: #333;
     border: 3px solid #a5ff36;
-    /* Hiệu ứng tỏa sáng cho avatar */
     box-shadow: 0 0 15px #a5ff36, 0 0 30px #a5ff36;
 }
 
@@ -179,16 +174,15 @@
     transition: all 0.3s ease;
 }
 
-    .btn-edit-profile:hover {
-        color: #000;
-        background: #a5ff36;
-        border-color: #a5ff36;
-        box-shadow: 0 0 15px rgba(165, 255, 54, 0.5);
-    }
+.btn-edit-profile:hover {
+    color: #000;
+    background: #a5ff36;
+    border-color: #a5ff36;
+    box-shadow: 0 0 15px rgba(165, 255, 54, 0.5);
+}
 
 /* --- Membership Card --- */
 .membership-card {
-    /* Áp dụng hiệu ứng kính mờ */
     background: rgba(138, 43, 226, 0.15);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -201,24 +195,24 @@
     z-index: 1;
 }
 
-    .membership-card .unlocked-badge {
-        background: rgba(165, 255, 54, 0.2);
-        color: #a5ff36;
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-size: 0.8rem;
-        font-weight: 500;
-        display: inline-block;
-        margin-bottom: 1rem;
-    }
+.membership-card .unlocked-badge {
+    background: rgba(165, 255, 54, 0.2);
+    color: #a5ff36;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: inline-block;
+    margin-bottom: 1rem;
+}
 
-    .membership-card .tier-name {
-        font-size: 2.5rem;
-        font-weight: 800;
-        color: #fff;
-        margin-bottom: 0.5rem;
-        text-shadow: 0 0 10px rgba(165, 255, 54, 0.5);
-    }
+.membership-card .tier-name {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 10px rgba(165, 255, 54, 0.5);
+}
 
 .progress-bar-custom {
     height: 8px;
@@ -228,12 +222,12 @@
     margin-top: 0.5rem;
 }
 
-    .progress-bar-custom .progress {
-        height: 100%;
-        background: #a5ff36;
-        border-radius: 4px;
-        box-shadow: 0 0 8px #a5ff36;
-    }
+.progress-bar-custom .progress {
+    height: 100%;
+    background: #a5ff36;
+    border-radius: 4px;
+    box-shadow: 0 0 8px #a5ff36;
+}
 
 .membership-card .tier-progress {
     display: flex;
@@ -268,25 +262,24 @@
     transition: all 0.2s ease;
 }
 
-    .benefit-item:hover {
-        transform: translateY(-5px);
-        background-color: #252525;
-    }
+.benefit-item:hover {
+    transform: translateY(-5px);
+    background-color: #252525;
+}
 
-    .benefit-item i {
-        font-size: 2rem;
-        color: #f0e6d2;
-        margin-bottom: 0.75rem;
-    }
+.benefit-item i {
+    font-size: 2rem;
+    color: #f0e6d2;
+    margin-bottom: 0.75rem;
+}
 
-    .benefit-item p {
-        margin: 0;
-        font-weight: 500;
-    }
+.benefit-item p {
+    margin: 0;
+    font-weight: 500;
+}
 
 /* --- Right Column Cards --- */
 .side-card {
-    /* Áp dụng hiệu ứng kính mờ chung */
     background: rgba(30, 30, 30, 0.45);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -299,12 +292,12 @@
     z-index: 1;
 }
 
-    .side-card h4 {
-        margin-top: 0;
-        margin-bottom: 1.5rem;
-        color: #f0e6d2;
-        font-weight: 800;
-    }
+.side-card h4 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #f0e6d2;
+    font-weight: 800;
+}
 
 .buddies-list {
     display: flex;
@@ -318,26 +311,22 @@
     flex-shrink: 0;
 }
 
-    .buddy-item img {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        margin-bottom: 0.5rem;
-        border: 2px solid #555;
-    }
+.buddy-item img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-bottom: 0.5rem;
+    border: 2px solid #555;
+}
 
 .profile-dashboard-wrapper .text-muted,
 .side-card .text-muted {
-    color: #9e9e9e !important; /* Màu xám sáng, dễ đọc. !important để đảm bảo ghi đè */
+    color: #9e9e9e !important;
 }
 
-/* 
- * Tùy chọn: Thêm một chút style cho các label (dt) trong trang
- * "Chỉnh sửa thông tin" để trông chuyên nghiệp hơn.
-*/
 .side-card dt.text-muted {
     text-transform: uppercase;
     font-size: 0.8rem;
     letter-spacing: 0.5px;
-    margin-bottom: 0.25rem; /* Thêm chút khoảng cách */
+    margin-bottom: 0.25rem;
 }

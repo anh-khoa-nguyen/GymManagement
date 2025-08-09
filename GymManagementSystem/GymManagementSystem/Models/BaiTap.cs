@@ -11,7 +11,7 @@ namespace GymManagementSystem.Models
     {
         public BaiTap()
         {
-            // Khởi tạo để tránh lỗi null khi thêm các bước thực hiện mới
+            // Tránh Null
             this.CacBuocThucHien = new HashSet<BuocThucHien>();
         }
 
@@ -30,11 +30,13 @@ namespace GymManagementSystem.Models
         [Required(ErrorMessage = "Nhóm cơ chính không được để trống")]
         [DisplayName("Nhóm Cơ Chính")]
         [StringLength(100)]
-        public string NhomCoChinh { get; set; } // Ví dụ: "Ngực", "Lưng", "Chân"
+        public string NhomCoChinh { get; set; } 
+        // Ví dụ: "Ngực", "Lưng", "Chân"
 
         [DisplayName("Nhóm Cơ Phụ")]
         [StringLength(100)]
-        public string NhomCoPhu { get; set; } // Ví dụ: "Tay sau", "Vai"
+        public string NhomCoPhu { get; set; } 
+        // Ví dụ: "Tay sau", "Vai"
 
         [DisplayName("Dụng Cụ Cần Thiết")]
         [StringLength(200)]

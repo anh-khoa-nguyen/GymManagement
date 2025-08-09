@@ -38,8 +38,8 @@
                 <th>Tên Khuyến Mãi</th>
                 <th>Mã</th>
                 <th>Giảm Giá</th>
-                <th>Ngày Bắt Đầu</th>
-                <th>Ngày Kết Thúc</th>
+                <th>Tối đa giảm</th>
+                <th>Hiệu lực</th>
                 <th>Trạng Thái</th>
                 <th class="text-end">Hành động</th>
             </tr>
@@ -51,9 +51,9 @@
                     <td><input type="checkbox" class="form-check-input row-checkbox" name="idsToDelete" value="@item.Id" /></td>
                     <td>@Html.DisplayFor(modelItem => item.TenKhuyenMai)</td>
                     <td>@Html.DisplayFor(modelItem => item.MaKhuyenMai)</td>
-                    <td>@(item.PhanTramGiamGia > 0 ? $"{item.PhanTramGiamGia}%" : $"{item.SoTienGiamGia:N0} VNĐ")</td>
-                    <td>@item.NgayBatDau.ToShortDateString()</td>
-                    <td>@item.NgayKetThuc.ToShortDateString()</td>
+                    <td>@item.PhanTramGiamGia %</td>
+                    <td>@item.SoTienGiamToiDa.ToString()</td>
+                    <td>@item.SoNgayHieuLuc.ToString() ngày</td>
                     <td>
                         @if (item.IsActive)
                         {<span class="status-badge status-active">Kích hoạt</span> }

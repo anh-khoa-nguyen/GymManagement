@@ -1,47 +1,101 @@
-﻿@model IEnumerable<GymManagementSystem.Models.GoiTap>
+﻿<head>
+    <link href="@Url.Content("~/Content/Workout/package.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Workout/plan.css")" rel="stylesheet" type="text/css" />
+
+</head>
+@model GymManagementSystem.Models.ViewModels.GoiTapViewModel
 @{
-    ViewBag.Title = "Chọn Gói Tập Của Bạn";
+    ViewBag.Title = "Các Gói Tập";
     var culture = new System.Globalization.CultureInfo("vi-VN");
 }
+<link href="@Url.Content("~/Content/goi-tap.css")" rel="stylesheet" type="text/css" />
 
-<h2><i class="fas fa-tags"></i> @ViewBag.Title</h2>
-<p class="text-muted">Hãy chọn một gói tập phù hợp để bắt đầu hành trình của bạn!</p>
+<div class="workout-plans-wrapper">
+    <div class="plans-layout">
+        <!-- ======================================================== -->
+        <!-- CỘT BÊN TRÁI: CÁC GÓI TẬP CỦA TÔI -->
+        <!-- ======================================================== -->
+        <div class="plans-column">
+            <div class="page-header mb-4">
+                <h2 class="text-white">Gói Tập</h2>
+                <p>Các gói tập bạn đã và đang sử dụng.</p>
+            </div>
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-dismissible alert-success">
-        <button type="button" class="close" data-dismiss="alert">×</button>
-        <strong>Thành công!</strong> @TempData["SuccessMessage"]
-    </div>
-}
+            @if (!Model.GoiTapDaDangKy.Any())
+            {
+                <div class="alert alert-info" style="background-color: rgba(37, 117, 252, 0.1); border-color: rgba(37, 117, 252, 0.3); color: #fff;">
+                    Bạn chưa đăng ký gói tập nào. Hãy chọn một gói bên cạnh!
+                </div>
+            }
+            else
+            {
+                foreach (var item in Model.GoiTapDaDangKy)
+                {
+                    bool conHan = item.NgayHetHan >= DateTime.Today;
+                    <div class="registered-card @(conHan ? "active" : "")">
+                        <div class="registered-card-header">
+                            <h4>@item.GoiTap.TenGoi</h4>
+                            @if (conHan)
+                            {
+                                <span class="status-badge status-active">Còn hạn</span>
+                            }
+                            else
+                            {
+                                <span class="status-badge status-inactive">Đã hết hạn</span>
+                            }
+                        </div>
+                        <div class="registered-card-body">
+                            <p>Đăng ký: @item.NgayDangKy.ToString("dd/MM/yyyy")</p>
+                            <strong>Hết hạn: @item.NgayHetHan.ToString("dd/MM/yyyy")</strong>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
 
-<div class="row mt-4">
-    @foreach (var item in Model)
-    {
-        <div class="col-md-4 mb-4">
-            <div class="card border-primary h-100 d-flex flex-column">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">@item.TenGoi</h5>
-                </div>
-                <div class="card-body">
-                    <h3 class="card-title text-success font-weight-bold">@item.GiaTien.ToString("C0", culture)</h3>
-                    <p class="card-text">
-                        <strong>Số buổi với PT:</strong> @item.SoBuoiTapVoiPT buổi
-                    </p>
-                    <hr />
-                    <p class="card-text text-muted">@item.MoTaQuyenLoi</p>
-                </div>
-                <div class="card-footer mt-auto text-center bg-transparent border-top-0">
-                    @using (Html.BeginForm("DangKyGoiTap", "HoiVien", FormMethod.Post))
-                    {
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="goiTapId" value="@item.Id" />
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-check-circle"></i> Chọn Gói này
-                        </button>
-                    }
-                </div>
+        <!-- Đường kẻ phân cách -->
+        <div class="column-divider"></div>
+
+        <!-- ======================================================== -->
+        <!-- CỘT BÊN PHẢI: KHÁM PHÁ GÓI TẬP -->
+        <!-- ======================================================== -->
+        <div class="plans-column">
+            <div class="page-header mb-4">
+                <h2 class="text-white">Khám phá</h2>
+                <p>Chọn một gói phù hợp để bắt đầu.</p>
+            </div>
+
+            <div class="workout-plans-container">
+                @foreach (var item in Model.GoiTapChuaDangKy)
+                {
+                    <div class="goi-tap-card">
+                        <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=2070&auto=format&fit=crop" class="illustration" />
+                        <div class="card-content">
+                            <div class="card-header bg-transparent border-0 px-0">
+                                <h5>@item.TenGoi</h5>
+                            </div>
+                            <div class="card-body px-0">
+                                <h3 class="card-price">@item.GiaTien.ToString("C0", culture)</h3>
+                                <p class="card-features">
+                                    <i class="fas fa-user-friends me-2"></i><strong>@item.SoBuoiTapVoiPT</strong> buổi với Huấn luyện viên
+                                </p>
+                                <hr style="border-color: #444;" />
+                                <p class="text-muted">@item.MoTaQuyenLoi</p>
+                            </div>
+                            <div class="card-footer">
+                                @using (Html.BeginForm("DangKyGoiTap", "HoiVien", FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="goiTapId" value="@item.Id" />
+                                    <button type="submit" class="btn-start">
+                                        <i class="fas fa-check-circle me-2"></i> Chọn Gói này
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
-    }
+    </div>
 </div>

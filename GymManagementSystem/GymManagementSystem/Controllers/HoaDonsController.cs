@@ -38,34 +38,43 @@ namespace GymManagementSystem.Controllers
         }
 
         // GET: HoaDons/Create (Hiển thị form lập hóa đơn)
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
+            // Lấy danh sách hội viên (những người có vai trò "HoiVien")
+            var danhSachHoiVien = await db.Users
+                                          .Where(u => u.VaiTro == "HoiVien")
+                                          .Select(u => new SelectListItem { Value = u.Id, Text = u.HoTen + " (" + u.UserName + ")" })
+                                          .ToListAsync();
+
+            // Lấy danh sách gói tập
+            var danhSachGoiTap = await db.GoiTaps
+                                         .Select(g => new SelectListItem { Value = g.Id.ToString(), Text = g.TenGoi })
+                                         .ToListAsync();
+
+            // === SỬA LẠI LOGIC LẤY DANH SÁCH KHUYẾN MÃI ===
+            // Logic mới: Chỉ cần lấy các khuyến mãi đang hoạt động, không cần check ngày
+            var danhSachKhuyenMai = await db.KhuyenMais
+                                            .Where(k => k.IsActive)
+                                            .Select(k => new SelectListItem { Value = k.Id.ToString(), Text = k.TenKhuyenMai })
+                                            .ToListAsync();
+            // Thêm một lựa chọn "Không áp dụng" vào đầu danh sách khuyến mãi
+            danhSachKhuyenMai.Insert(0, new SelectListItem { Value = "", Text = "-- Không áp dụng --" });
+
+
+            // Tạo ViewModel và gán các danh sách đã lấy được
             var viewModel = new TaoHoaDonViewModel
             {
-                // Lấy danh sách hội viên (những người có vai trò "HoiVien")
-                DanhSachHoiVien = db.Users
-                                    .Where(u => u.VaiTro == "HoiVien")
-                                    .Select(u => new SelectListItem { Value = u.Id, Text = u.HoTen + " (" + u.UserName + ")" })
-                                    .ToList(),
-                // Lấy danh sách gói tập
-                DanhSachGoiTap = db.GoiTaps
-                                   .Select(g => new SelectListItem { Value = g.Id.ToString(), Text = g.TenGoi })
-                                   .ToList(),
-                // Lấy danh sách khuyến mãi còn hoạt động
-                DanhSachKhuyenMai = db.KhuyenMais
-                                      .Where(k => k.IsActive && k.NgayKetThuc >= DateTime.Now)
-                                      .Select(k => new SelectListItem { Value = k.Id.ToString(), Text = k.TenKhuyenMai })
-                                      .ToList()
+                DanhSachHoiVien = danhSachHoiVien,
+                DanhSachGoiTap = danhSachGoiTap,
+                DanhSachKhuyenMai = danhSachKhuyenMai
             };
-            // Thêm một lựa chọn "Không áp dụng" vào đầu danh sách khuyến mãi
-            viewModel.DanhSachKhuyenMai.ToList().Insert(0, new SelectListItem { Value = "", Text = "-- Không áp dụng --" });
 
             if (Request.IsAjaxRequest())
             {
                 return PartialView("Create", viewModel);
             }
 
-
+            // Bỏ logic IsAjaxRequest không cần thiết nếu bạn không dùng partial view
             return View(viewModel);
         }
 
@@ -89,8 +98,15 @@ namespace GymManagementSystem.Controllers
                 decimal soTienGiam = 0;
                 if (khuyenMai != null)
                 {
-                    soTienGiam = (decimal)khuyenMai.PhanTramGiamGia * giaGoc / 100;
-                    soTienGiam += khuyenMai.SoTienGiamGia;
+                    // === LOGIC TÍNH TOÁN GIẢM GIÁ MỚI ===
+                    decimal soTienGiamTheoPhanTram = (decimal)khuyenMai.PhanTramGiamGia * giaGoc / 100;
+                    decimal soTienGiamToiDa = khuyenMai.SoTienGiamToiDa; // <-- Sử dụng trường mới
+
+                    soTienGiam = soTienGiamTheoPhanTram;
+                    if (soTienGiamToiDa > 0 && soTienGiamTheoPhanTram > soTienGiamToiDa)
+                    {
+                        soTienGiam = soTienGiamToiDa;
+                    }
                 }
                 decimal thanhTien = giaGoc - soTienGiam;
 
@@ -112,11 +128,26 @@ namespace GymManagementSystem.Controllers
                 return RedirectToAction("Index");
             }
 
+            // --- SỬA LẠI LOGIC LẤY DANH SÁCH KHUYẾN MÃI KHI MODELSTATE LỖI ---
+
             // Nếu model không hợp lệ, tải lại các danh sách và trả về view
-            viewModel.DanhSachHoiVien = db.Users.Where(u => u.VaiTro == "HoiVien").Select(u => new SelectListItem { Value = u.Id, Text = u.HoTen + " (" + u.UserName + ")" }).ToList();
-            viewModel.DanhSachGoiTap = db.GoiTaps.Select(g => new SelectListItem { Value = g.Id.ToString(), Text = g.TenGoi }).ToList();
-            viewModel.DanhSachKhuyenMai = db.KhuyenMais.Where(k => k.IsActive && k.NgayKetThuc >= DateTime.Now).Select(k => new SelectListItem { Value = k.Id.ToString(), Text = k.TenKhuyenMai }).ToList();
+            viewModel.DanhSachHoiVien = await db.Users
+                .Where(u => u.VaiTro == "HoiVien")
+                .Select(u => new SelectListItem { Value = u.Id, Text = u.HoTen + " (" + u.UserName + ")" })
+                .ToListAsync();
+
+            viewModel.DanhSachGoiTap = await db.GoiTaps
+                .Select(g => new SelectListItem { Value = g.Id.ToString(), Text = g.TenGoi })
+                .ToListAsync();
+
+            // Logic mới: Chỉ cần lấy các khuyến mãi đang hoạt động, không cần check ngày
+            viewModel.DanhSachKhuyenMai = await db.KhuyenMais
+                .Where(k => k.IsActive)
+                .Select(k => new SelectListItem { Value = k.Id.ToString(), Text = k.TenKhuyenMai })
+                .ToListAsync();
+
             viewModel.DanhSachKhuyenMai.ToList().Insert(0, new SelectListItem { Value = "", Text = "-- Không áp dụng --" });
+
             return View(viewModel);
         }
 
@@ -165,12 +196,28 @@ namespace GymManagementSystem.Controllers
         public async Task<JsonResult> GetKhuyenMaiDiscount(int id, decimal giaGoc)
         {
             var khuyenMai = await db.KhuyenMais.FindAsync(id);
-            if (khuyenMai == null) return Json(null, JsonRequestBehavior.AllowGet);
+            if (khuyenMai == null)
+            {
+                // Trả về 0 nếu không tìm thấy khuyến mãi
+                return Json(new { soTienGiam = 0 }, JsonRequestBehavior.AllowGet);
+            }
 
-            decimal soTienGiam = (decimal)khuyenMai.PhanTramGiamGia * giaGoc / 100;
-            soTienGiam += khuyenMai.SoTienGiamGia;
+            // === LOGIC TÍNH TOÁN GIẢM GIÁ MỚI ===
 
-            return Json(new { soTienGiam = soTienGiam }, JsonRequestBehavior.AllowGet);
+            // 1. Tính số tiền giảm theo phần trăm
+            decimal soTienGiamTheoPhanTram = (decimal)khuyenMai.PhanTramGiamGia * giaGoc / 100;
+
+            // 2. Lấy số tiền giảm tối đa từ khuyến mãi
+            decimal soTienGiamToiDa = khuyenMai.SoTienGiamToiDa;
+
+            // 3. So sánh và chọn ra số tiền giảm cuối cùng
+            decimal soTienGiamCuoiCung = soTienGiamTheoPhanTram;
+            if (soTienGiamToiDa > 0 && soTienGiamTheoPhanTram > soTienGiamToiDa)
+            {
+                soTienGiamCuoiCung = soTienGiamToiDa;
+            }
+
+            return Json(new { soTienGiam = soTienGiamCuoiCung }, JsonRequestBehavior.AllowGet);
         }
 
         private async Task UpdateHoiVienRankAsync(string hoiVienId)
@@ -197,35 +244,17 @@ namespace GymManagementSystem.Controllers
                 return;
             }
 
-            // 3. Lấy thông tin người dùng hiện tại để kiểm tra và cập nhật
-            var user = await UserManager.FindByIdAsync(hoiVienId);
-
-            if (user == null)
+            var hoivienProfile = await db.HoiViens.FirstOrDefaultAsync(h => h.ApplicationUserId == hoiVienId);
+            if (hoivienProfile == null)
             {
                 return;
             }
 
-            // 4. Chỉ cập nhật nếu hạng mới cao hơn hạng hiện tại
-            // (Tránh trường hợp bị hạ hạng hoặc cập nhật không cần thiết)
-            var hangHienTai = await db.HangHoiViens.FindAsync(user.HangHoiVienId);
-
-            if (hangHienTai == null || hangMoi.NguongChiTieu > hangHienTai.NguongChiTieu)
+            if (hoivienProfile.HangHoiVienId != hangMoi.Id)
             {
-                // 1. Cập nhật thuộc tính của đối tượng user
-                user.HangHoiVienId = hangMoi.Id;
-
-                // 2. Dùng UserManager để cập nhật người dùng vào CSDL
-                var result = await UserManager.UpdateAsync(user);
-
-                // (Tùy chọn) Kiểm tra kết quả và xử lý lỗi nếu cần
-                if (result.Succeeded)
-                {
-                    // Gửi thông báo cho người dùng về việc được nâng hạng...
-                }
-                else
-                {
-                    // Ghi log lỗi hoặc xử lý vấn đề không cập nhật được
-                }
+                // Cập nhật trực tiếp trên hồ sơ hội viên
+                hoivienProfile.HangHoiVienId = hangMoi.Id;
+                await db.SaveChangesAsync();
             }
         }
 

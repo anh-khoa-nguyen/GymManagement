@@ -1,99 +1,76 @@
-﻿/* --- CRUD & Table Styles --- */
-
-/* --- Modern Table --- */
+﻿/* --- Modern Table --- */
 .modern-table {
     width: 100%;
     border-collapse: collapse;
     color: #e0e0e0;
-    /* Nâng cấp cốt lõi */
-    background-color: #1c1c1c; /* Nền xám than, tách biệt với nền đen của body */
-    border-radius: 12px; /* Bo góc mềm mại hơn */
-    border: 1px solid #2c2c2c; /* Thêm một đường viền rất mờ */
-    overflow: hidden; /* Quan trọng để bo góc hoạt động */
-    /* Hiệu ứng highlight chính, tạo điểm nhấn thương hiệu */
+    background-color: #1c1c1c;
+    border-radius: 12px;
+    border: 1px solid #2c2c2c;
+    overflow: hidden;
     border-top: 3px solid #a5ff36;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25); /* Đổ bóng nhẹ để tạo chiều sâu */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
 }
 
-    /* Style cho các ô header (TH) và ô dữ liệu (TD) */
-    .modern-table th,
-    .modern-table td {
-        padding: 1.25rem 1.5rem; /* Tăng thêm không gian cho thoáng */
-        text-align: left;
-        /* Thay vì dùng border dưới cho mỗi ô, ta sẽ dùng cho cả hàng */
-        border-bottom: none;
-        vertical-align: middle;
-        text-decoration: none;
-    }
+/* Style TH & TD */
+.modern-table th,
+.modern-table td {
+    padding: 1.25rem 1.5rem;
+    text-align: left;
+    border-bottom: none;
+    vertical-align: middle;
+    text-decoration: none;
+}
 
-    /* Style riêng cho header của bảng */
-    .modern-table th {
-        /* Phối màu: Đổi thành màu xám sáng hơn để nổi bật trên nền */
-        color: #F6A822;
-        text-transform: uppercase;
-        /* Cỡ chữ: Tăng lên để dễ đọc và quan trọng hơn */
-        font-size: 0.85rem;
-        font-weight: 600; /* Giữ nguyên độ đậm vừa phải, không quá gắt */
-        /* Khoảng cách: Tăng lên để các tiêu đề thoáng và "đẳng cấp" hơn */
-        letter-spacing: 1px;
-        /* Thêm một chút padding ở dưới để tạo không gian với đường kẻ */
-        padding-bottom: 1.5rem;
-        /* Giữ nguyên đường kẻ ngăn cách header và body */
-        border-bottom: 2px solid #333;
-    }
+/* Style Header */
+.modern-table th {
+    color: #F6A822;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid #333;
+}
 
-    /* Style cho cả một hàng trong body */
-    .modern-table tbody tr {
-        /* Thêm một đường viền bên trái trong suốt để chuẩn bị cho hiệu ứng hover */
-        border-left: 4px solid transparent;
-        transition: all 0.25s ease-out; /* Hiệu ứng chuyển động mượt mà hơn */
-    }
+.modern-table tbody tr {
+    border-left: 4px solid transparent;
+    transition: all 0.25s ease-out;
+}
 
-        /* Hiệu ứng "Zebra-striping" giúp tăng khả năng đọc */
-        .modern-table tbody tr:nth-of-type(odd) {
-            background-color: rgba(0, 0, 0, 0.1); /* Một lớp phủ đen mờ cực nhẹ */
-        }
+.modern-table tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.1);
+}
 
-        /* Hiệu ứng hover ĐỈNH CAO */
-        .modern-table tbody tr:hover {
-            background-color: #252525; /* Nền sáng hơn một chút */
-            border-left-color: #a5ff36; /* HIỆU ỨNG HIGHLIGHT BÊN TRÁI! */
-            transform: translateX(5px); /* Di chuyển cả hàng sang phải một chút */
-        }
+.modern-table tbody tr:hover {
+    background-color: #252525;
+    border-left-color: #a5ff36;
+    transform: translateX(5px);
+}
 
-        /* Đảm bảo hover trên hàng zebra cũng có nền nhất quán */
-        .modern-table tbody tr:nth-of-type(odd):hover {
-            background-color: #252525;
-        }
+.modern-table tbody tr:nth-of-type(odd):hover {
+    background-color: #252525;
+}
 
-    .modern-table .form-check-input {
-        /* Style cơ bản (khi chưa được check) */
-        float: none; /* Bỏ float để dễ căn chỉnh */
-        margin-left: 0;
-        margin-right: 0;
-        border-radius: 6px !important; /* Bo góc mềm mại */
-        background-color: #333; /* Nền xám tối */
-        border: 1px solid #555; /* Viền xám sáng hơn một chút */
-        transition: all 0.2s ease-in-out; /* Hiệu ứng chuyển động mượt mà */
-    }
+.modern-table .form-check-input {
+    float: none;
+    margin-left: 0;
+    margin-right: 0;
+    border-radius: 6px !important; 
+    background-color: #333; 
+    border: 1px solid #555;
+    transition: all 0.2s ease-in-out;
+}
 
-        /* Style khi checkbox được CHỌN */
-        .modern-table .form-check-input:checked {
-            background-color: #a5ff36; /* Nền màu xanh neon thương hiệu */
-            border-color: #a5ff36; /* Viền cùng màu để tạo khối đồng nhất */
-            /* 
-     * Đây là phần "ma thuật": Chúng ta thay thế hình ảnh dấu tick mặc định (màu trắng)
-     * của Bootstrap bằng một phiên bản màu ĐEN (%23000) để nó nổi bật trên nền xanh.
-    */
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e");
-        }
+.modern-table .form-check-input:checked {
+    background-color: #a5ff36;
+    border-color: #a5ff36;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e");
+}
 
-        /* Style khi checkbox được FOCUS (khi dùng phím Tab) */
-        .modern-table .form-check-input:focus {
-            /* Bỏ viền xanh dương mặc định của Bootstrap */
-            box-shadow: 0 0 0 0.25rem rgba(165, 255, 54, 0.35) !important;
-            border-color: #a5ff36 !important;
-        }
+.modern-table .form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(165, 255, 54, 0.35) !important;
+    border-color: #a5ff36 !important;
+}
 
 /* --- Status Badges (Huy hiệu trạng thái) --- */
 .status-badge {
@@ -115,7 +92,12 @@
     color: #f87171;
 }
 
-/* --- CRUD Buttons in Table (Nút Sửa/Chi tiết/Xóa) --- */
+.status-badge.status-warning {
+    background-color: rgba(251, 146, 60, 0.15); /* Nền status-badge trong suốt */
+    color: #fb923c; /* Chữ màu cam sáng */
+}
+
+/* --- CRUD Buttons in Table --- */
 .btn-crud {
     background: #2c2c2c;
     color: #a0a0a0;
@@ -128,13 +110,13 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    opacity: 0.5; /* Mặc định các nút sẽ mờ đi */
+    opacity: 0.5;
     text-decoration: none !important;
 }
 
-/* Nút chỉ hiện rõ khi di chuột vào cả HÀNG */
+
 .modern-table tbody tr:hover .btn-crud {
-    opacity: 1; /* Hiện rõ các nút */
+    opacity: 1;
 }
 
 .btn-crud:hover {
@@ -172,14 +154,31 @@
     transition: all 0.2s ease;
 }
 
-    .btn-crud:hover {
-        background: #a5ff36;
-        color: #000;
-    }
+.btn-crud:hover {
+    background: #a5ff36;
+    color: #000;
+}
+
+.btn-secondary-custom {
+    color: #ccc;
+    border: 1px solid #444;
+    padding: 7px 16px;
+    margin-left: 5px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary-custom:hover {
+    background-color: #333;
+    color: #fff;
+    border-color: #555;
+}
 
 /* --- Offcanvas Styling --- */
 .offcanvas {
-    background-color: #1c1c1c !important; /* Màu nền cho offcanvas */
+    background-color: #1c1c1c !important;
     color: #fff;
 }
 
@@ -191,23 +190,20 @@
     font-weight: 700;
 }
 
-/* --- Form elements inside Offcanvas --- */
 .offcanvas .text-muted {
-    color: #888 !important; /* Dùng màu xám sáng hơn. !important để đảm bảo ghi đè Bootstrap */
-    text-transform: uppercase; /* Viết hoa các label */
-    font-size: 0.8rem; /* Cho chữ nhỏ hơn một chút */
+    color: #888 !important;
+    text-transform: uppercase;
+    font-size: 0.8rem;
     font-weight: 500;
-    letter-spacing: 0.5px; /* Tăng nhẹ khoảng cách ký tự */
+    letter-spacing: 0.5px;
 }
 
-/* Cải thiện khoảng cách giữa các cặp label/value trong view chi tiết */
 .offcanvas dl dd {
-    margin-bottom: 1.5rem; /* Tăng khoảng cách dưới mỗi giá trị */
-    font-size: 1rem; /* Đảm bảo kích thước chữ của giá trị rõ ràng */
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
     font-weight: 500;
 }
 
-/* Áp dụng cho cả view chi tiết hóa đơn (vì nó dùng class khác) */
 .details-container .text-muted {
     color: #888 !important;
 }
@@ -226,42 +222,40 @@
     padding: 10px;
 }
 
-    .offcanvas-body .form-control:focus {
-        background-color: #2b2b2b;
-        border-color: #a5ff36;
-        color: #fff;
-        box-shadow: 0 0 0 0.25rem rgba(165, 255, 54, 0.25);
-    }
+.offcanvas-body .form-control:focus {
+    background-color: #2b2b2b;
+    border-color: #a5ff36;
+    color: #fff;
+    box-shadow: 0 0 0 0.25rem rgba(165, 255, 54, 0.25);
+}
 
 .offcanvas-body .form-check-input {
     background-color: #444;
     border-color: #555;
 }
 
-    .offcanvas-body .form-check-input:checked {
-        background-color: #a5ff36;
-        border-color: #a5ff36;
-    }
+.offcanvas-body .form-check-input:checked {
+    background-color: #a5ff36;
+    border-color: #a5ff36;
+}
 
 .offcanvas-body {
-    /* Tạo một không gian ở dưới cùng của body để footer không che mất nội dung */
     padding-bottom: 100px !important;
 }
 
 .offcanvas-footer {
-    position: absolute; /* Định vị tuyệt đối so với Offcanvas */
+    position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
-    /* Style để đồng bộ với giao diện */
     padding: 1rem 1.5rem;
-    background-color: #1c1c1c; /* Cùng màu với nền Offcanvas */
+    background-color: #1c1c1c;
     border-top: 1px solid #333;
-    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15); /* Tạo chiều sâu */
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
 }
 
 
-/* --- Buttons inside Offcanvas --- */
+/* --- Buttons Offcanvas --- */
 .btn-offcanvas-primary {
     background-color: #a5ff36;
     color: #000;
@@ -293,6 +287,204 @@
 }
 
 .btn-custom-green {
-    flex-shrink: 0; /* Quan trọng nhất: không cho phép co lại */
-    white-space: nowrap; /* Đảm bảo chữ bên trong không bao giờ bị xuống dòng */
+    flex-shrink: 0; 
+    white-space: nowrap;
 }
+
+
+/* =================================================== */
+/* --- FILTER SECTION STYLING --- */
+/* =================================================== */
+
+.filter-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* Khoảng cách giữa các phần tử */
+    margin-bottom: 2rem;
+}
+
+/* Style cho ô nhập ngày */
+.filter-section .form-control-dark {
+    background-color: #2b2b2b;
+    border: 1px solid #444;
+    color: #fff;
+    border-radius: 8px;
+    padding: 8px 12px;
+}
+
+.filter-section .form-control-dark:focus {
+    border-color: var(--neon-green);
+    box-shadow: 0 0 0 0.25rem rgba(165, 255, 54, 0.25);
+}
+
+/* Style cho nút Lọc (nút chính) */
+.filter-section .btn-filter-primary {
+    background: var(--neon-green); /* DÙNG MÀU XANH NEON ĐỒNG BỘ */
+    color: #000; /* Chữ đen để nổi bật */
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-weight: 600; /* Tăng độ đậm */
+    transition: all 0.2s ease;
+}
+
+.filter-section .btn-filter-primary:hover {
+    filter: brightness(1.1); /* Sáng hơn một chút khi hover */
+}
+
+/* Style cho nút Xóa bộ lọc (nút phụ) */
+.filter-section .btn-filter-secondary {
+    color: #9e9e9e;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.filter-section .btn-filter-secondary:hover {
+    color: #fff;
+}
+
+.action-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.8rem;
+    color: #fff;
+}
+
+.action-badge.create {
+    background-color: rgba(74, 222, 128, 0.3);
+}
+/* Xanh lá */
+.action-badge.update {
+    background-color: rgba(251, 146, 60, 0.3);
+}
+/* Cam */
+.action-badge.delete {
+    background-color: rgba(248, 113, 113, 0.3);
+}
+/* Đỏ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =================================================== */
+/* --- SELECT2 DARK THEME --- */
+/* =================================================== */
+
+/* Container chính của Select2 */
+.select2-container--bootstrap-5 .select2-selection {
+    background-color: #2b2b2b !important;
+    border: 1px solid #444 !important;
+    color: #fff !important;
+    border-radius: 8px !important;
+    padding: 5px 10px !important;
+    min-height: 40px; /* Đảm bảo chiều cao tối thiểu */
+    transition: all 0.2s ease;
+}
+
+/* Khi dropdown được focus */
+.select2-container--bootstrap-5.select2-container--focus .select2-selection,
+.select2-container--bootstrap-5.select2-container--open .select2-selection {
+    border-color: var(--neon-green) !important;
+    box-shadow: 0 0 0 0.25rem rgba(165, 255, 54, 0.25) !important;
+}
+
+/* Các tag đã chọn (ví dụ: "Ghế") */
+.select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice {
+    background-color: #444 !important;
+    border: 1px solid #555 !important;
+    color: #fff !important;
+    padding: 5px 10px !important;
+    border-radius: 6px !important;
+}
+
+/* Nút X để xóa tag */
+.select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice__remove {
+    color: #ccc !important;
+    margin-right: 5px !important;
+}
+
+    .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice__remove:hover {
+        color: #fff !important;
+    }
+
+/* Danh sách kết quả xổ xuống */
+.select2-dropdown {
+    background-color: #1c1c1c !important;
+    border: 1px solid #444 !important;
+    border-radius: 8px !important;
+}
+
+.select2-container--bootstrap-5 .select2-results__option {
+    color: #ccc;
+}
+
+.select2-container--bootstrap-5 .select2-results__option--highlighted {
+    background-color: #252525 !important;
+    color: var(--neon-green) !important;
+}
+
+.select2-container--bootstrap-5 .select2-results__option[aria-selected=true] {
+    background-color: #333 !important;
+    color: #fff !important;
+}
+
+/* =================================================== */
+/* --- CUSTOM FILE INPUT STYLING --- */
+/* =================================================== */
+
+/* Ghi đè lại style mặc định của Bootstrap cho input file */
+.form-control[type="file"] {
+    background-color: #2b2b2b;
+    border-color: #444;
+    color: #9e9e9e; /* Màu cho chữ "No file chosen" */
+}
+
+    /* Style cho nút "Choose File" */
+    .form-control[type="file"]::file-selector-button {
+        background-color: #444;
+        color: #fff;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 6px;
+        margin-right: 1rem;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+        .form-control[type="file"]::file-selector-button:hover {
+            background-color: #a5ff36;
+        }

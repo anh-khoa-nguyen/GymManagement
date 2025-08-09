@@ -1,19 +1,24 @@
-﻿@model GymManagementSystem.Models.ViewModels.ChiTietKeHoachViewModel
-<head>
+﻿<head>
     <link href="@Url.Content("~/Content/Workout/exer.css")" rel="stylesheet" type="text/css" />
 </head>
+@model GymManagementSystem.Models.ViewModels.ChiTietKeHoachViewModel
 @{
     ViewBag.Title = Model.DangKyKeHoach.KeHoach.TenKeHoach;
 }
-<link href="@Url.Content("~/Content/plan-progress.css")" rel="stylesheet" type="text-css" />
+<link href="@Url.Content("~/Content/plan-progress.css")" rel="stylesheet" type="text/css" />
 
 <div class="plan-progress-wrapper">
     <div class="plan-header">
         <h2>@ViewBag.Title</h2>
-        <p>@Model.DangKyKeHoach.KeHoach.MoTa</p>
+        <div class="plan-meta">
+            <span><i class="fas fa-calendar-alt"></i> Tổng số: @Model.DangKyKeHoach.KeHoach.ThoiGianThucHien ngày</span>
+            @if (Model.DangKyKeHoach.KeHoach.KhuyenMai != null)
+            {
+                <span><i class="fas fa-gift"></i> Thưởng: @Model.DangKyKeHoach.KeHoach.KhuyenMai.TenKhuyenMai</span>
+            }
+        </div>
     </div>
 
-    <!-- Thanh tiến trình -->
     <div class="progress-container">
         <p class="progress-label">Tiến độ hoàn thành: @Model.PhanTramHoanThanh%</p>
         <div class="progress-bar-wrapper">
@@ -21,43 +26,109 @@
         </div>
     </div>
 
-    <hr style="border-color: #333; margin: 2.5rem 0;" />
+    <hr style="border-color: #333; margin: 1rem 0;" />
 
-    <!-- Danh sách các ngày -->
     <div class="day-list">
         @foreach (var ngayTap in Model.DanhSachNgayTap)
         {
+            // --- XÁC ĐỊNH CÁC BIẾN ---
             string itemClass = "";
-            string linkUrl = "#";
             string iconClass = "";
+            string linkUrl = Url.Action("BaiTapChiTiet", "ThucHienKeHoach", new { chiTietKeHoachId = ngayTap.ChiTietBaiTap.Id, dangKyKeHoachId = Model.DangKyKeHoach.Id });
 
-            if (ngayTap.DaHoanThanh)
-            {
-                itemClass = "completed";
-                iconClass = "fas fa-check-circle"; // Font Awesome icon
-            }
-            else if (ngayTap.CoTheTap)
-            {
-                itemClass = "tappable";
-                iconClass = "fas fa-play-circle"; // Font Awesome icon
-                linkUrl = Url.Action("BaiTapChiTiet", "ThucHienKeHoach", new { chiTietKeHoachId = ngayTap.ChiTietBaiTap.Id, dangKyKeHoachId = Model.DangKyKeHoach.Id });
-            }
-            else
-            {
-                itemClass = "locked";
-                iconClass = "fas fa-lock"; // Font Awesome icon
-            }
+            if (ngayTap.DaHoanThanh) { itemClass = "completed"; iconClass = "fas fa-check-circle"; }
+            else if (ngayTap.CoTheTap) { itemClass = "tappable"; iconClass = "fas fa-play-circle"; }
+            else { itemClass = "locked"; iconClass = "fas fa-lock"; }
 
-            <a href="@linkUrl" class="day-item @itemClass">
-                <div class="day-item-info">
-                    <strong>Ngày @ngayTap.NgayTrongKeHoach</strong>
-                    <p>@ngayTap.ChiTietBaiTap.BaiTap.TenBaiTap</p>
+            // --- BẮT ĐẦU KHỐI NGÀY TẬP ---
+            <div class="day-block">
+
+                @* Nếu có thể tập, toàn bộ card sẽ là một thẻ <a> *@
+                @if (ngayTap.CoTheTap)
+                {
+                    <a href="@linkUrl" class="day-item @itemClass">
+                        <div class="day-item-info">
+                            <strong>Ngày @ngayTap.NgayTrongKeHoach</strong>
+                            <p>@ngayTap.ChiTietBaiTap.BaiTap.TenBaiTap</p>
+                        </div>
+                        <div class="day-item-actions">
+                            <span class="action-icon info-icon" data-bs-toggle="collapse" data-bs-target="#detail-@ngayTap.NgayTrongKeHoach" title="Xem thông tin">
+                                <i class="fas fa-info-circle"></i>
+                            </span>
+                            <span class="action-icon play-icon" title="Bắt đầu tập">
+                                <i class="@iconClass"></i>
+                            </span>
+                        </div>
+                    </a>
+                }
+                else
+                {
+                    @* Nếu không, nó chỉ là một thẻ <div> *@
+                    <div class="day-item @itemClass">
+                        <div class="day-item-info">
+                            <strong>Ngày @ngayTap.NgayTrongKeHoach</strong>
+                            <p>@ngayTap.ChiTietBaiTap.BaiTap.TenBaiTap</p>
+                        </div>
+                        <div class="day-item-actions">
+                            <span class="action-icon info-icon" data-bs-toggle="collapse" data-bs-target="#detail-@ngayTap.NgayTrongKeHoach" title="Xem thông tin">
+                                <i class="fas fa-info-circle"></i>
+                            </span>
+                            <span class="action-icon status-icon" title="Trạng thái">
+                                <i class="@iconClass"></i>
+                            </span>
+                        </div>
+                    </div>
+                }
+
+                <!-- KHUNG THÔNG TIN CHI TIẾT (COLLAPSE) -->
+                <div class="collapse day-item-details" id="detail-@ngayTap.NgayTrongKeHoach">
+                    <div class="detail-content">
+                        <div class="detail-text">
+                            <h5>@ngayTap.ChiTietBaiTap.BaiTap.TenBaiTap</h5>
+                            <p>@ngayTap.ChiTietBaiTap.BaiTap.MoTa</p>
+                            <ul>
+                                <li><strong>Nhóm cơ chính:</strong> @ngayTap.ChiTietBaiTap.BaiTap.NhomCoChinh</li>
+                                <li><strong>Nhóm cơ phụ:</strong> @ngayTap.ChiTietBaiTap.BaiTap.NhomCoPhu</li>
+                                <li><strong>Dụng cụ:</strong> @ngayTap.ChiTietBaiTap.BaiTap.DungCu</li>
+                                <li><strong>Mức độ:</strong> @ngayTap.ChiTietBaiTap.BaiTap.MucDo</li>
+                            </ul>
+                        </div>
+                        @if (!string.IsNullOrEmpty(ngayTap.ChiTietBaiTap.BaiTap.ImageUrl))
+                        {
+                            <div class="detail-image">
+                                <img src="@ngayTap.ChiTietBaiTap.BaiTap.ImageUrl" alt="Ảnh minh họa" />
+                            </div>
+                        }
+                    </div>
                 </div>
-
-                <div class="day-item-status">
-                    <i class="@iconClass"></i>
-                </div>
-            </a>
+            </div>
         }
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.info-icon').on('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                // Lấy các phần tử liên quan
+                var $thisIcon = $(this);
+                var $parentBlock = $thisIcon.closest('.day-block');
+                var $targetDetails = $parentBlock.find('.day-item-details');
+
+                // Tìm và đóng tất cả các khung chi tiết khác ĐANG MỞ
+                $('.day-item-details.is-open').not($targetDetails).each(function () {
+                    $(this).removeClass('is-open');
+                    // Tìm icon tương ứng và xóa class active
+                    $(this).closest('.day-block').find('.info-icon').removeClass('is-active');
+                });
+
+                // Toggle (bật/tắt) class cho khung chi tiết và icon được click
+                $targetDetails.toggleClass('is-open');
+                $thisIcon.toggleClass('is-active');
+            });
+        });
+    </script>
+}

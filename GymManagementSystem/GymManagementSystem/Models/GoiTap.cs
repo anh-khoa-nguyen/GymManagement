@@ -24,6 +24,10 @@ namespace GymManagementSystem.Models
         [Display(Name = "Số Buổi Tập với PT")]
         public int SoBuoiTapVoiPT { get; set; }
 
+        [Display(Name = "Ảnh Minh Họa")]
+        [DataType(DataType.Url)]
+        public string ImageUrl { get; set; }
+
         public virtual ICollection<DangKyGoiTap> DangKyGoiTaps { get; set; }
 
 

@@ -6,7 +6,7 @@
 }
 
 @{
-    string illustrationUrl = "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=2070&auto=format&fit=crop";
+    string illustrationUrl = "https://images.unsplash.com/photo-1576678927484-cc907957088c?q=80&w=1974&auto=format&fit=crop";
     if (Model.TenKeHoach.ToLower().Contains("yoga")) { illustrationUrl = "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=2120&auto=format&fit=crop"; }
     else if (Model.TenKeHoach.ToLower().Contains("cycling")) { illustrationUrl = "https://images.unsplash.com/photo-1576678927484-cc907957088c?q=80&w=1974&auto=format&fit=crop"; }
     else if (Model.TenKeHoach.ToLower().Contains("running")) { illustrationUrl = "https://images.unsplash.com/photo-1475113548554-5a36f1f523d6?q=80&w=2070&auto=format&fit=crop"; }
@@ -16,7 +16,7 @@
     @if (isRegistered)
     {
         var progress = parentModel.TienDoKeHoach.ContainsKey(Model.Id) ? parentModel.TienDoKeHoach[Model.Id] : 0;
-        <div class="progress-circle" style="--p:@progress;">
+        <div class="progress-circle mt-5" style="--p:@progress;">
             @progress%
         </div>
     }

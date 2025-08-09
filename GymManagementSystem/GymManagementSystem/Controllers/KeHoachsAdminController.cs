@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 using GymManagementSystem.Models;
 using GymManagementSystem.Models.ViewModels;
@@ -79,10 +80,15 @@ namespace GymManagementSystem.Controllers
         // POST: KeHoachsAdmin/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(KeHoachViewModel viewModel)
+        public async Task<ActionResult> Create(KeHoachViewModel viewModel, HttpPostedFileBase imageFile)
         {
             if (ModelState.IsValid)
             {
+                if (imageFile != null && imageFile.ContentLength > 0)
+                {
+                    var cloudinaryService = new CloudinaryService();
+                    viewModel.KeHoach.ImageUrl = await cloudinaryService.UploadImageAsync(imageFile);
+                }
                 // Gán lại số ngày cho đúng
                 if (viewModel.KeHoach.ChiTietKeHoachs != null)
                 {
@@ -123,10 +129,15 @@ namespace GymManagementSystem.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(KeHoachViewModel viewModel)
+        public async Task<ActionResult> Edit(KeHoachViewModel viewModel, HttpPostedFileBase imageFile)
         {
             if (ModelState.IsValid)
             {
+                if (imageFile != null && imageFile.ContentLength > 0)
+                {
+                    var cloudinaryService = new CloudinaryService();
+                    viewModel.KeHoach.ImageUrl = await cloudinaryService.UploadImageAsync(imageFile);
+                }
                 var keHoachInDb = await db.KeHoachs
                                           .Include(k => k.ChiTietKeHoachs)
                                           .FirstOrDefaultAsync(k => k.Id == viewModel.KeHoach.Id);

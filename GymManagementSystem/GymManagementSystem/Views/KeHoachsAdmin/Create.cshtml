@@ -37,6 +37,24 @@
     @Html.DropDownListFor(model => model.KeHoach.KhuyenMaiId, Model.DanhSachKhuyenMai, "-- Không có --", new { @class = "form-select" })
 </div>
 
+<div class="mb-3">
+    @Html.LabelFor(model => model.KeHoach.ImageUrl, "Ảnh Minh Họa", htmlAttributes: new { @class = "form-label" })
+
+    <!-- Input ẩn để lưu URL hiện tại (quan trọng cho form Edit) -->
+    @Html.HiddenFor(model => model.KeHoach.ImageUrl)
+
+    <!-- Ô chọn file mới -->
+    <input type="file" name="imageFile" id="imageFile" class="form-control" accept="image/*" />
+
+    <!-- Hiển thị ảnh hiện tại (nếu có, trong form Edit) -->
+    @if (isEditing && !string.IsNullOrEmpty(Model.KeHoach.ImageUrl))
+    {
+        <div class="mt-2">
+            <img src="@Model.KeHoach.ImageUrl" alt="Ảnh hiện tại" style="max-width: 200px; border-radius: 8px;" />
+        </div>
+    }
+</div>
+
 <div class="form-check form-switch mb-4">
     @Html.CheckBoxFor(model => model.KeHoach.IsActive, new { @class = "form-check-input", role = "switch" })
     @Html.LabelFor(model => model.KeHoach.IsActive, "Kích hoạt", htmlAttributes: new { @class = "form-check-label" })

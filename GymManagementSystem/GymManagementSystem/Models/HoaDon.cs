@@ -22,13 +22,14 @@ namespace GymManagementSystem.Models
 
         [Required]
         public int GoiTapId { get; set; }
+
         public int? KhuyenMaiId { get; set; }
 
         public DateTime NgayTao { get; set; }
 
-
         [Required]
         public decimal GiaGoc { get; set; }
+
         public decimal SoTienGiam { get; set; }
 
         [Required]

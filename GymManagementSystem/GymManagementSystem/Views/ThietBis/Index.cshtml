@@ -1,0 +1,94 @@
+﻿<head>
+    <link href="@Url.Content("~/Content/CRUD/crud.css")" rel="stylesheet" type="text/css" />
+</head>
+@model IEnumerable<GymManagementSystem.Models.ThietBi>
+@using GymManagementSystem.Models.ViewModels
+
+@{
+    ViewBag.Title = "Quản lý Thiết Bị";
+
+    // ViewModel cho header vẫn được sử dụng cho phần bên phải
+    var headerViewModel = new AdminPageHeaderViewModel
+    {
+        Title = ViewBag.Title, // Tạm thời không dùng đến Title trong partial
+        CreateActionUrl = Url.Action("Create"),
+        SearchAction = "Index",
+        SearchController = "ThietBis",
+        CurrentFilter = ViewBag.CurrentFilter
+    };
+}
+
+<!-- ======================================================== -->
+<!-- HEADER ĐƯỢC TÙY CHỈNH LẠI -->
+<!-- ======================================================== -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <!-- Nhóm bên trái: Tiêu đề và Nút Lịch sử -->
+    <div class="d-flex align-items-center gap-3">
+        <h2 class="text-white mb-0">@ViewBag.Title</h2>
+        <a href="@Url.Action("History")" class="btn btn-secondary-custom">
+            <i class="fas fa-history me-2"></i>Xem Lịch Sử
+        </a>
+    </div>
+
+    <!-- Nhóm bên phải: Dùng lại một phần của Partial View -->
+    <div class="d-flex align-items-center gap-3">
+        @using (Html.BeginForm(headerViewModel.SearchAction, headerViewModel.SearchController, FormMethod.Get, new { @class = "d-flex" }))
+        {
+            <input type="text" name="searchString" value="@headerViewModel.CurrentFilter" class="form-control" placeholder="Tìm kiếm..." style="background-color: #2b2b2b; color: #fff; border-color: #444;" />
+            <button type="submit" class="btn btn-crud ms-2" title="Tìm kiếm"><i class="fas fa-search"></i></button>
+        }
+        <a href="#" class="btn btn-custom-green js-open-offcanvas" data-url="@headerViewModel.CreateActionUrl">
+            <i class="fas fa-plus me-2"></i>Tạo mới
+        </a>
+    </div>
+</div>
+
+
+<!-- Form xóa hàng loạt -->
+@using (Html.BeginForm("DeleteMultiple", "ThietBis", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.Partial("_DeleteSelectedButton")
+
+    <table class="modern-table">
+        <thead>
+            <tr>
+                <th style="width: 40px;"><input type="checkbox" class="form-check-input" id="checkAll" /></th>
+                <th>Tên Thiết Bị</th>
+                <th>Mô Tả</th>
+                <th>Ngày Mua</th>
+                <th>Tình Trạng</th>
+                <th class="text-end">Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><input type="checkbox" class="form-check-input row-checkbox" name="idsToDelete" value="@item.Id" /></td>
+                    <td>@Html.DisplayFor(modelItem => item.TenThietBi)</td>
+                    <td>@Html.DisplayFor(modelItem => item.MoTa)</td>
+                    <td>@(item.NgayMua.HasValue ? item.NgayMua.Value.ToShortDateString() : "Chưa rõ")</td>
+                    <td>
+                        @if (item.TinhTrang == GymManagementSystem.Models.TinhTrangThietBi.CanBaoTri)
+                        {
+                            <span class="status-badge status-warning">Cần bảo trì</span>
+                        }
+                        else if (item.TinhTrang == GymManagementSystem.Models.TinhTrangThietBi.HoatDongTot)
+                        {
+                            <span class="status-badge status-active">Hoạt động tốt</span>
+                        }
+                        else
+                        {
+                            <span class="status-badge status-inactive">Hư hỏng</span>
+                        }
+                    </td>
+                    <td>
+                        @Html.Partial("_CrudButtons", item.Id)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

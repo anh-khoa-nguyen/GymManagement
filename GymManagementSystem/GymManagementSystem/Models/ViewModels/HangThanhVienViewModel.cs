@@ -2,14 +2,17 @@
 {
     public class HangThanhVienViewModel
     {
-        public string TenHoiVien { get; set; }
+        public string TenHoiVien { get; set; } //Lấy từ User login hiện tại
 
-        public HangHoiVien HangHienTai { get; set; }
+        public decimal TongChiTieu { get; set; } //Tính toán: SUM(HoaDon.Total)
 
-        public HangHoiVien HangTiepTheo { get; set; }
+        public HangHoiVien HangHienTai { get; set; } //Tính toán: SUM(HoaDon.Total) --> Hạng
 
-        public decimal TongChiTieu { get; set; }
-        public decimal ChiTieuCanThem { get; set; }
-        public int PhanTramHoanThanh { get; set; } // % để vẽ thanh tiến trình
+        public HangHoiVien HangTiepTheo { get; set; } 
+
+        public decimal ChiTieuCanThem { get; set; } //So sánh: SUM(HoaDon.Total) cách Hạng kế tiếp
+
+        public int PhanTramHoanThanh { get; set; } 
+        // % giữa Tiền(Hạng mới) - Tiền(Hạng cũ) --> 100% --> Chênh lệch --> 100% - x%
     }
 }

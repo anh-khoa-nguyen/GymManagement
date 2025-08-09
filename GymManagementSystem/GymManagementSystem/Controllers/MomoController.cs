@@ -85,6 +85,23 @@ public class MomoController : Controller
                     };
                     db.DangKyGoiTaps.Add(dangKy);
                 }
+
+                if (hoaDon.KhuyenMaiId.HasValue)
+                {
+                    // Tìm voucher cụ thể mà hội viên đã dùng cho hóa đơn này
+                    // (Dựa trên loại khuyến mãi và người sở hữu)
+                    var voucherDaSuDung = await db.KhuyenMaiCuaHoiViens
+                        .FirstOrDefaultAsync(v => v.HoiVienId == hoivienProfile.Id &&
+                                                  v.KhuyenMaiId == hoaDon.KhuyenMaiId.Value &&
+                                                  v.TrangThai == TrangThaiKhuyenMaiHV.ChuaSuDung);
+
+                    if (voucherDaSuDung != null)
+                    {
+                        // Đổi trạng thái của nó thành "Đã sử dụng"
+                        voucherDaSuDung.TrangThai = TrangThaiKhuyenMaiHV.DaSuDung;
+                    }
+                }
+
                 await db.SaveChangesAsync();
 
                 // 4. (Tích hợp) Gọi hàm nâng hạng cho hội viên
@@ -118,15 +135,17 @@ public class MomoController : Controller
 
         if (hangMoi == null) return;
 
-        // Lưu ý: Cần có UserManager để cập nhật User, hoặc dùng cách truy cập trực tiếp
-        var user = await UserManager.FindByIdAsync(hoiVienId);
-
-        if (user != null && user.HangHoiVienId != hangMoi.Id)
+        var hoivienProfile = await db.HoiViens.FirstOrDefaultAsync(h => h.ApplicationUserId == hoiVienId);
+        if (hoivienProfile == null)
         {
-            user.HangHoiVienId = hangMoi.Id;
+            return;
+        }
 
-            // Dùng UserManager để cập nhật, không dùng db.SaveChangesAsync()
-            await UserManager.UpdateAsync(user);
+        if (hoivienProfile.HangHoiVienId != hangMoi.Id)
+        {
+            // Cập nhật trực tiếp trên hồ sơ hội viên
+            hoivienProfile.HangHoiVienId = hangMoi.Id;
+            await db.SaveChangesAsync();
         }
     }
 }

@@ -17,28 +17,28 @@
     <dd class="mb-3">@Html.DisplayFor(model => model.MaKhuyenMai)</dd>
 
     <dt class="text-muted">Giảm Giá</dt>
-    <dd class="mb-3">@(Model.PhanTramGiamGia > 0 ? $"{Model.PhanTramGiamGia}%" : $"{Model.SoTienGiamGia:N0} VNĐ")</dd>
+    <dd class="mb-3">
+        Giảm @Model.PhanTramGiamGia%
+        @if (Model.SoTienGiamToiDa > 0)
+        {
+            <span>(tối đa @Model.SoTienGiamToiDa.ToString("N0") đ)</span>
+        }
+    </dd>
 
-    <dt class="text-muted">Ngày Bắt Đầu</dt>
-    <dd class="mb-3">@Model.NgayBatDau.ToShortDateString()</dd>
-
-    <dt class="text-muted">Ngày Kết Thúc</dt>
-    <dd class="mb-3">@Model.NgayKetThuc.ToShortDateString()</dd>
+    <dt class="text-muted">Thời Hạn Sử Dụng</dt>
+    <dd class="mb-3">@Model.SoNgayHieuLuc ngày</dd>
 
     <dt class="text-muted">Trạng Thái</dt>
     <dd>
         @if (Model.IsActive)
-        {
-            <span class="status-badge status-active">Kích hoạt</span>
-        }
+        {<span class="status-badge status-active">Kích hoạt</span> }
         else
-        {
-            <span class="status-badge status-inactive">Vô hiệu hóa</span>
-        }
+        { <span class="status-badge status-inactive">Vô hiệu hóa</span>}
     </dd>
-    <div class="offcanvas-footer">
-        <div class="d-grid gap-2">
-            <button type="button" class="btn btn-offcanvas-secondary" data-bs-dismiss="offcanvas">Đóng</button>
-        </div>
-    </div>
 </dl>
+
+<div class="offcanvas-footer">
+    <div class="d-grid gap-2">
+        <button type="button" class="btn btn-offcanvas-secondary" data-bs-dismiss="offcanvas">Đóng</button>
+    </div>
+</div>
