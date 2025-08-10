@@ -1,0 +1,16 @@
+﻿@model GymManagementSystem.Models.Phong
+
+<h4>Chi tiết: @Model.TenPhong</h4>
+
+<dl>
+    <dt class="text-muted">Tên Phòng</dt>
+    <dd class="mb-3">@Html.DisplayFor(model => model.TenPhong)</dd>
+
+    <dt class="text-muted">Mã Phòng</dt>
+    <dd class="mb-3">@Html.DisplayFor(model => model.MaPhong)</dd>
+
+</dl>
+
+<div class="offcanvas-footer">
+    <button type="button" class="btn btn-offcanvas-secondary" data-bs-dismiss="offcanvas">Đóng</button>
+</div>

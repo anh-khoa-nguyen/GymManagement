@@ -13,6 +13,7 @@ namespace GymManagementSystem.Models.ViewModels.UserManagement {
 
         [Display(Name = "Email (Không thể thay đổi)")]
         public string Email { get; set; }
+        public string AvatarUrl { get; set; }
 
         [StringLength(100, ErrorMessage = "{0} phải có ít nhất {2} ký tự.", MinimumLength = 6)]
         [DataType(DataType.Password), Display(Name = "Mật khẩu mới")]

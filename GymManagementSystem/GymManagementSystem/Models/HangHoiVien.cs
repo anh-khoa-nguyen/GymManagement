@@ -9,11 +9,12 @@ namespace GymManagementSystem.Models
         public int Id { get; set; }
 
         [Required]
-        [StringLength(50)]
+        [StringLength(50), Display(Name = "Tên Đặc Quyền")]
         public string TenHang { get; set; } // Ví dụ: Bạc, Vàng, Kim Cương
+        [Display(Name = "Ngưỡng Chi Tiêu")]
         public decimal NguongChiTieu { get; set; }
-        public string DacQuyen { get; set; } // Mô tả các đặc quyền
         public virtual ICollection<HangCoKhuyenMai> KhuyenMaiDacQuyen { get; set; }
+        public virtual ICollection<HangCoDacQuyen> HangCoDacQuyen { get; set; }
 
     }
 }

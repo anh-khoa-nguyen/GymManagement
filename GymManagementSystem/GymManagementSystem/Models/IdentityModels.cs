@@ -66,9 +66,15 @@ namespace GymManagementSystem.Models
         public DbSet<HoaDon> HoaDons { get; set; }
         public DbSet<KhuyenMai> KhuyenMais { get; set; }
         public DbSet<HangCoKhuyenMai> HangHoiVien_KhuyenMais { get; set; }
+        public virtual DbSet<KhuyenMaiCuaGoi> KhuyenMaiCuaGois { get; set; }
+
+        public DbSet<HangCoDacQuyen> HangHoiVien_DacQuyens { get; set; }
+
         public DbSet<KhuyenMaiCuaHoiVien> KhuyenMaiCuaHoiViens { get; set; }
         public DbSet<ThietBi> ThietBis { get; set; }
         public DbSet<LichSuThietBi> LichSuThietBis { get; set; }
+        public DbSet<Phong> Phongs { get; set; }
+        public DbSet<LichSuCheckin> LichSuCheckins { get; set; }
 
 
         public ApplicationDbContext()
@@ -80,5 +86,7 @@ namespace GymManagementSystem.Models
         {
             return new ApplicationDbContext();
         }
+
+        public System.Data.Entity.DbSet<GymManagementSystem.Models.DacQuyen> DacQuyens { get; set; }
     }
 }

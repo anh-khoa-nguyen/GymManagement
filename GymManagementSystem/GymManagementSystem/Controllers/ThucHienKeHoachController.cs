@@ -14,7 +14,7 @@ public class ThucHienKeHoachController : Controller
 {
     private ApplicationDbContext db = new ApplicationDbContext();
 
-
+    #region Xem (D) / Thực hiện kế hoạch (X)
     public async Task<ActionResult> XemKeHoach(int dangKyKeHoachId)
     {
         var userId = User.Identity.GetUserId();
@@ -24,7 +24,7 @@ public class ThucHienKeHoachController : Controller
 
         if (dangKy == null) return HttpNotFound();
 
-        // 1. Lấy tất cả các bài tập của kế hoạch này
+        // 1. Lấy tất cả các bài tập
         var tatCaBaiTap = await db.ChiTietKeHoachs
                                    .Include(ct => ct.BaiTap)
                                    .Where(ct => ct.KeHoachId == dangKy.KeHoachId)
@@ -45,8 +45,6 @@ public class ThucHienKeHoachController : Controller
         foreach (var baiTap in tatCaBaiTap)
         {
             bool daHoanThanh = baiTapDaHoanThanhIds.Contains(baiTap.BaiTapId);
-
-            // Logic cho phép tập: Người dùng có thể tập bài của hôm nay hoặc các ngày trước đó chưa hoàn thành
             bool coTheTap = !daHoanThanh && (baiTap.NgayTrongKeHoach <= ngayHienTaiCuaKeHoach);
 
             danhSachNgayTap.Add(new NgayTapLuyenItem
@@ -76,22 +74,33 @@ public class ThucHienKeHoachController : Controller
         return View(viewModel);
     }
 
+    public async Task<ActionResult> BaiTapChiTiet(int chiTietKeHoachId, int dangKyKeHoachId)
+    {
+        var baiTapChiTiet = await db.ChiTietKeHoachs
+                                    .Include(ct => ct.BaiTap)
+                                    .FirstOrDefaultAsync(ct => ct.Id == chiTietKeHoachId);
+
+        if (baiTapChiTiet == null) return HttpNotFound();
+
+        ViewBag.DangKyKeHoachId = dangKyKeHoachId;
+        return View(baiTapChiTiet); // Đây sẽ là View chứa camera và logic tracking
+    }
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<JsonResult> HoanThanhBaiTap(int dangKyKeHoachId, int baiTapId)
     {
         try
         {
-            // --- TOÀN BỘ LOGIC CŨ CỦA BẠN NẰM TRONG KHỐI TRY ---
             var userId = User.Identity.GetUserId();
-            var dangKy = await db.DangKyKeHoachs.FirstOrDefaultAsync(d => d.Id == dangKyKeHoachId && d.HoiVienId == userId);
+            var dangKy = await db.DangKyKeHoachs
+                .FirstOrDefaultAsync(d => d.Id == dangKyKeHoachId && d.HoiVienId == userId);
 
             if (dangKy == null)
             {
                 return Json(new { success = false, message = "Không tìm thấy kế hoạch đăng ký." });
             }
 
-            // 1. Ghi nhận tiến độ vào CSDL
             db.TienDoBaiTaps.Add(new TienDoBaiTap
             {
                 DangKyKeHoachId = dangKyKeHoachId,
@@ -100,7 +109,6 @@ public class ThucHienKeHoachController : Controller
             });
             await db.SaveChangesAsync();
 
-            // 2. Kiểm tra xem đã hoàn thành toàn bộ kế hoạch chưa
             int soBaiTapDaHoanThanh = await db.TienDoBaiTaps
                                               .Where(td => td.DangKyKeHoachId == dangKyKeHoachId)
                                               .Select(td => td.BaiTapId)
@@ -117,8 +125,12 @@ public class ThucHienKeHoachController : Controller
                 dangKy.NgayHoanThanh = DateTime.Now;
                 db.Entry(dangKy).State = EntityState.Modified;
 
-                var keHoach = await db.KeHoachs.Include(k => k.KhuyenMai).FirstOrDefaultAsync(k => k.Id == dangKy.KeHoachId);
-                var hoivienProfile = await db.HoiViens.FirstOrDefaultAsync(h => h.ApplicationUserId == userId);
+                var keHoach = await db.KeHoachs
+                    .Include(k => k.KhuyenMai)
+                    .FirstOrDefaultAsync(k => k.Id == dangKy.KeHoachId);
+
+                var hoivienProfile = await db.HoiViens
+                    .FirstOrDefaultAsync(h => h.ApplicationUserId == userId);
 
                 if (keHoach != null && keHoach.KhuyenMaiId.HasValue && hoivienProfile != null)
                 {
@@ -134,36 +146,16 @@ public class ThucHienKeHoachController : Controller
                 }
                 await db.SaveChangesAsync();
 
-                return Json(new { success = true, message = "Chúc mừng bạn đã hoàn thành kế hoạch! Một phần thưởng đang chờ bạn." });
+                return Json(new { success = true, message = "Chúc mừng bạn đã hoàn thành kế hoạch! Phần thưởng đã được trao cho bạn." });
             }
 
             return Json(new { success = true, message = "Hoàn thành bài tập hôm nay!" });
         }
         catch (Exception ex)
         {
-            // --- KHỐI CATCH SẼ BẮT LẠI MỌI LỖI XẢY RA ---
-
-            // Ghi log lỗi ra hệ thống (quan trọng cho việc debug sau này)
-            // Khi debug, lỗi sẽ hiện trong cửa sổ Output của Visual Studio
-            System.Diagnostics.Debug.WriteLine("LỖI TRONG HoanThanhBaiTap: " + ex.ToString());
-
-            // Set mã lỗi HTTP 500 (Internal Server Error) để JavaScript có thể nhận biết
-            Response.StatusCode = 500;
-
-            // Trả về một thông báo lỗi dạng JSON thân thiện với người dùng
             return Json(new { success = false, message = "Đã có lỗi không mong muốn xảy ra phía máy chủ. Vui lòng thử lại." });
         }
     }
 
-    public async Task<ActionResult> BaiTapChiTiet(int chiTietKeHoachId, int dangKyKeHoachId)
-    {
-        var baiTapChiTiet = await db.ChiTietKeHoachs
-                                    .Include(ct => ct.BaiTap)
-                                    .FirstOrDefaultAsync(ct => ct.Id == chiTietKeHoachId);
-
-        if (baiTapChiTiet == null) return HttpNotFound();
-
-        ViewBag.DangKyKeHoachId = dangKyKeHoachId;
-        return View(baiTapChiTiet); // Đây sẽ là View chứa camera và logic tracking
-    }
+    #endregion
 }

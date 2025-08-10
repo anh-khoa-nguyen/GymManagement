@@ -1,0 +1,42 @@
+﻿<head>
+    <link href="@Url.Content("~/Content/CRUD/crud.css")" rel="stylesheet" type="text/css" />
+</head>
+@model IEnumerable<GymManagementSystem.Models.Phong>
+@using GymManagementSystem.Models.ViewModels
+
+@{
+    ViewBag.Title = "Quản lý Phòng";
+    var headerViewModel = new AdminPageHeaderViewModel
+    {
+        Title = ViewBag.Title,
+        CreateActionUrl = Url.Action("Create"),
+        SearchAction = "Index",
+        SearchController = "Phongs",
+        CurrentFilter = ViewBag.CurrentFilter
+    };
+}
+
+@Html.Partial("_AdminPageHeader", headerViewModel)
+
+<table class="modern-table">
+    <thead>
+        <tr>
+            <th>Tên Phòng</th>
+            <th>Mã Phòng</th>
+            <th class="text-end">Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.TenPhong)</td>
+                <td>@Html.DisplayFor(modelItem => item.MaPhong)</td>
+                <td>
+                    <!-- Gọi Partial View chứa các nút Sửa, Chi tiết, Xóa -->
+                    @Html.Partial("_CrudButtons", item.Id)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

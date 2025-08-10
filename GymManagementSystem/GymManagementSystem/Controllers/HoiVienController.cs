@@ -187,6 +187,7 @@ namespace GymManagementSystem.Controllers
         //    return View(goiTaps);
         //}
 
+        #region Thanh toán hóa đơn
         // POST: /HoiVien/DangKyGoiTap
         // Action này được gọi khi hội viên nhấn nút "Chọn Gói này"
         [HttpPost]
@@ -219,86 +220,6 @@ namespace GymManagementSystem.Controllers
             // 2. CHUYỂN HƯỚNG NGƯỜI DÙNG ĐẾN TRANG XÁC NHẬN VÀ THANH TOÁN
             // Chúng ta sẽ truyền ID của hóa đơn vừa tạo đi
             return RedirectToAction("XacNhanThanhToan", new { hoaDonId = hoaDon.Id });
-        }
-
-        // GET: /HoiVien/XacNhanThanhToan?hoaDonId=5
-        // Hiển thị trang xác nhận thông tin trước khi thanh toán
-        public async Task<ActionResult> XacNhanThanhToan(int hoaDonId)
-        {
-            var hoaDon = await db.HoaDons
-                         .Include(h => h.GoiTap)
-                         .FirstOrDefaultAsync(h => h.Id == hoaDonId);
-
-            if (hoaDon == null || hoaDon.HoiVienId != User.Identity.GetUserId()) return HttpNotFound();
-
-            // Lấy hồ sơ hội viên để tìm các voucher
-            var hoivienProfile = await db.HoiViens.FirstOrDefaultAsync(h => h.ApplicationUserId == hoaDon.HoiVienId);
-
-            // Lấy danh sách các voucher CHƯA SỬ DỤNG và CÒN HẠN của hội viên
-            var danhSachVoucher = await db.KhuyenMaiCuaHoiViens
-                .Include(km => km.KhuyenMai)
-                .Where(km => km.HoiVienId == hoivienProfile.Id &&
-                             km.TrangThai == TrangThaiKhuyenMaiHV.ChuaSuDung &&
-                             km.NgayHetHan >= DateTime.Today)
-                .Select(km => new SelectListItem
-                {
-                    Value = km.Id.ToString(),
-                    Text = km.KhuyenMai.TenKhuyenMai
-                })
-                .ToListAsync();
-
-            danhSachVoucher.Insert(0, new SelectListItem { Value = "", Text = "-- Không áp dụng --" });
-
-            KhuyenMai khuyenMaiDaApDung = null;
-            if (hoaDon.KhuyenMaiId.HasValue)
-            {
-                khuyenMaiDaApDung = await db.KhuyenMais.FindAsync(hoaDon.KhuyenMaiId.Value);
-            }
-
-            var viewModel = new XacNhanThanhToanViewModel
-            {
-                HoaDon = hoaDon,
-                DanhSachKhuyenMai = danhSachVoucher,
-                KhuyenMaiDaApDung = khuyenMaiDaApDung // Gán vào ViewModel
-            };
-
-            return View(viewModel);
-        }
-
-        public async Task<ActionResult> DanhSachGoiTap()
-        {
-            var userIdString = User.Identity.GetUserId(); // Lấy ID dạng chuỗi
-
-            var hoiVien = await db.HoiViens.FirstOrDefaultAsync(h => h.ApplicationUserId == userIdString);
-            if (hoiVien == null)
-            {
-                // Xử lý trường hợp không tìm thấy hội viên tương ứng
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            var hoiVienIdInt = hoiVien.Id; // Đây là ID kiểu int mà chúng ta cần
-
-            // Lấy danh sách các gói tập đã đăng ký bằng ID kiểu int
-            var goiTapDaDangKy = await db.DangKyGoiTaps
-                                         .Where(d => d.HoiVienId == hoiVienIdInt) // So sánh int với int
-                                         .Include(d => d.GoiTap)
-                                         .OrderByDescending(d => d.NgayHetHan)
-                                         .ToListAsync();
-
-
-            // --- Phần còn lại của Action ---
-            var daDangKyIds = goiTapDaDangKy.Select(d => d.GoiTapId).ToList();
-
-            var goiTapChuaDangKy = await db.GoiTaps
-                                           .Where(g => !daDangKyIds.Contains(g.Id))
-                                           .ToListAsync();
-
-            var viewModel = new GoiTapViewModel
-            {
-                GoiTapDaDangKy = goiTapDaDangKy,
-                GoiTapChuaDangKy = goiTapChuaDangKy
-            };
-
-            return View(viewModel);
         }
 
         [HttpPost]
@@ -367,6 +288,109 @@ namespace GymManagementSystem.Controllers
 
             return RedirectToAction("XacNhanThanhToan", new { hoaDonId = hoaDon.Id });
         }
+
+        private async Task<List<SelectListItem>> VouchersChoGoiTap(int goiTapId)
+        {
+            var userId = User.Identity.GetUserId();
+            var hoivienProfile = await db.HoiViens.FirstOrDefaultAsync(h => h.ApplicationUserId == userId);
+            if (hoivienProfile == null)
+            {
+                return new List<SelectListItem>();
+            }
+
+            var userVouchers = await db.KhuyenMaiCuaHoiViens
+                .Include(v => v.KhuyenMai.ApDungChoGoiTap)
+                .Where(v => v.HoiVienId == hoivienProfile.Id &&
+                            v.TrangThai == TrangThaiKhuyenMaiHV.ChuaSuDung &&
+                            v.NgayHetHan >= DateTime.Today)
+                .ToListAsync();
+
+            var validVouchers = userVouchers.Where(v =>
+            {
+                var linkedGoiTaps = v.KhuyenMai.ApDungChoGoiTap;
+                if (!linkedGoiTaps.Any()) return true;
+                return linkedGoiTaps.Any(gt => gt.GoiTapId == goiTapId);
+            })
+            .Select(v => new SelectListItem
+            {
+                Value = v.Id.ToString(),
+                Text = v.KhuyenMai.TenKhuyenMai
+            }).ToList();
+
+            return validVouchers;
+        }
+
+        // GET: /HoiVien/XacNhanThanhToan?hoaDonId=5
+        // Hiển thị trang xác nhận thông tin trước khi thanh toán
+        public async Task<ActionResult> XacNhanThanhToan(int hoaDonId)
+        {
+            if (hoaDonId == null)
+            {
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
+            }
+
+            var hoaDon = await db.HoaDons
+                         .Include(h => h.GoiTap)
+                         .FirstOrDefaultAsync(h => h.Id == hoaDonId);
+
+            if (hoaDon == null || hoaDon.HoiVienId != User.Identity.GetUserId()) 
+                return HttpNotFound();
+
+            var danhSachVoucher = await VouchersChoGoiTap(hoaDon.GoiTapId);
+
+
+            var viewModel = new XacNhanThanhToanViewModel
+            {
+                HoaDon = hoaDon,
+                DanhSachKhuyenMai = danhSachVoucher
+            };
+
+            if (hoaDon.KhuyenMaiId.HasValue)
+            {
+                viewModel.KhuyenMaiDaApDung = await db.KhuyenMais.FindAsync(hoaDon.KhuyenMaiId.Value);
+            }
+
+            return View(viewModel);
+        }
+        #endregion
+
+
+        public async Task<ActionResult> DanhSachGoiTap()
+        {
+            var userIdString = User.Identity.GetUserId(); // Lấy ID dạng chuỗi
+
+            var hoiVien = await db.HoiViens.FirstOrDefaultAsync(h => h.ApplicationUserId == userIdString);
+            if (hoiVien == null)
+            {
+                // Xử lý trường hợp không tìm thấy hội viên tương ứng
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var hoiVienIdInt = hoiVien.Id; // Đây là ID kiểu int mà chúng ta cần
+
+            // Lấy danh sách các gói tập đã đăng ký bằng ID kiểu int
+            var goiTapDaDangKy = await db.DangKyGoiTaps
+                                         .Where(d => d.HoiVienId == hoiVienIdInt) // So sánh int với int
+                                         .Include(d => d.GoiTap)
+                                         .OrderByDescending(d => d.NgayHetHan)
+                                         .ToListAsync();
+
+
+            // --- Phần còn lại của Action ---
+            var daDangKyIds = goiTapDaDangKy.Select(d => d.GoiTapId).ToList();
+
+            var goiTapChuaDangKy = await db.GoiTaps
+                                           .Where(g => !daDangKyIds.Contains(g.Id))
+                                           .ToListAsync();
+
+            var viewModel = new GoiTapViewModel
+            {
+                GoiTapDaDangKy = goiTapDaDangKy,
+                GoiTapChuaDangKy = goiTapChuaDangKy
+            };
+
+            return View(viewModel);
+        }
+
 
 
         // Hàm helper để quyết định màu sắc dựa trên trạng thái
@@ -465,5 +489,29 @@ namespace GymManagementSystem.Controllers
             }
         }
 
+
+        // GET: HoiVien/KhuyenMai
+        public async Task<ActionResult> KhuyenMai()
+        {
+            var userId = User.Identity.GetUserId();
+            var hoivienProfile = await db.HoiViens.FirstOrDefaultAsync(h => h.ApplicationUserId == userId);
+
+            if (hoivienProfile == null)
+            {
+                // Nếu không có hồ sơ hội viên, trả về một danh sách rỗng
+                return View(new List<KhuyenMaiCuaHoiVien>());
+            }
+
+            // Lấy danh sách các voucher CHƯA SỬ DỤNG và CÒN HẠN của hội viên
+            var vouchers = await db.KhuyenMaiCuaHoiViens
+                .Include(v => v.KhuyenMai) // Nạp sẵn thông tin của KhuyenMai để hiển thị tên
+                .Where(v => v.HoiVienId == hoivienProfile.Id &&
+                            v.TrangThai == TrangThaiKhuyenMaiHV.ChuaSuDung &&
+                            v.NgayHetHan >= System.DateTime.Today)
+                .OrderBy(v => v.NgayHetHan) // Sắp xếp theo ngày hết hạn gần nhất
+                .ToListAsync();
+
+            return View(vouchers);
+        }
     }
 }

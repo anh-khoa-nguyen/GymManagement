@@ -15,6 +15,7 @@ namespace GymManagementSystem.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
+        #region CRUD
         // GET: HangHoiViens
         public async Task<ActionResult> Index(string searchString)
         {
@@ -27,37 +28,12 @@ namespace GymManagementSystem.Controllers
             return View(await hangHoiViens.OrderBy(h => h.NguongChiTieu).ToListAsync());
         }
 
-        // GET: HangHoiViens/Details/5
-        public async Task<ActionResult> Details(int? id)
-        {
-            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-
-            var hangHoiVien = await db.HangHoiViens
-                                      .Include(h => h.KhuyenMaiDacQuyen.Select(km => km.KhuyenMai))
-                                      .FirstOrDefaultAsync(h => h.Id == id);
-
-            if (hangHoiVien == null) return HttpNotFound();
-
-            if (Request.IsAjaxRequest())
-            {
-                return PartialView("Details", hangHoiVien);
-            }
-            return View(hangHoiVien);
-        }
-
-        private async Task PopulateKhuyenMaiDropdown(HangHoiVienViewModel viewModel)
-        {
-            viewModel.DanhSachKhuyenMai = await db.KhuyenMais
-                .Where(k => k.IsActive)
-                .Select(k => new SelectListItem { Value = k.Id.ToString(), Text = k.TenKhuyenMai })
-                .ToListAsync();
-        }
-
         // GET: HangHoiViens/Create
         public async Task<ActionResult> Create()
         {
             var viewModel = new HangHoiVienViewModel();
             await PopulateKhuyenMaiDropdown(viewModel);
+            await PopulateDacQuyenDropdown(viewModel);
             if (Request.IsAjaxRequest())
             {
                 return PartialView("CreateOrEdit", viewModel);
@@ -79,7 +55,20 @@ namespace GymManagementSystem.Controllers
                 {
                     foreach (var kmId in viewModel.SelectedKhuyenMaiIds)
                     {
-                        db.HangHoiVien_KhuyenMais.Add(new HangCoKhuyenMai { HangHoiVienId = viewModel.HangHoiVien.Id, KhuyenMaiId = kmId });
+                        db.HangHoiVien_KhuyenMais.Add
+                            (new HangCoKhuyenMai 
+                            { HangHoiVienId = viewModel.HangHoiVien.Id, KhuyenMaiId = kmId });
+                    }
+                    await db.SaveChangesAsync();
+                }
+
+                if (viewModel.SelectedDacQuyenIds != null)
+                {
+                    foreach (var dqId in viewModel.SelectedDacQuyenIds)
+                    {
+                        db.HangHoiVien_DacQuyens.Add
+                            (new HangCoDacQuyen 
+                            { HangHoiVienId = viewModel.HangHoiVien.Id, DacQuyenId = dqId });
                     }
                     await db.SaveChangesAsync();
                 }
@@ -98,20 +87,45 @@ namespace GymManagementSystem.Controllers
             return View(viewModel);
         }
 
+        // GET: HangHoiViens/Details/5
+        public async Task<ActionResult> Details(int? id)
+        {
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            var hangHoiVien = await db.HangHoiViens
+                                      .Include(h => h.KhuyenMaiDacQuyen.Select(km => km.KhuyenMai))
+                                      .FirstOrDefaultAsync(h => h.Id == id);
+
+            if (hangHoiVien == null) return HttpNotFound();
+
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("Details", hangHoiVien);
+            }
+            return View(hangHoiVien);
+        }
+
+
         // GET: HangHoiViens/Edit/5
         public async Task<ActionResult> Edit(int? id)
         {
             if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-            var hangHoiVien = await db.HangHoiViens.Include(h => h.KhuyenMaiDacQuyen).FirstOrDefaultAsync(h => h.Id == id);
+            var hangHoiVien = await db.HangHoiViens
+                .Include(h => h.KhuyenMaiDacQuyen)
+                .Include(h => h.HangCoDacQuyen)
+                .FirstOrDefaultAsync(h => h.Id == id);
             if (hangHoiVien == null) return HttpNotFound();
 
             var viewModel = new HangHoiVienViewModel
             {
                 HangHoiVien = hangHoiVien,
-                SelectedKhuyenMaiIds = hangHoiVien.KhuyenMaiDacQuyen.Select(km => km.KhuyenMaiId).ToList()
+                SelectedKhuyenMaiIds = hangHoiVien.KhuyenMaiDacQuyen.Select(km => km.KhuyenMaiId).ToList(),
+                SelectedDacQuyenIds = hangHoiVien.HangCoDacQuyen.Select(dq => dq.DacQuyenId).ToList()
+
             };
             await PopulateKhuyenMaiDropdown(viewModel);
+            await PopulateDacQuyenDropdown(viewModel);
 
             if (Request.IsAjaxRequest())
             {
@@ -127,9 +141,13 @@ namespace GymManagementSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                var hangInDb = await db.HangHoiViens.Include(h => h.KhuyenMaiDacQuyen).FirstOrDefaultAsync(h => h.Id == viewModel.HangHoiVien.Id);
+                var hangInDb = await db.HangHoiViens
+                    .Include(h => h.KhuyenMaiDacQuyen)
+                    .Include(h => h.HangCoDacQuyen)
+                    .FirstOrDefaultAsync(h => h.Id == viewModel.HangHoiVien.Id);
 
-                db.Entry(hangInDb).CurrentValues.SetValues(viewModel.HangHoiVien);
+                db.Entry(hangInDb).CurrentValues.SetValues(viewModel.HangHoiVien); //Nhanh hơn việc gán thủ công
+
                 db.HangHoiVien_KhuyenMais.RemoveRange(hangInDb.KhuyenMaiDacQuyen);
 
                 if (viewModel.SelectedKhuyenMaiIds != null)
@@ -139,6 +157,16 @@ namespace GymManagementSystem.Controllers
                         db.HangHoiVien_KhuyenMais.Add(new HangCoKhuyenMai { HangHoiVienId = hangInDb.Id, KhuyenMaiId = kmId });
                     }
                 }
+
+                db.HangHoiVien_DacQuyens.RemoveRange(hangInDb.HangCoDacQuyen);
+                if (viewModel.SelectedDacQuyenIds != null)
+                {
+                    foreach (var dqId in viewModel.SelectedDacQuyenIds)
+                    {
+                        db.HangHoiVien_DacQuyens.Add(new HangCoDacQuyen { HangHoiVienId = hangInDb.Id, DacQuyenId = dqId });
+                    }
+                }
+
                 await db.SaveChangesAsync();
 
                 if (Request.IsAjaxRequest())
@@ -187,6 +215,27 @@ namespace GymManagementSystem.Controllers
             }
             return RedirectToAction("Index");
         }
+        #endregion
+
+        #region Dropdowns
+        private async Task PopulateKhuyenMaiDropdown(HangHoiVienViewModel viewModel)
+        {
+            viewModel.DanhSachKhuyenMai = await db.KhuyenMais
+                .Where(k => k.IsActive)
+                .Select(k => new SelectListItem { Value = k.Id.ToString(), Text = k.TenKhuyenMai })
+                .ToListAsync();
+        }
+
+        private async Task PopulateDacQuyenDropdown(HangHoiVienViewModel viewModel)
+        {
+            viewModel.DanhSachDacQuyen = await db.DacQuyens
+                .Select(d => new SelectListItem
+                {
+                    Value = d.Id.ToString(),
+                    Text = d.TenDacQuyen
+                }).ToListAsync();
+        }
+        #endregion
 
         protected override void Dispose(bool disposing)
         {

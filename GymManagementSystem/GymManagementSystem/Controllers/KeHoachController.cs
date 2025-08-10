@@ -15,7 +15,7 @@ namespace GymManagementSystem.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: KeHoach (Hiển thị danh sách các kế hoạch có thể đăng ký)
+        #region
         public async Task<ActionResult> Index()
         {
             var userId = User.Identity.GetUserId();
@@ -42,7 +42,6 @@ namespace GymManagementSystem.Controllers
                 tienDoKeHoach[dangKy.KeHoachId] = phanTram;
             }
 
-            // PHÂN LOẠI KẾ HOẠCH
             var daDangKyList = tatCaKeHoach.Where(k => dangKyIds.ContainsKey(k.Id)).ToList();
             var chuaDangKyList = tatCaKeHoach.Where(k => !dangKyIds.ContainsKey(k.Id)).ToList();
 
@@ -57,36 +56,33 @@ namespace GymManagementSystem.Controllers
             return View(viewModel);
         }
 
-        // POST: KeHoach/DangKy/5 (Xử lý khi người dùng nhấn nút đăng ký)
+        // POST: KeHoach/DangKy/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DangKy(int keHoachId)
         {
             var userId = User.Identity.GetUserId();
 
-            // Kiểm tra xem người dùng đã đăng ký kế hoạch này chưa để tránh trùng lặp
             bool daDangKy = await db.DangKyKeHoachs.AnyAsync(d => d.HoiVienId == userId && d.KeHoachId == keHoachId);
             if (daDangKy)
             {
-                // Có thể thêm TempData để báo lỗi cho người dùng
                 TempData["ErrorMessage"] = "Bạn đã đăng ký kế hoạch này rồi.";
                 return RedirectToAction("Index");
             }
 
-            // Tạo bản ghi đăng ký mới
             var dangKyMoi = new DangKyKeHoach
             {
                 HoiVienId = userId,
                 KeHoachId = keHoachId,
-                NgayBatDau = DateTime.Today, // Bắt đầu từ hôm nay
+                NgayBatDau = DateTime.Today,
                 TrangThai = "Đang thực hiện"
             };
 
             db.DangKyKeHoachs.Add(dangKyMoi);
             await db.SaveChangesAsync();
 
-            // Sau khi đăng ký thành công, chuyển thẳng đến trang xem chi tiết kế hoạch
             return RedirectToAction("XemKeHoach", "ThucHienKeHoach", new { dangKyKeHoachId = dangKyMoi.Id });
         }
+        #endregion
     }
 }

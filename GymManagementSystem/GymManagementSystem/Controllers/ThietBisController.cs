@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using GymManagementSystem.Models;
 using Microsoft.AspNet.Identity;
+using Newtonsoft.Json;
 
 namespace GymManagementSystem.Controllers
 {
@@ -14,6 +15,7 @@ namespace GymManagementSystem.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
+        #region CRUD
         // GET: ThietBis
         public async Task<ActionResult> Index(string searchString)
         {
@@ -26,6 +28,45 @@ namespace GymManagementSystem.Controllers
 
             ViewBag.CurrentFilter = searchString;
             return View(await thietBis.OrderBy(t => t.TenThietBi).ToListAsync());
+        }
+
+        // GET: ThietBis/Create
+        public async Task<ActionResult> Create()
+        {
+            await PopulatePhongDropdown();
+            var model = new ThietBi { TinhTrang = TinhTrangThietBi.HoatDongTot };
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("CreateOrEdit", model);
+            }
+            return View(model);
+        }
+
+        // POST: ThietBis/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Create([Bind(Include = "Id,TenThietBi,MoTa,NgayMua,TinhTrang, PhongId")] ThietBi thietBi)
+        {
+            if (ModelState.IsValid)
+            {
+                db.ThietBis.Add(thietBi);
+                await db.SaveChangesAsync();
+
+                GhiLogThietBi(thietBi.Id, LoaiHanhDong.TaoMoi, null, thietBi); // Trạng thái trước là null
+                await db.SaveChangesAsync();
+
+                if (Request.IsAjaxRequest())
+                {
+                    return Json(new { success = true });
+                }
+                return RedirectToAction("Index");
+            }
+
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("CreateOrEdit", thietBi);
+            }
+            return View(thietBi);
         }
 
         // GET: ThietBis/Details/5
@@ -43,50 +84,13 @@ namespace GymManagementSystem.Controllers
             return View(thietBi);
         }
 
-        // GET: ThietBis/Create
-        public ActionResult Create()
-        {
-            var model = new ThietBi { TinhTrang = TinhTrangThietBi.HoatDongTot };
-            if (Request.IsAjaxRequest())
-            {
-                return PartialView("CreateOrEdit", model);
-            }
-            return View(model);
-        }
-
-        // POST: ThietBis/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,TenThietBi,MoTa,NgayMua,TinhTrang")] ThietBi thietBi)
-        {
-            if (ModelState.IsValid)
-            {
-                db.ThietBis.Add(thietBi);
-                await db.SaveChangesAsync();
-
-                GhiLogThietBi(thietBi.Id, LoaiHanhDong.TaoMoi, $"Tạo mới thiết bị '{thietBi.TenThietBi}' với tình trạng '{thietBi.TinhTrang}'.");
-                await db.SaveChangesAsync();
-
-                if (Request.IsAjaxRequest())
-                {
-                    return Json(new { success = true });
-                }
-                return RedirectToAction("Index");
-            }
-
-            if (Request.IsAjaxRequest())
-            {
-                return PartialView("CreateOrEdit", thietBi);
-            }
-            return View(thietBi);
-        }
-
         // GET: ThietBis/Edit/5
         public async Task<ActionResult> Edit(int? id)
         {
             if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
             ThietBi thietBi = await db.ThietBis.FindAsync(id);
+            await PopulatePhongDropdown();
             if (thietBi == null) return HttpNotFound();
 
             if (Request.IsAjaxRequest())
@@ -99,7 +103,7 @@ namespace GymManagementSystem.Controllers
         // POST: ThietBis/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,TenThietBi,MoTa,NgayMua,TinhTrang")] ThietBi thietBi)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,TenThietBi,MoTa,NgayMua,TinhTrang, PhongId")] ThietBi thietBi)
         {
             if (ModelState.IsValid)
             {
@@ -111,7 +115,7 @@ namespace GymManagementSystem.Controllers
                 }
 
                 db.Entry(thietBi).State = EntityState.Modified;
-                GhiLogThietBi(thietBi.Id, LoaiHanhDong.CapNhat, moTaThayDoi);
+                GhiLogThietBi(thietBi.Id, LoaiHanhDong.CapNhat, thietBiCu, thietBi);
                 await db.SaveChangesAsync();
 
                 if (Request.IsAjaxRequest())
@@ -151,7 +155,7 @@ namespace GymManagementSystem.Controllers
             ThietBi thietBi = await db.ThietBis.FindAsync(id);
             if (thietBi != null)
             {
-                GhiLogThietBi(thietBi.Id, LoaiHanhDong.Xoa, $"Xóa thiết bị '{thietBi.TenThietBi}'.");
+                GhiLogThietBi(thietBi.Id, LoaiHanhDong.Xoa, thietBi, null);
                 db.ThietBis.Remove(thietBi);
                 await db.SaveChangesAsync();
             }
@@ -163,35 +167,61 @@ namespace GymManagementSystem.Controllers
             return RedirectToAction("Index");
         }
 
+        #endregion
+
+        #region Lịch sử, Log
         // GET: ThietBis/LichSu
         public async Task<ActionResult> History(DateTime? ngayLoc)
         {
-            var lichSuQuery = db.LichSuThietBis
-                                 .Include(l => l.NguoiThucHien)
-                                 .OrderByDescending(l => l.NgayThucHien);
+            DateTime targetDate = ngayLoc ?? DateTime.Now;
 
-            if (ngayLoc.HasValue)
-            {
-                DateTime batDau = ngayLoc.Value.Date;
-                DateTime ketThuc = batDau.AddDays(1);
-                lichSuQuery = (IOrderedQueryable<LichSuThietBi>)lichSuQuery.Where(l => l.NgayThucHien >= batDau && l.NgayThucHien < ketThuc);
-            }
+            var historyService = new HistoryReconstructionService(db);
+            ViewBag.EquipmentStates = await historyService.GetEquipmentStateAtAsync(targetDate);
 
-            ViewBag.NgayLoc = ngayLoc?.ToString("yyyy-MM-dd");
-            return View(await lichSuQuery.ToListAsync());
+            var logQuery = db.LichSuThietBis.Include(l => l.NguoiThucHien);
+            DateTime batDau = targetDate.Date;
+            DateTime ketThuc = batDau.AddDays(1);
+            var logsForDate = await logQuery
+                .Where(l => l.NgayThucHien >= batDau && l.NgayThucHien < ketThuc)
+                .OrderByDescending(l => l.NgayThucHien)
+                .ToListAsync();
+
+            ViewBag.NgayLoc = targetDate;
+            return View(logsForDate); // Truyền danh sách log vào Model
+
         }
 
-        private void GhiLogThietBi(int thietBiId, LoaiHanhDong hanhDong, string moTa)
+        private void GhiLogThietBi(int thietBiId, LoaiHanhDong hanhDong, ThietBi trangThaiTruoc, ThietBi trangThaiSau)
         {
+            db.Configuration.ProxyCreationEnabled = false;
+
+            var settings = new JsonSerializerSettings
+            {
+                // Bỏ qua các vòng lặp tham chiếu thay vì ném ra lỗi
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            };
+
             var log = new LichSuThietBi
             {
                 ThietBiId = thietBiId,
                 NguoiThucHienId = User.Identity.GetUserId(),
                 HanhDong = hanhDong,
                 NgayThucHien = DateTime.Now,
-                MoTaThayDoi = moTa
+                // Sử dụng 'settings' khi serialize
+                TrangThaiTruoc = trangThaiTruoc == null ? null : JsonConvert.SerializeObject(trangThaiTruoc, settings),
+                TrangThaiSau = trangThaiSau == null ? null : JsonConvert.SerializeObject(trangThaiSau, settings)
             };
             db.LichSuThietBis.Add(log);
+            db.Configuration.ProxyCreationEnabled = true;
+        }
+
+        #endregion
+
+        private async Task PopulatePhongDropdown()
+        {
+            ViewBag.PhongId = new SelectList
+                (await db.Phongs.OrderBy(p => p.TenPhong)
+                .ToListAsync(), "Id", "TenPhong");
         }
 
         protected override void Dispose(bool disposing)

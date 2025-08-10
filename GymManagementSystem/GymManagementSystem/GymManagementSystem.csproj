@@ -65,6 +65,15 @@
     <Reference Include="QRCoder, Version=1.6.0.0, Culture=neutral, PublicKeyToken=c4ed5b9ae8358a28, processorArchitecture=MSIL">
       <HintPath>..\packages\QRCoder.1.6.0\lib\net40\QRCoder.dll</HintPath>
     </Reference>
+    <Reference Include="RazorEngine, Version=3.10.0.0, Culture=neutral, PublicKeyToken=9ee697374c7e744a, processorArchitecture=MSIL">
+      <HintPath>..\packages\RazorEngine.3.10.0\lib\net45\RazorEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="SendGrid, Version=9.29.3.0, Culture=neutral, PublicKeyToken=4f047e93159395ca, processorArchitecture=MSIL">
+      <HintPath>..\packages\SendGrid.9.29.3\lib\net452\SendGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="StarkbankEcdsa, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b2e6337a5d77bfbc, processorArchitecture=MSIL">
+      <HintPath>..\packages\starkbank-ecdsa.1.3.3\lib\net452\StarkbankEcdsa.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
@@ -105,6 +114,7 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
       <Private>True</Private>
@@ -256,6 +266,7 @@
     <Compile Include="Controllers\BaiTapsController.cs" />
     <Compile Include="Controllers\CheckinApiController.cs" />
     <Compile Include="Controllers\CheckinController.cs" />
+    <Compile Include="Controllers\DacQuyensController.cs" />
     <Compile Include="Controllers\GoiTapsController.cs" />
     <Compile Include="Controllers\HangHoiViensController.cs" />
     <Compile Include="Controllers\HoaDonsController.cs" />
@@ -266,6 +277,7 @@
     <Compile Include="Controllers\KhuyenMaisController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MomoController.cs" />
+    <Compile Include="Controllers\PhongsController.cs" />
     <Compile Include="Controllers\PTController.cs" />
     <Compile Include="Controllers\ThietBisController.cs" />
     <Compile Include="Controllers\ThucHienKeHoachController.cs" />
@@ -274,6 +286,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\HistoryHelper.cs" />
+    <Compile Include="Helpers\KhuyenMaiHelper.cs" />
     <Compile Include="Helpers\RoleHelper.cs" />
     <Compile Include="Helpers\VideoHelper.cs" />
     <Compile Include="Migrations\202508030705557_InitialCreate.cs" />
@@ -368,15 +382,41 @@
     <Compile Include="Migrations\202508081932160_AddImageUrls.Designer.cs">
       <DependentUpon>202508081932160_AddImageUrls.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202508090925354_DacQuyen.cs" />
+    <Compile Include="Migrations\202508090925354_DacQuyen.Designer.cs">
+      <DependentUpon>202508090925354_DacQuyen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202508100746306_AddRoomModuleAndLinkToEquipment.cs" />
+    <Compile Include="Migrations\202508100746306_AddRoomModuleAndLinkToEquipment.Designer.cs">
+      <DependentUpon>202508100746306_AddRoomModuleAndLinkToEquipment.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202508100809127_MakePhongIdNullableInThietBi.cs" />
+    <Compile Include="Migrations\202508100809127_MakePhongIdNullableInThietBi.Designer.cs">
+      <DependentUpon>202508100809127_MakePhongIdNullableInThietBi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202508100850268_AddCheckinHistory.cs" />
+    <Compile Include="Migrations\202508100850268_AddCheckinHistory.Designer.cs">
+      <DependentUpon>202508100850268_AddCheckinHistory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202508101345208_LogThietBiChange.cs" />
+    <Compile Include="Migrations\202508101345208_LogThietBiChange.Designer.cs">
+      <DependentUpon>202508101345208_LogThietBiChange.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202508101442224_AddLink_KhuyenMai_GoiTap.cs" />
+    <Compile Include="Migrations\202508101442224_AddLink_KhuyenMai_GoiTap.Designer.cs">
+      <DependentUpon>202508101442224_AddLink_KhuyenMai_GoiTap.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ChiSoSucKhoe.cs" />
     <Compile Include="Models\BaiTap.cs" />
     <Compile Include="Models\BuocThucHien.cs" />
     <Compile Include="Models\ChiTietKeHoach.cs" />
+    <Compile Include="Models\DacQuyen.cs" />
     <Compile Include="Models\DangKyGoiTap.cs" />
     <Compile Include="Models\DangKyKeHoach.cs" />
     <Compile Include="Models\GoiTap.cs" />
+    <Compile Include="Models\HangCoDacQuyen.cs" />
     <Compile Include="Models\HangCoKhuyenMai.cs" />
     <Compile Include="Models\HangHoiVien.cs" />
     <Compile Include="Models\HoaDon.cs" />
@@ -385,10 +425,13 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\KeHoach.cs" />
     <Compile Include="Models\KhuyenMai.cs" />
+    <Compile Include="Models\KhuyenMaiCuaGoi.cs" />
     <Compile Include="Models\KhuyenMaiCuaHoiVien.cs" />
+    <Compile Include="Models\LichSuCheckin.cs" />
     <Compile Include="Models\LichSuThietBi.cs" />
     <Compile Include="Models\LichTap.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\Phong.cs" />
     <Compile Include="Models\PTDashboardViewModel.cs" />
     <Compile Include="Models\ThietBi.cs" />
     <Compile Include="Models\TienDoBaiTap.cs" />
@@ -399,6 +442,7 @@
     <Compile Include="Models\ViewModels\HangThanhVienViewModel.cs" />
     <Compile Include="Models\ViewModels\KeHoachListViewModel.cs" />
     <Compile Include="Models\ViewModels\KeHoachViewModel.cs" />
+    <Compile Include="Models\ViewModels\KhuyenMaiViewModel.cs" />
     <Compile Include="Models\ViewModels\LichSuGioiThieuViewModel.cs" />
     <Compile Include="Models\ViewModels\TaoHoaDonViewModel.cs" />
     <Compile Include="Models\ViewModels\UserManagement\UserDetailsViewModel.cs" />
@@ -409,7 +453,11 @@
     <Compile Include="Models\ViewModels\XacNhanThanhToanViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CloudinaryService.cs" />
+    <Compile Include="Services\EmailService.cs" />
+    <Compile Include="Services\HistoryReconstructionService.cs" />
     <Compile Include="Services\MomoService.cs" />
+    <Compile Include="Services\PrivilegeService.cs" />
+    <Compile Include="Services\ReferralService.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -432,6 +480,7 @@
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\CRUD\crud.css" />
     <Content Include="Content\Homepage\homepage.css" />
+    <Content Include="Content\Manage\invite.css" />
     <Content Include="Content\Manage\profile.css" />
     <Content Include="Content\Manage\qr.css" />
     <Content Include="Content\Payment\status.css" />
@@ -509,7 +558,7 @@
     <Content Include="Views\Manage\ShowQrCode.cshtml" />
     <Content Include="Views\Checkin\Scan.cshtml" />
     <Content Include="Views\BaiTaps\Practice.cshtml" />
-    <Content Include="Views\KhuyenMais\Create.cshtml" />
+    <Content Include="Views\KhuyenMais\CreateOrEdit.cshtml" />
     <Content Include="Views\KhuyenMais\Delete.cshtml" />
     <Content Include="Views\KhuyenMais\Details.cshtml" />
     <Content Include="Views\KhuyenMais\Edit.cshtml" />
@@ -560,12 +609,23 @@
     <Content Include="Views\HangHoiViens\Details.cshtml" />
     <Content Include="Views\HangHoiViens\Delete.cshtml" />
     <Content Include="Views\ThucHienKeHoach\_DayItemContent.cshtml" />
+    <Content Include="Views\HoiVien\KhuyenMai.cshtml" />
+    <Content Include="Views\DacQuyens\Index.cshtml" />
+    <Content Include="Views\DacQuyens\CreateOrEdit.cshtml" />
+    <Content Include="Views\DacQuyens\Details.cshtml" />
+    <Content Include="Views\DacQuyens\Delete.cshtml" />
+    <Content Include="Views\Phongs\Index.cshtml" />
+    <Content Include="Views\Phongs\CreateOrEdit.cshtml" />
+    <Content Include="Views\Phongs\Details.cshtml" />
+    <Content Include="Views\Phongs\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\App_LocalResources\" />
+    <Folder Include="Views\CheckinApi\" />
     <Folder Include="Views\Index\" />
     <Folder Include="Views\KeHoachViewModel\" />
+    <Folder Include="Views\_EmailLayout\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
@@ -663,6 +723,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202508081932160_AddImageUrls.resx">
       <DependentUpon>202508081932160_AddImageUrls.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202508090925354_DacQuyen.resx">
+      <DependentUpon>202508090925354_DacQuyen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202508100746306_AddRoomModuleAndLinkToEquipment.resx">
+      <DependentUpon>202508100746306_AddRoomModuleAndLinkToEquipment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202508100809127_MakePhongIdNullableInThietBi.resx">
+      <DependentUpon>202508100809127_MakePhongIdNullableInThietBi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202508100850268_AddCheckinHistory.resx">
+      <DependentUpon>202508100850268_AddCheckinHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202508101345208_LogThietBiChange.resx">
+      <DependentUpon>202508101345208_LogThietBiChange.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202508101442224_AddLink_KhuyenMai_GoiTap.resx">
+      <DependentUpon>202508101442224_AddLink_KhuyenMai_GoiTap.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

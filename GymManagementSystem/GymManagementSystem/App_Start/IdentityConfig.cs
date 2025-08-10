@@ -1,17 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.Entity;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
+using GymManagementSystem.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
-using GymManagementSystem.Models;
-
+using SendGrid;
+using SendGrid.Helpers.Mail;
+using RazorEngine;
+using RazorEngine.Templating;
+using System.IO;
 namespace GymManagementSystem
 {
     public class IdentityConfig
@@ -35,12 +41,43 @@ namespace GymManagementSystem
             //}
         }
     }
+
+
     public class EmailService : IIdentityMessageService
     {
+        public async Task SendCustomEmailAsync(string toEmail, string toName, string subject, string htmlContent)
+        {
+            var apiKey = ConfigurationManager.AppSettings["SendGrid:ApiKey"];
+            var fromEmail = ConfigurationManager.AppSettings["SendGrid:FromEmail"];
+            var fromName = ConfigurationManager.AppSettings["SendGrid:FromName"];
+
+
+
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                System.Diagnostics.Debug.WriteLine("SendGrid API Key is missing.");
+                return;
+            }
+
+            try
+            {
+                var client = new SendGridClient(apiKey);
+                var from = new EmailAddress(fromEmail, fromName);
+                var to = new EmailAddress(toEmail, toName);
+                var plainTextContent = Regex.Replace(htmlContent, "<.*?>", String.Empty);
+                var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+
+                await client.SendEmailAsync(msg);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Exception when sending custom email: {ex.Message}");
+            }
+        }
+
         public Task SendAsync(IdentityMessage message)
         {
-            // Plug in your email service here to send an email.
-            return Task.FromResult(0);
+            return SendCustomEmailAsync(message.Destination, message.Destination, message.Subject, message.Body);
         }
     }
 

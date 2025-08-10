@@ -14,20 +14,9 @@ public class MomoController : Controller
 {
     private readonly MomoService _momoService = new MomoService();
     private readonly ApplicationDbContext db = new ApplicationDbContext();
-
     private ApplicationUserManager _userManager;
-    public ApplicationUserManager UserManager
-    {
-        get
-        {
-            return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-        }
-        private set
-        {
-            _userManager = value;
-        }
-    }
-
+    
+    #region Tạo thanh toán MoMo --- Xác nhận thanh toán --- Trả về kết quả
     // GET: /Momo/CreatePaymentRequest?hoaDonId=5
     // Action này được gọi khi người dùng nhấn vào link "Thanh toán MoMo"
     public async Task<ActionResult> CreatePaymentRequest(int hoaDonId)
@@ -35,7 +24,6 @@ public class MomoController : Controller
         var hoaDon = await db.HoaDons.FindAsync(hoaDonId);
         if (hoaDon == null || hoaDon.TrangThai == TrangThai.DaThanhToan)
         {
-            // Nếu hóa đơn không hợp lệ, quay lại trang danh sách với thông báo lỗi
             TempData["ErrorMessage"] = "Hóa đơn không hợp lệ hoặc đã được thanh toán.";
             return RedirectToAction("Index", "HoaDons");
         }
@@ -45,51 +33,61 @@ public class MomoController : Controller
 
         if (!string.IsNullOrEmpty(payUrl))
         {
-            // Nếu tạo URL thành công, chuyển hướng người dùng thẳng đến trang thanh toán của MoMo
             return Redirect(payUrl);
         }
         else
         {
-            // Nếu có lỗi khi tạo URL, quay lại trang danh sách với thông báo lỗi
             TempData["ErrorMessage"] = "Không thể tạo yêu cầu thanh toán MoMo. Vui lòng thử lại sau.";
             return RedirectToAction("Index", "HoaDons");
         }
     }
 
-    // Action này được MoMo gọi về để xác nhận thanh toán (IPN) - Giữ nguyên
+    // MoMo gọi về để xác nhận thanh toán (IPN)
     [HttpPost]
     public async Task<ActionResult> ConfirmPayment(/* Tham số MoMo gửi về */ int resultCode, string orderId)
     {
-        if (resultCode == 0) // Giao dịch thành công
+        if (resultCode == 0)
         {
-            var hoaDon = await db.HoaDons.Include(h => h.GoiTap) // <-- Thêm .Include()
+            var hoaDon = await db.HoaDons.Include(h => h.GoiTap)
                                      .FirstOrDefaultAsync(h => h.MomoOrderId == orderId);
 
-            // 2. Nếu tìm thấy hóa đơn và nó đang ở trạng thái chờ
             if (hoaDon != null && hoaDon.TrangThai == TrangThai.ChoThanhToan)
             {
-                // 3. Cập nhật trạng thái hóa đơn
                 hoaDon.TrangThai = TrangThai.DaThanhToan;
-                var goiTap = hoaDon.GoiTap; // Lấy thông tin gói tập từ hóa đơn
+                var goiTap = hoaDon.GoiTap;
                 var hoivienProfile = await db.HoiViens.FirstOrDefaultAsync(h => h.ApplicationUserId == hoaDon.HoiVienId);
+                
                 if (goiTap != null && hoivienProfile != null)
                 {
-                    var dangKy = new DangKyGoiTap
+                    var dangKyHienTai = await db.DangKyGoiTaps
+                        .FirstOrDefaultAsync(d => d.HoiVienId == hoivienProfile.Id &&
+                                                  d.GoiTapId == goiTap.Id &&
+                                                  d.TrangThai == TrangThaiDangKy.HoatDong);
+
+                    if (dangKyHienTai != null)
                     {
-                        HoiVienId = hoivienProfile.Id, // <-- DÙNG ID TỪ BẢNG HOIVIENS
-                        GoiTapId = goiTap.Id,
-                        // HoaDonId không có trong model của bạn, có thể bỏ qua
-                        NgayDangKy = DateTime.Today,
-                        NgayHetHan = DateTime.Today.AddDays(goiTap.SoBuoiTapVoiPT),
-                        TrangThai = TrangThaiDangKy.HoatDong
-                    };
-                    db.DangKyGoiTaps.Add(dangKy);
-                }
+                        DateTime ngayBatDauCongDon = dangKyHienTai.NgayHetHan > DateTime.Today
+                                                    ? dangKyHienTai.NgayHetHan
+                                                    : DateTime.Today;
+
+                        dangKyHienTai.NgayHetHan = ngayBatDauCongDon.AddDays(goiTap.SoBuoiTapVoiPT);
+                    }
+                    else
+                    {
+                        var dangKyMoi = new DangKyGoiTap
+                        {
+                            HoiVienId = hoivienProfile.Id,
+                            GoiTapId = goiTap.Id,
+                            NgayDangKy = DateTime.Today,
+                            NgayHetHan = DateTime.Today.AddDays(goiTap.SoBuoiTapVoiPT),
+                            TrangThai = TrangThaiDangKy.HoatDong
+                        };
+                        db.DangKyGoiTaps.Add(dangKyMoi);
+                    }
+                }   
 
                 if (hoaDon.KhuyenMaiId.HasValue)
                 {
-                    // Tìm voucher cụ thể mà hội viên đã dùng cho hóa đơn này
-                    // (Dựa trên loại khuyến mãi và người sở hữu)
                     var voucherDaSuDung = await db.KhuyenMaiCuaHoiViens
                         .FirstOrDefaultAsync(v => v.HoiVienId == hoivienProfile.Id &&
                                                   v.KhuyenMaiId == hoaDon.KhuyenMaiId.Value &&
@@ -97,29 +95,28 @@ public class MomoController : Controller
 
                     if (voucherDaSuDung != null)
                     {
-                        // Đổi trạng thái của nó thành "Đã sử dụng"
                         voucherDaSuDung.TrangThai = TrangThaiKhuyenMaiHV.DaSuDung;
                     }
                 }
 
                 await db.SaveChangesAsync();
-
-                // 4. (Tích hợp) Gọi hàm nâng hạng cho hội viên
                 await UpdateHoiVienRankAsync(hoaDon.HoiVienId);
             }
         }
 
-        // Phản hồi cho MoMo biết đã nhận được thông tin để MoMo không gửi lại IPN nữa
+        // Phản hồi lại MoMo
         return new HttpStatusCodeResult(204);
     }
 
     // Action này là trang người dùng được chuyển hướng về sau khi thanh toán - Giữ nguyên
     public ActionResult PaymentResult()
     {
-        ViewBag.Message = "Giao dịch của bạn đang được xử lý. Vui lòng kiểm tra lại trạng thái hóa đơn sau ít phút.";
+        ViewBag.Message = "Xin chúc mừng, bạn đã thanh toán thành công. Vui lòng kiểm tra lại trạng thái hóa đơn và thông tin gói tập.";
         return View();
     }
+    #endregion
 
+    #region Nâng hạng Hội viên
     private async Task UpdateHoiVienRankAsync(string hoiVienId)
     {
         if (string.IsNullOrEmpty(hoiVienId)) return;
@@ -141,11 +138,18 @@ public class MomoController : Controller
             return;
         }
 
-        if (hoivienProfile.HangHoiVienId != hangMoi.Id)
+        int? oldRankId = hoivienProfile.HangHoiVienId;
+        int newRankId = hangMoi.Id;
+
+        if (oldRankId != newRankId)
         {
-            // Cập nhật trực tiếp trên hồ sơ hội viên
-            hoivienProfile.HangHoiVienId = hangMoi.Id;
+            hoivienProfile.HangHoiVienId = newRankId;
             await db.SaveChangesAsync();
+
+            // GỌI SERVICE ĐỂ TẶNG ĐẶC QUYỀN
+            var privilegeService = new PrivilegeService(db);
+            await privilegeService.GrantPrivilegesOnRankUp(hoiVienId, newRankId);
         }
     }
+    #endregion
 }

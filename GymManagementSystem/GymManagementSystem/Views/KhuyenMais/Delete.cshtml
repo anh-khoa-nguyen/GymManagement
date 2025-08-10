@@ -1,22 +1,15 @@
 ﻿@model GymManagementSystem.Models.KhuyenMai
 
-@{
-    if (!Request.IsAjaxRequest()) { Layout = "~/Views/Shared/_Layout.cshtml"; }
-}
-
 <h3>Bạn có chắc chắn muốn xóa?</h3>
 <p>Hành động này sẽ xóa vĩnh viễn khuyến mãi:</p>
-<h4 class="text-warning">@Html.DisplayFor(model => model.TenKhuyenMai)</h4>
+<h4 class="text-warning">@Model.TenKhuyenMai</h4>
 <hr />
 
 @using (Html.BeginForm("Delete", "KhuyenMais", new { id = Model.Id }, FormMethod.Post))
 {
     @Html.AntiForgeryToken()
-
     <div class="offcanvas-footer">
-        <div class="d-grid gap-2">
-            <input type="submit" value="Xóa Vĩnh Viễn" class="btn btn-offcanvas-danger" />
-            <button type="button" class="btn btn-offcanvas-secondary" data-bs-dismiss="offcanvas">Hủy</button>
-        </div>
+        <input type="submit" value="Xóa Vĩnh Viễn" class="btn btn-offcanvas-danger" />
+        <button type="button" class="btn btn-offcanvas-secondary" data-bs-dismiss="offcanvas">Hủy</button>
     </div>
 }

@@ -17,20 +17,18 @@
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
     <div class="mb-3">
-        <label class="form-label">Chọn Hội Viên</label>
-        @Html.DropDownListFor(model => model.HoiVienId, Model.DanhSachHoiVien, "-- Chọn hội viên --", new { @class = "form-select" })
-        @Html.ValidationMessageFor(model => model.HoiVienId, "", new { @class = "text-danger d-block mt-1" })
+        @Html.LabelFor(m => m.HoiVienId, "Chọn Hội Viên", new { @class = "form-label" })
+        @Html.DropDownListFor(m => m.HoiVienId, Model.DanhSachHoiVien, "-- Chọn hội viên --", new { @class = "form-select", id = "hoiVienSelect" })
     </div>
 
     <div class="mb-3">
-        <label class="form-label">Chọn Gói Tập</label>
-        @Html.DropDownListFor(model => model.GoiTapId, Model.DanhSachGoiTap, "-- Chọn gói tập --", new { @class = "form-select" })
-        @Html.ValidationMessageFor(model => model.GoiTapId, "", new { @class = "text-danger d-block mt-1" })
+        @Html.LabelFor(m => m.GoiTapId, "Chọn Gói Tập", new { @class = "form-label" })
+        @Html.DropDownListFor(m => m.GoiTapId, Model.DanhSachGoiTap, "-- Chọn gói tập --", new { @class = "form-select", id = "goiTapSelect" })
     </div>
 
     <div class="mb-3">
-        <label class="form-label">Áp dụng Khuyến Mãi (Nếu có)</label>
-        @Html.DropDownListFor(model => model.KhuyenMaiId, Model.DanhSachKhuyenMai, "-- Không áp dụng --", new { @class = "form-select" })
+        @Html.LabelFor(m => m.KhuyenMaiId, "Áp dụng Khuyến Mãi (Nếu có)", new { @class = "form-label" })
+        @Html.DropDownListFor(m => m.KhuyenMaiId, Model.DanhSachKhuyenMai, new { @class = "form-select", id = "khuyenMaiSelect", disabled = "disabled" })
     </div>
 
     <hr class="my-4" />
@@ -65,48 +63,75 @@
     gắn các sự kiện 'change' vào các dropdown và làm cho chức năng tính giá hoạt động.
 -->
 <script>
-    // Đặt trong một hàm để tránh xung đột biến toàn cục
-    (function () {
-        // Biến lưu giá trị
-        var giaGoc = 0;
-        var soTienGiam = 0;
+    // Đảm bảo script chỉ chạy sau khi DOM đã sẵn sàng
+    $(document).ready(function() {
+        // --- KHAI BÁO BIẾN ---
+        const hoiVienSelect = $('#hoiVienSelect');
+        const goiTapSelect = $('#goiTapSelect');
+        const khuyenMaiSelect = $('#khuyenMaiSelect');
+        let giaGoc = 0;
+        let soTienGiam = 0;
 
-        // Hàm cập nhật giá
+        // --- CÁC HÀM ---
         function updatePrice() {
             var thanhTien = giaGoc - soTienGiam;
             if (thanhTien < 0) thanhTien = 0;
-
-            // Định dạng tiền tệ
             var format = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' });
-
             $('#giaGocDisplay').text(format.format(giaGoc));
             $('#giamGiaDisplay').text(format.format(soTienGiam));
             $('#thanhTienDisplay').text(format.format(thanhTien));
         }
 
-        // Sự kiện khi thay đổi Gói Tập
-        $('#GoiTapId').change(function () {
+        function loadKhuyenMai() {
+            const hoiVienId = hoiVienSelect.val();
+            const goiTapId = goiTapSelect.val();
+
+            if (hoiVienId && goiTapId) {
+                khuyenMaiSelect.prop('disabled', true).html('<option value="">Đang tải...</option>');
+                $.getJSON('@Url.Action("GetAvailableVouchers", "HoaDons")', { hoiVienId: hoiVienId, goiTapId: goiTapId }, function (vouchers) {
+                    khuyenMaiSelect.empty();
+                    khuyenMaiSelect.append($('<option>', { value: '', text: '-- Không áp dụng --' }));
+                    if (vouchers && vouchers.length > 0) {
+                        $.each(vouchers, function (i, voucher) {
+                            khuyenMaiSelect.append($('<option>', { value: voucher.Value, text: voucher.Text }));
+                        });
+                        khuyenMaiSelect.prop('disabled', false);
+                    } else {
+                        khuyenMaiSelect.html('<option value="">Không có KM hợp lệ</option>');
+                    }
+                    // Trigger change để tính lại tiền giảm giá (trường hợp không áp dụng)
+                    khuyenMaiSelect.trigger('change');
+                });
+            } else {
+                khuyenMaiSelect.prop('disabled', true).html('<option value="">-- Chọn Hội viên và Gói tập --</option>');
+                // Trigger change để reset tiền giảm giá
+                khuyenMaiSelect.trigger('change');
+            }
+        }
+
+        // --- GẮN SỰ KIỆN ---
+        hoiVienSelect.on('change', loadKhuyenMai);
+
+        goiTapSelect.on('change', function () {
             var goiTapId = $(this).val();
             if (goiTapId) {
-                // Gọi AJAX để lấy giá
                 $.get('@Url.Action("GetGoiTapInfo", "HoaDons")', { id: goiTapId }, function (data) {
-                    giaGoc = data.giaGoc;
-                    // Trigger sự kiện change của khuyến mãi để tính lại giảm giá
-                    $('#KhuyenMaiId').trigger('change');
+                    giaGoc = data ? data.giaGoc : 0;
+                    loadKhuyenMai(); // Tải lại danh sách KM sau khi có giá mới
+                    updatePrice();   // Cập nhật giá gốc ngay lập tức
                 });
             } else {
                 giaGoc = 0;
-                $('#KhuyenMaiId').trigger('change');
+                loadKhuyenMai();
+                updatePrice();
             }
         });
 
-        // Sự kiện khi thay đổi Khuyến Mãi
-        $('#KhuyenMaiId').change(function () {
+        khuyenMaiSelect.on('change', function () {
             var khuyenMaiId = $(this).val();
             if (khuyenMaiId && giaGoc > 0) {
-                // Gọi AJAX để tính giảm giá
                 $.get('@Url.Action("GetKhuyenMaiDiscount", "HoaDons")', { id: khuyenMaiId, giaGoc: giaGoc }, function (data) {
-                    soTienGiam = data.soTienGiam;
+                    soTienGiam = data ? data.soTienGiam : 0;
                     updatePrice();
                 });
             } else {
@@ -114,8 +139,5 @@
                 updatePrice();
             }
         });
-
-        // Cập nhật giá lần đầu khi form được tải
-        updatePrice();
-    })();
+    });
 </script>
