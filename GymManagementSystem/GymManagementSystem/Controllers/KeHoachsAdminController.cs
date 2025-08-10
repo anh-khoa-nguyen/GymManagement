@@ -16,6 +16,7 @@ namespace GymManagementSystem.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
+        #region CRUD
         // GET: KeHoachsAdmin (Danh sách kế hoạch)
         public async Task<ActionResult> Index(string searchString)
         {
@@ -29,40 +30,6 @@ namespace GymManagementSystem.Controllers
 
             ViewBag.CurrentFilter = searchString;
             return View(keHoachs.ToList());
-        }
-
-        // --- THÊM ACTION DETAILS ---
-        // GET: KeHoachsAdmin/Details/5
-        public async Task<ActionResult> Details(int? id)
-        {
-            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-
-            var keHoach = await db.KeHoachs
-                                  .Include(k => k.ChiTietKeHoachs.Select(ct => ct.BaiTap)) // Lấy chi tiết và tên bài tập
-                                  .FirstOrDefaultAsync(k => k.Id == id);
-
-            if (keHoach == null) return HttpNotFound();
-
-            if (Request.IsAjaxRequest())
-            {
-                return PartialView("Details", keHoach);
-            }
-
-            return View(keHoach);
-        }
-
-        // Hàm private để chuẩn bị dữ liệu cho ViewModel
-        private async Task PopulateViewModelDropdowns(KeHoachViewModel viewModel)
-        {
-            viewModel.DanhSachBaiTap = await db.BaiTaps
-                .Select(b => new SelectListItem { Value = b.Id.ToString(), Text = b.TenBaiTap })
-                .ToListAsync();
-
-            viewModel.DanhSachKhuyenMai = await db.KhuyenMais
-                .Where(k => k.IsActive)
-                .Select(k => new SelectListItem { Value = k.Id.ToString(), Text = k.TenKhuyenMai })
-                .ToListAsync();
-            viewModel.DanhSachKhuyenMai.ToList().Insert(0, new SelectListItem { Value = "", Text = "-- Không có khuyến mãi thưởng --" });
         }
 
         // GET: KeHoachsAdmin/Create
@@ -87,9 +54,13 @@ namespace GymManagementSystem.Controllers
                 if (imageFile != null && imageFile.ContentLength > 0)
                 {
                     var cloudinaryService = new CloudinaryService();
-                    viewModel.KeHoach.ImageUrl = await cloudinaryService.UploadImageAsync(imageFile);
+                    var imageUrl = await cloudinaryService.UploadImageAsync(imageFile);
+                    if (!string.IsNullOrEmpty(imageUrl))
+                    {
+                        viewModel.KeHoach.ImageUrl = imageUrl;
+                    }
                 }
-                // Gán lại số ngày cho đúng
+
                 if (viewModel.KeHoach.ChiTietKeHoachs != null)
                 {
                     for (int i = 0; i < viewModel.KeHoach.ChiTietKeHoachs.Count; i++)
@@ -105,6 +76,25 @@ namespace GymManagementSystem.Controllers
 
             await PopulateViewModelDropdowns(viewModel);
             return View(viewModel);
+        }
+
+        // GET: KeHoachsAdmin/Details/5
+        public async Task<ActionResult> Details(int? id)
+        {
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            var keHoach = await db.KeHoachs
+                                  .Include(k => k.ChiTietKeHoachs.Select(ct => ct.BaiTap)) // Lấy chi tiết và tên bài tập
+                                  .FirstOrDefaultAsync(k => k.Id == id);
+
+            if (keHoach == null) return HttpNotFound();
+
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("Details", keHoach);
+            }
+
+            return View(keHoach);
         }
 
         // GET: KeHoachsAdmin/Edit/5
@@ -184,6 +174,17 @@ namespace GymManagementSystem.Controllers
             return View(keHoach);
         }
 
+        // POST: KeHoachsAdmin/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> DeleteConfirmed(int id)
+        {
+            var keHoach = await db.KeHoachs.FindAsync(id);
+            db.KeHoachs.Remove(keHoach);
+            await db.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteMultiple(int[] idsToDelete)
@@ -200,16 +201,22 @@ namespace GymManagementSystem.Controllers
             return RedirectToAction("Index");
         }
 
-        // POST: KeHoachsAdmin/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
+        #endregion
+
+        #region Dropdowns
+        private async Task PopulateViewModelDropdowns(KeHoachViewModel viewModel)
         {
-            var keHoach = await db.KeHoachs.FindAsync(id);
-            db.KeHoachs.Remove(keHoach);
-            await db.SaveChangesAsync();
-            return RedirectToAction("Index");
+            viewModel.DanhSachBaiTap = await db.BaiTaps
+                .Select(b => new SelectListItem { Value = b.Id.ToString(), Text = b.TenBaiTap })
+                .ToListAsync();
+
+            viewModel.DanhSachKhuyenMai = await db.KhuyenMais
+                .Where(k => k.IsActive)
+                .Select(k => new SelectListItem { Value = k.Id.ToString(), Text = k.TenKhuyenMai })
+                .ToListAsync();
+            viewModel.DanhSachKhuyenMai.ToList().Insert(0, new SelectListItem { Value = "", Text = "-- Không có khuyến mãi thưởng --" });
         }
+        #endregion
 
         protected override void Dispose(bool disposing)
         {

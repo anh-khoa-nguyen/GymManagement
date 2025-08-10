@@ -4,22 +4,27 @@
 }
 <link href="@Url.Content("~/Content/Manage/profile.css")" rel="stylesheet" type="text/css" />
 
-<!-- ======================================================== -->
-<!-- CONTAINER CHÍNH CHO TOÀN BỘ DASHBOARD -->
-<!-- ======================================================== -->
 <div class="profile-dashboard-wrapper">
-
+    <!-- HEADER -->
     <div class="profile-header">
-        <img src="https://i.pravatar.cc/80" alt="Avatar" class="profile-avatar" />
+        <img src="@(Model.UserAccount?.AvatarUrl ?? Url.Content("https://i.pravatar.cc/80"))" alt="Avatar" class="profile-avatar" />
         <div class="profile-info">
             <h3>@Model.UserName</h3>
             <p>@Model.Email</p>
         </div>
-        @Html.ActionLink("Chỉnh sửa thông tin", "Edit", "Manage", null, new { @class = "btn-edit-profile" })
+        <!-- SỬA LỖI 1: Nhóm các nút hành động lại -->
+        <div class="profile-actions">
+            @if (User.IsInRole("HoiVien"))
+            {
+                @Html.ActionLink("Khuyến mãi của tôi", "KhuyenMai", "HoiVien", null, new { @class = "btn-edit-profile" })
+            }
+            <a href="@Url.Action("Edit", "Manage")" class="btn-edit-profile">Chỉnh sửa thông tin</a>
+        </div>
     </div>
 
-    <div class="row">
-        <!-- NỀN HIỆU ỨNG BONG BÓNG NỔI -->
+    @if (User.IsInRole("HoiVien"))
+    {
+        <!-- Nền động -->
         <ul class="background-bubbles">
             <li></li>
             <li></li>
@@ -33,68 +38,168 @@
             <li></li>
         </ul>
 
-        <!-- Cột chính bên trái -->
-        <div class="col-lg-8">
-            <div class="membership-card">
-                @if (Model.MembershipInfo.HangHienTai != null)
-                {
-                    <span class="unlocked-badge">@Model.MembershipInfo.HangHienTai.TenHang</span>
-                    <div class="tier-progress">
-                        <div>
-                            <h3 class="tier-name">@Model.MembershipInfo.HangHienTai.TenHang Member</h3>
-                            <p class="text-muted">Điểm tích lũy: @String.Format("{0:N0}", Model.MembershipInfo.TongChiTieu) / @String.Format("{0:N0}", Model.MembershipInfo.HangTiepTheo?.NguongChiTieu ?? Model.MembershipInfo.TongChiTieu)</p>
-                            <div class="progress-bar-custom">
-                                <div class="progress" style="width: @Model.MembershipInfo.PhanTramHoanThanh%;"></div>
+        <div class="row">
+            <!-- Cột trái -->
+            <div class="col-lg-8">
+                <!-- THẺ THÀNH VIÊN -->
+                <div class="membership-card">
+                    @if (Model.MembershipInfo.HangHienTai != null)
+                    {
+                        <span class="unlocked-badge">@Model.MembershipInfo.HangHienTai.TenHang</span>
+                        <div class="tier-progress">
+                            <div>
+                                <h3 class="tier-name">@Model.MembershipInfo.HangHienTai.TenHang Member</h3>
+                                @if (Model.MembershipInfo.HangTiepTheo != null)
+                                {
+                                    <p class="text-muted">
+                                        Chi tiêu: @String.Format("{0:N0}", Model.MembershipInfo.TongChiTieu) / @String.Format("{0:N0}", Model.MembershipInfo.HangTiepTheo.NguongChiTieu) đ
+                                    </p>
+                                }
+                                else
+                                {
+                                    <p class="text-muted">
+                                        Chi tiêu: @String.Format("{0:N0}", Model.MembershipInfo.TongChiTieu) đ (Đã đạt hạng cao nhất)
+                                    </p>
+                                }
+                                <div class="progress-bar-custom">
+                                    <div class="progress" style="width: @Model.MembershipInfo.PhanTramHoanThanh%;"></div>
+                                </div>
                             </div>
+                            @if (Model.MembershipInfo.HangTiepTheo != null)
+                            {
+                                <a href="@Url.Action("DanhSachGoiTap", "HoiVien")" class="btn-upgrade">Đăng ký Gói Tập</a>
+                            }
                         </div>
-                        @if (Model.MembershipInfo.HangTiepTheo != null)
+                    }
+                    else
+                    {
+                        <h3 class="tier-name">New Member</h3>
+                    }
+                </div>
+
+                <!-- ĐẶC QUYỀN -->
+                <div class="member-benefits">
+                    <h4>Đặc quyền của bạn</h4>
+                    <div class="benefits-grid">
+                        @if (Model.MembershipInfo.HangHienTai?.HangCoDacQuyen != null && Model.MembershipInfo.HangHienTai.HangCoDacQuyen.Any())
                         {
-                            <button class="btn-upgrade">Nâng cấp</button>
+                            foreach (var dacQuyenItem in Model.MembershipInfo.HangHienTai.HangCoDacQuyen)
+                            {
+                                <div class="benefit-item">
+                                    <i class="@(dacQuyenItem.DacQuyen?.IconClass ?? "fas fa-check")"></i>
+                                    <p>@dacQuyenItem.DacQuyen.TenDacQuyen</p>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="text-muted">Bạn chưa có đặc quyền nào. Hãy nâng hạng để nhận ưu đãi!</p>
                         }
                     </div>
-                }
-                else
-                {
-                    <h3 class="tier-name">New Member</h3>
-                }
-            </div>
-
-            <div class="member-benefits">
-                <h4>Đặc quyền của bạn</h4>
-                <div class="benefits-grid">
-                    <div class="benefit-item"><i class="fas fa-bed"></i><p>Room Upgrade</p></div>
-                    <div class="benefit-item"><i class="fas fa-birthday-cake"></i><p>Birthday Bonus</p></div>
-                    <div class="benefit-item"><i class="fas fa-percent"></i><p>Partner Discounts</p></div>
-                    <div class="benefit-item"><i class="fas fa-utensils"></i><p>Sunrise Feast</p></div>
-                    <div class="benefit-item"><i class="fas fa-box-open"></i><p>Special Package</p></div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Cột phụ bên phải -->
-        <div class="col-lg-4">
-            <div class="side-card invite-card">
-                <h4>Mời bạn bè</h4>
-                <p class="text-muted">Mã giới thiệu của bạn: <strong class="text-white">@Model.MaGioiThieu</strong></p>
-                <p>Danh sách đã mời (@Model.ReferralInfo.DanhSachNguoiDuocGioiThieu.Count()):</p>
-                <div class="buddies-list">
-                    @foreach (var buddy in Model.ReferralInfo.DanhSachNguoiDuocGioiThieu.Take(5))
+                <!-- ƯU ĐÃI ĐÃ NHẬN & SẮP TỚI -->
+                <div class="side-card vouchers-card">
+                    <h4>Ưu đãi đã nhận (@Model.KhuyenMaiDaNhan.Count)</h4>
+                    @if (Model.KhuyenMaiDaNhan.Any())
                     {
-                        <div class="buddy-item">
-                            <img src="https://i.pravatar.cc/60?u=@buddy.Email" alt="@buddy.HoTen" />
-                            <p>@buddy.HoTen.Split(' ').FirstOrDefault()</p>
+                        <div class="vouchers-list">
+                            @foreach (var khuyenMai in Model.KhuyenMaiDaNhan)
+                            {
+                                <div class="voucher-item">
+                                    <i class="fas fa-check-circle" style="color: var(--neon-green);"></i>
+                                    <span>@khuyenMai.TenKhuyenMai</span>
+                                </div>
+                            }
                         </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted small">Chưa có ưu đãi nào cho hạng hiện tại.</p>
+                    }
+
+                    <hr style="border-color: #333; margin: 1.5rem 0;" />
+
+                    <h4>Ưu đãi sắp tới</h4>
+                    @if (Model.KhuyenMaiSapToi.Any())
+                    {
+                        <p class="text-muted small">Đạt hạng <strong>@Model.TenHangTiepTheo</strong> để mở khóa:</p>
+                        <div class="vouchers-list">
+                            @foreach (var khuyenMai in Model.KhuyenMaiSapToi)
+                            {
+                                <div class="voucher-item locked">
+                                    <i class="fas fa-lock"></i>
+                                    <span>@khuyenMai.TenKhuyenMai</span>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted small">Bạn đã mở khóa tất cả ưu đãi!</p>
                     }
                 </div>
             </div>
 
-            <div class="side-card qr-code-card">
-                <h4>Mã QR Check-in</h4>
-                <p class="text-muted">Đưa mã này cho nhân viên để vào phòng tập.</p>
-                <div class="text-center">
-                    <img src="@Model.QrCodeUri" alt="Mã QR" style="width: 100%; border-radius: 12px;" />
+            <!-- Cột phải -->
+            <div class="col-lg-4">
+                <!-- GIỚI THIỆU BẠN BÈ -->
+                <div class="side-card invite-card">
+                    <h4>Mời bạn bè</h4>
+                    <p class="text-muted">Mã giới thiệu của bạn: <strong class="text-white">@Model.MaGioiThieu</strong></p>
+                    <p>Đã mời (@Model.ReferralInfo.TongSoNguoiDaGioiThieu người):</p>
+                    <div class="buddies-list">
+                        @if (Model.ReferralInfo.DanhSachNguoiDuocGioiThieu.Any())
+                        {
+                            foreach (var buddy in Model.ReferralInfo.DanhSachNguoiDuocGioiThieu.Take(5))
+                            {
+                                <div class="buddy-item">
+                                    <img src="@(buddy.AvatarUrl ?? Url.Content("https://i.pravatar.cc/70"))" alt="@buddy.HoTen" />
+                                    <p>@buddy.HoTen.Split(' ').FirstOrDefault()</p>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="text-muted small">Chưa có ai tham gia từ mã của bạn.</p>
+                        }
+                    </div>
+                    @Html.ActionLink("Xem chi tiết & Phần thưởng", "LichSuGioiThieu", "Manage", null, new { @class = "btn-view-more" })
+                </div>
+
+                <!-- MÃ QR CHECK-IN -->
+                <div class="side-card qr-code-card">
+                    <h4>Mã QR Check-in</h4>
+                    <p class="text-muted">Đưa mã này cho nhân viên để vào phòng tập.</p>
+                    <div class="text-center">
+                        <img src="@Model.QrCodeUri" alt="Mã QR" style="width: 100%; border-radius: 12px;" />
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    }
+    else
+    {
+        <div class="row">
+            <!-- Cột bên trái: Lời chào mừng -->
+            <div class="col-lg-8">
+                <div class="non-member-dashboard">
+                    <h4>Chào mừng trở lại, @Model.UserName!</h4>
+                    <p class="text-muted">Đây là trang quản lý tài khoản cá nhân của bạn.</p>
+                    <p>Sử dụng thanh điều hướng phía trên để truy cập các chức năng quản trị.</p>
+                </div>
+            </div>
+
+            <!-- Cột bên phải: Mã QR Check-in -->
+            <div class="col-lg-4">
+                <div class="side-card qr-code-card-admin">
+                    <h4>Mã QR Check-in</h4>
+                    <p class="text-muted">Sử dụng mã này để thực hiện chấm công.</p>
+                    <div class="text-center mt-3">
+                        <img src="@Model.QrCodeUri" alt="Mã QR" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 </div>

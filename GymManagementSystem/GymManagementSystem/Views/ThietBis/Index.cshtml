@@ -59,6 +59,7 @@
                 <th>Mô Tả</th>
                 <th>Ngày Mua</th>
                 <th>Tình Trạng</th>
+                <th>Phòng</th>
                 <th class="text-end">Hành động</th>
             </tr>
         </thead>
@@ -84,6 +85,7 @@
                             <span class="status-badge status-inactive">Hư hỏng</span>
                         }
                     </td>
+                    <td>@Html.DisplayFor(modelItem => item.Phong.TenPhong)</td>
                     <td>
                         @Html.Partial("_CrudButtons", item.Id)
                     </td>

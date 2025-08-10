@@ -15,6 +15,7 @@ namespace GymManagementSystem.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
+        #region CRUD
         // GET: BaiTaps
         public async Task<ActionResult> Index(string searchString)
         {
@@ -25,21 +26,6 @@ namespace GymManagementSystem.Controllers
             }
             ViewBag.CurrentFilter = searchString;
             return View(await baiTapsQuery.OrderBy(b => b.TenBaiTap).ToListAsync());
-        }
-
-        // GET: BaiTaps/Details/5
-        public async Task<ActionResult> Details(int? id)
-        {
-            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-
-            var baiTap = await db.BaiTaps.Include(b => b.CacBuocThucHien).FirstOrDefaultAsync(b => b.Id == id);
-            if (baiTap == null) return HttpNotFound();
-
-            if (Request.IsAjaxRequest())
-            {
-                return PartialView("Details", baiTap);
-            }
-            return View(baiTap);
         }
 
         // GET: BaiTaps/Create
@@ -90,6 +76,21 @@ namespace GymManagementSystem.Controllers
             return View(viewModel);
         }
 
+        // GET: BaiTaps/Details/5
+        public async Task<ActionResult> Details(int? id)
+        {
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            var baiTap = await db.BaiTaps.Include(b => b.CacBuocThucHien).FirstOrDefaultAsync(b => b.Id == id);
+            if (baiTap == null) return HttpNotFound();
+
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("Details", baiTap);
+            }
+            return View(baiTap);
+        }
+ 
         // GET: BaiTaps/Edit/5
         public async Task<ActionResult> Edit(int? id)
         {
@@ -189,7 +190,8 @@ namespace GymManagementSystem.Controllers
             }
             return RedirectToAction("Index");
         }
-
+        #endregion
+        
         private async Task<List<string>> GetAvailableThietBiList()
         {
             var tenThietBiList = await db.ThietBis

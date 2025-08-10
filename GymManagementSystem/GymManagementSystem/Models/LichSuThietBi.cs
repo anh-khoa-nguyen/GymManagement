@@ -33,9 +33,9 @@ namespace GymManagementSystem.Models
         [Required]
         public DateTime NgayThucHien { get; set; } // Thời điểm thay đổi
 
-        [Required]
-        [StringLength(200)]
-        public string MoTaThayDoi { get; set; } // Mô tả chi tiết thay đổi, ví dụ: "Đổi tình trạng từ HoatDongTot sang CanBaoTri"
+        public string TrangThaiTruoc { get; set; }
+        public string TrangThaiSau { get; set; }
+
 
         // Navigation properties
         [ForeignKey("NguoiThucHienId")]

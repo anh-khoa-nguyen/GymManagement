@@ -33,7 +33,13 @@
             <tr>
                 <td>@item.TenHang</td>
                 <td>@item.NguongChiTieu.ToString("N0") đ</td>
-                <td>@item.DacQuyen</td>
+                <td>
+                    @if (item.HangCoDacQuyen != null && item.HangCoDacQuyen.Any())
+                    {
+                        // Nối tên các đặc quyền lại thành một chuỗi
+                        string.Join(", ", item.HangCoDacQuyen.Select(d => d.DacQuyen.TenDacQuyen));
+                    }
+                </td>
                 <td>@Html.Partial("_CrudButtons", item.Id)</td>
             </tr>
         }

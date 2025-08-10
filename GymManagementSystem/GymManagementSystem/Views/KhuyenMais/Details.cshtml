@@ -1,15 +1,14 @@
 ﻿@model GymManagementSystem.Models.KhuyenMai
-
-@{
-    if (!Request.IsAjaxRequest()) { Layout = "~/Views/Shared/_Layout.cshtml"; }
+@using GymManagementSystem.Helpers
+@{ 
+    var culture = new System.Globalization.CultureInfo("vi-VN");
+    var dbContext = new GymManagementSystem.Models.ApplicationDbContext();
+    var quyTacInfo = KhuyenMaiHelper.SuyLuanQuyTacApDung(Model, dbContext);
 }
 
-<h4>Chi tiết Khuyến mãi</h4>
+<h4>Chi tiết: @Model.TenKhuyenMai</h4>
 
 <dl>
-    <dt class="text-muted">Tên Khuyến Mãi</dt>
-    <dd class="mb-3">@Html.DisplayFor(model => model.TenKhuyenMai)</dd>
-
     <dt class="text-muted">Mô Tả</dt>
     <dd class="mb-3">@Html.DisplayFor(model => model.MoTa)</dd>
 
@@ -21,12 +20,28 @@
         Giảm @Model.PhanTramGiamGia%
         @if (Model.SoTienGiamToiDa > 0)
         {
-            <span>(tối đa @Model.SoTienGiamToiDa.ToString("N0") đ)</span>
+            <span>(tối đa @Model.SoTienGiamToiDa.ToString("N0", culture) đ)</span>
         }
     </dd>
 
     <dt class="text-muted">Thời Hạn Sử Dụng</dt>
     <dd class="mb-3">@Model.SoNgayHieuLuc ngày</dd>
+
+    <dt class="text-muted">Quy Tắc Áp Dụng</dt>
+    <dd class="mb-3">@quyTacInfo.TenQuyTac</dd>
+
+    @if (quyTacInfo.DanhSachGoiTapLienQuan != null)
+    {
+        <dt class="text-muted">Danh sách Gói Tập Liên Quan</dt>
+        <dd class="mb-3">
+            <ul>
+                @foreach (var goiTap in quyTacInfo.DanhSachGoiTapLienQuan)
+                {
+                    <li>@goiTap.TenGoi</li>
+                }
+            </ul>
+        </dd>
+    }
 
     <dt class="text-muted">Trạng Thái</dt>
     <dd>
@@ -38,7 +53,5 @@
 </dl>
 
 <div class="offcanvas-footer">
-    <div class="d-grid gap-2">
-        <button type="button" class="btn btn-offcanvas-secondary" data-bs-dismiss="offcanvas">Đóng</button>
-    </div>
+    <button type="button" class="btn btn-offcanvas-secondary" data-bs-dismiss="offcanvas">Đóng</button>
 </div>

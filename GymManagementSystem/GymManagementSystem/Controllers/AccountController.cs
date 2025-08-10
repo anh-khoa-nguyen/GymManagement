@@ -82,7 +82,13 @@ namespace GymManagementSystem.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
+                    if (Url.IsLocalUrl(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
+
+                    // 2. Nếu không có returnUrl, chuyển hướng mặc định đến Manage/Index
+                    return RedirectToAction("Index", "Manage");
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -150,7 +156,7 @@ namespace GymManagementSystem.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> Register(RegisterViewModel model, HttpPostedFileBase avatarFile)
         {
             if (ModelState.IsValid)
             {
@@ -179,48 +185,53 @@ namespace GymManagementSystem.Controllers
                     Email = model.Email,
                     HoTen = model.HoTen,
                     VaiTro = model.VaiTro,
-                    NguoiGioiThieuId = nguoiGioiThieuId
+                    NguoiGioiThieuId = nguoiGioiThieuId,
                 };
+
+                if (avatarFile != null && avatarFile.ContentLength > 0)
+                {
+                    var cloudinaryService = new CloudinaryService(); // Giả sử bạn đã có service này
+                    user.AvatarUrl = await cloudinaryService.UploadImageAsync(avatarFile);
+                }
 
                 // 2. Tạo người dùng trong hệ thống Identity
                 var result = await UserManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
                 {
-                    // 3. Gán vai trò cho người dùng
                     await UserManager.AddToRoleAsync(user.Id, model.VaiTro);
 
-                    // 4. Xử lý logic riêng dựa trên vai trò
+                    // 5. TẠO HỒ SƠ CHI TIẾT (HoiVien hoặc PT)
                     if (model.VaiTro == "HoiVien")
                     {
-                        // Đảm bảo các trường thông tin hội viên đã được cung cấp
-                        if (!model.ChieuCao.HasValue || !model.CanNang.HasValue)
-                        {
-                            // Nếu thiếu thông tin, ta có thể xóa user vừa tạo và báo lỗi
-                            // Hoặc đơn giản là báo lỗi để người dùng cập nhật sau.
-                            // Ở đây ta chọn cách đơn giản hơn là vẫn tạo nhưng hồ sơ sẽ trống
-                            ModelState.AddModelError("", "Vui lòng cung cấp đầy đủ chiều cao và cân nặng.");
-                        }
-
                         var hoiVienProfile = new HoiVien
                         {
                             ApplicationUserId = user.Id,
-                            ChieuCao = model.ChieuCao ?? 0, // Cung cấp giá trị mặc định nếu null
+                            ChieuCao = model.ChieuCao ?? 0,
                             CanNang = model.CanNang ?? 0,
                             MucTieuTapLuyen = model.MucTieuTapLuyen,
-                            MaGioiThieu = await GenerateUniqueReferralCode() // <-- Tạo mã và lưu vào đây
+                            MaGioiThieu = await GenerateUniqueReferralCode()
                         };
                         db.HoiViens.Add(hoiVienProfile);
-                        db.SaveChanges(); // Lưu hồ sơ hội viên
-
-                        if (nguoiGioiThieuId != null)
-                        {
-                            await CheckAndGrantReferralRewardAsync(nguoiGioiThieuId);
-                        }
 
                         // Cập nhật lại user để lưu Id của hồ sơ hội viên
                         user.HoiVienId = hoiVienProfile.Id;
                         await UserManager.UpdateAsync(user);
+
+                        try
+                        {
+                            var emailService = new EmailService();
+                            var subject = "Chào mừng bạn đến với FiTusion Gym!";
+                            var htmlContent = $"<h3>Xin chào {user.HoTen},</h3>...";
+                            await emailService.SendCustomEmailAsync(user.Email, user.HoTen, subject, htmlContent);
+                            System.Diagnostics.Debug.WriteLine("Send successful");
+                        }
+                        catch (Exception ex)
+                        {
+                            // Ghi log lỗi gửi email nếu cần, nhưng không dừng chương trình
+                            // vì người dùng đã được tạo thành công.
+                            System.Diagnostics.Debug.WriteLine("Failed to send welcome email", ex);
+                        }
                     }
                     else if (model.VaiTro == "PT")
                     {
@@ -239,11 +250,17 @@ namespace GymManagementSystem.Controllers
                         await UserManager.UpdateAsync(user);
                     }
 
+                    if (nguoiGioiThieuId != null)
+                    {
+                        await CheckAndGrantReferralRewardAsync(nguoiGioiThieuId);
+                    }
+
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
                     // 5. Đăng nhập cho người dùng và chuyển hướng
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Manage");
                 }
                 AddErrors(result);
             }
@@ -502,18 +519,11 @@ namespace GymManagementSystem.Controllers
 
         private async Task CheckAndGrantReferralRewardAsync(string referrerId)
         {
-            // Đếm xem người này đã giới thiệu được bao nhiêu người
             int referralCount = await UserManager.Users.CountAsync(u => u.NguoiGioiThieuId == referrerId);
 
-            // Định nghĩa các mốc thưởng và mã khuyến mãi tương ứng
-            var rewardTiers = new Dictionary<int, string>
-            {
-                { 5, "REFERRAL_5" },   // Mã KM cho mốc 5 người
-                { 10, "REFERRAL_10" }, // Mã KM cho mốc 10 người
-                { 15, "REFERRAL_15" }  // Mã KM cho mốc 15 người
-            };
+            // LẤY CÁC MỐC THƯỞNG TỪ REFERRALSERVICE
+            var rewardTiers = ReferralService.RewardTiers;
 
-            // Kiểm tra xem có đạt mốc nào không
             if (rewardTiers.ContainsKey(referralCount))
             {
                 string maKhuyenMai = rewardTiers[referralCount];
@@ -521,12 +531,7 @@ namespace GymManagementSystem.Controllers
 
                 if (khuyenMai != null)
                 {
-                    // TODO: Logic tặng khuyến mãi cho người dùng có ID là referrerId
-                    // Ví dụ: Tạo một bản ghi trong bảng nối HoiVien_KhuyenMai
-                    // db.HoiVien_KhuyenMais.Add(new HoiVien_KhuyenMai { HoiVienId = referrerId, KhuyenMaiId = khuyenMai.Id });
-                    // await db.SaveChangesAsync();
-
-                    // Có thể gửi email thông báo cho người giới thiệu
+                    // ... logic tặng khuyến mãi ...
                 }
             }
         }

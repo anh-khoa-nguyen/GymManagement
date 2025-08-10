@@ -1,0 +1,15 @@
+﻿@model GymManagementSystem.Models.Phong
+
+<h3>Bạn có chắc chắn muốn xóa?</h3>
+<p>Hành động này sẽ xóa vĩnh viễn phòng:</p>
+<h4 class="text-warning">@Model.TenPhong</h4>
+<hr />
+
+@using (Html.BeginForm("Delete", "Phongs", new { id = Model.Id }, FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <div class="offcanvas-footer">
+        <input type="submit" value="Xóa Vĩnh Viễn" class="btn btn-offcanvas-danger" />
+        <button type="button" class="btn btn-offcanvas-secondary" data-bs-dismiss="offcanvas">Hủy</button>
+    </div>
+}

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GymManagementSystem.Models
 {
@@ -32,5 +33,11 @@ namespace GymManagementSystem.Models
 
         [Required, Display(Name = "Tình Trạng")]
         public TinhTrangThietBi TinhTrang { get; set; }
+
+        [Display(Name = "Phòng")]
+        public int? PhongId { get; set; } // <-- THÊM DẤU ? VÀO ĐÂY
+
+        [ForeignKey("PhongId")]
+        public virtual Phong Phong { get; set; }
     }
 }

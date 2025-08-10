@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Data.Entity; 
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -13,8 +10,7 @@ using GymManagementSystem.Models.ViewModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-//Khoa
-using QRCoder; // Và using này
+using QRCoder;
 using System.Collections.Generic;
 
 
@@ -61,7 +57,7 @@ namespace GymManagementSystem.Controllers
             }
         }
 
-        //
+        #region Thông tin hội viên
         // GET: /Manage/Index
         public async Task<ActionResult> Index(ManageMessageId? message)
         {
@@ -74,65 +70,96 @@ namespace GymManagementSystem.Controllers
                 : message == ManageMessageId.RemovePhoneSuccess ? "Your phone number was removed."
                 : "";
 
-            // === BẮT ĐẦU LOGIC HỢP NHẤT ===
             var userId = User.Identity.GetUserId();
             var user = await UserManager.FindByIdAsync(userId);
             if (user == null)
             {
                 return View("Error");
             }
-            
+
             string maGioiThieu = null;
+            HangThanhVienViewModel membershipInfo = new HangThanhVienViewModel();
+            LichSuGioiThieuViewModel referralInfo = new LichSuGioiThieuViewModel();
+            string qrCodeUri = "";
+            List<KhuyenMai> khuyenMaiDaNhan = new List<KhuyenMai>();
+            List<KhuyenMai> khuyenMaiSapToi = new List<KhuyenMai>();
+            string tenHangTiepTheo = null;
 
             if (User.IsInRole("HoiVien"))
             {
-                // Giả sử bạn có một bảng HoiViens liên kết với ApplicationUser qua một khóa ngoại
-                // và bạn cần lấy thông tin từ bảng đó.
-                // Nếu thông tin đã có sẵn trong 'user' thì dùng user.MaGioiThieu là đủ.
                 var hoivienProfile = await db.HoiViens.FirstOrDefaultAsync(h => h.ApplicationUserId == userId);
                 if (hoivienProfile != null)
                 {
                     maGioiThieu = hoivienProfile.MaGioiThieu;
+
+                    // 1. LẤY THÔNG TIN HẠNG THÀNH VIÊN
+                    decimal tongChiTieu = await db.HoaDons
+                                                  .Where(h => h.HoiVienId == userId && h.TrangThai == TrangThai.DaThanhToan)
+                                                  .SumAsync(h => (decimal?)h.ThanhTien) ?? 0;
+
+                    var cacHang = await db.HangHoiViens.OrderBy(h => h.NguongChiTieu).ToListAsync();
+                    var hangHienTai = cacHang.LastOrDefault(h => h.NguongChiTieu <= tongChiTieu);
+                    var hangTiepTheo = cacHang.FirstOrDefault(h => h.NguongChiTieu > tongChiTieu);
+
+                    membershipInfo.TongChiTieu = tongChiTieu;
+                    membershipInfo.HangHienTai = hangHienTai;
+                    membershipInfo.HangTiepTheo = hangTiepTheo;
+
+                    if (hangTiepTheo != null)
+                    {
+                        decimal nguongTruoc = hangHienTai?.NguongChiTieu ?? 0;
+                        decimal khoangCachNguong = hangTiepTheo.NguongChiTieu - nguongTruoc;
+                        membershipInfo.ChiTieuCanThem = hangTiepTheo.NguongChiTieu - tongChiTieu;
+                        if (khoangCachNguong > 0)
+                        {
+                            membershipInfo.PhanTramHoanThanh = (int)(((tongChiTieu - nguongTruoc) / khoangCachNguong) * 100);
+                        }
+                    }
+                    else
+                    {
+                        membershipInfo.PhanTramHoanThanh = 100;
+                    }
+
+                    // 2. Lấy khuyến mãi của HẠNG
+                    if (membershipInfo.HangHienTai != null)
+                    {
+                        khuyenMaiDaNhan = await db.HangHoiVien_KhuyenMais
+                            .Where(hkm => hkm.HangHoiVienId == membershipInfo.HangHienTai.Id)
+                            .Select(hkm => hkm.KhuyenMai)
+                            .ToListAsync();
+                    }
+
+                    if (membershipInfo.HangTiepTheo != null)
+                    {
+                        tenHangTiepTheo = membershipInfo.HangTiepTheo.TenHang;
+                        khuyenMaiSapToi = await db.HangHoiVien_KhuyenMais
+                            .Where(hkm => hkm.HangHoiVienId == membershipInfo.HangTiepTheo.Id)
+                            .Select(hkm => hkm.KhuyenMai)
+                            .ToListAsync();
+                    }
+
+                    // 2. LẤY THÔNG TIN LỊCH SỬ GIỚI THIỆU
+                    referralInfo.DanhSachNguoiDuocGioiThieu = 
+                        await db.Users
+                        .Where(u => u.NguoiGioiThieuId == userId)
+                        .Select(u => new NguoiDuocGioiThieuItem
+                        {
+                            HoTen = u.HoTen,
+                            Email = u.Email,
+                            AvatarUrl = u.AvatarUrl
+                            // NgayThamGia = u.NgayTao // Cần thêm trường NgayTao vào ApplicationUser
+                        }).ToListAsync();
+
+                    // Lấy các thông số tổng hợp
+                    referralInfo.TongSoNguoiDaGioiThieu = referralInfo.DanhSachNguoiDuocGioiThieu.Count;
+                    referralInfo.CacMocThuong = ReferralService.RewardTiers;
+                    referralInfo.MocThuongTiepTheo = ReferralService.GetNextRewardTier(referralInfo.TongSoNguoiDaGioiThieu);
+                    referralInfo.SoNguoiCanThem = referralInfo.MocThuongTiepTheo > 0
+                        ? referralInfo.MocThuongTiepTheo - referralInfo.TongSoNguoiDaGioiThieu
+                        : 0;
                 }
             }
 
-            // 1. Lấy thông tin Hạng Thành Viên
-            var tongChiTieu = db.HoaDons
-                                .Where(h => h.HoiVienId == userId && h.TrangThai == TrangThai.DaThanhToan)
-                                .Sum(h => (decimal?)h.ThanhTien) ?? 0;
-            var cacHang = db.HangHoiViens.OrderBy(h => h.NguongChiTieu).ToList(); 
-            var hangHienTai = cacHang.LastOrDefault(h => h.NguongChiTieu <= tongChiTieu); 
-            var hangTiepTheo = cacHang.FirstOrDefault(h => h.NguongChiTieu > tongChiTieu); 
-
-            var membershipInfo = new HangThanhVienViewModel
-            {
-                TongChiTieu = tongChiTieu,
-                HangHienTai = hangHienTai,
-                HangTiepTheo = hangTiepTheo
-            };
-            if (hangTiepTheo != null && hangHienTai != null)
-            {
-                var chiTieuDaDat = tongChiTieu - hangHienTai.NguongChiTieu;
-                var chiTieuCanDat = hangTiepTheo.NguongChiTieu - hangHienTai.NguongChiTieu;
-                membershipInfo.ChiTieuCanThem = hangTiepTheo.NguongChiTieu - tongChiTieu;
-                membershipInfo.PhanTramHoanThanh = chiTieuCanDat > 0 ? (int)((chiTieuDaDat / chiTieuCanDat) * 100) : 100;
-            }
-
-            // 2. Lấy thông tin Lịch Sử Giới Thiệu
-            var nguoiDuocGioiThieu = db.Users.Where(u => u.NguoiGioiThieuId == userId).ToList();
-            var referralInfo = new LichSuGioiThieuViewModel
-            {
-                DanhSachNguoiDuocGioiThieu = nguoiDuocGioiThieu.Select(u => new NguoiDuocGioiThieuItem
-                {
-                    HoTen = u.HoTen, // Giả sử ApplicationUser có thuộc tính HoTen
-                    Email = u.Email,
-                    //NgayThamGia = u.NgayTao // Giả sử ApplicationUser có thuộc tính NgayTao
-                }).ToList()
-                // Logic tính các mốc thưởng có thể thêm vào đây nếu cần
-            };
-
-            // 3. Tạo mã QR
-            string qrCodeUri = "";
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
             QRCodeData qrCodeData = qrGenerator.CreateQrCode(userId, QRCodeGenerator.ECCLevel.Q);
             using (PngByteQRCode qrCode = new PngByteQRCode(qrCodeData))
@@ -142,60 +169,30 @@ namespace GymManagementSystem.Controllers
                 qrCodeUri = "data:image/png;base64," + base64String;
             }
 
-            //if (User.IsInRole("HoiVien"))
-            //{
-            //    var hoivienProfile = await db.HoiViens.FirstOrDefaultAsync(h => h.ApplicationUserId == userId);
-            //    if (hoivienProfile != null)
-            //    {
-            //        maGioiThieu = hoivienProfile.MaGioiThieu;
-            //    }
-            //}
-
-            // 4. Tạo ViewModel "mẹ" và gán dữ liệu
             var model = new UserProfileViewModel
             {
-                UserName = user.HoTen, // Giả sử bạn có thuộc tính HoTen
+                UserAccount = user, 
+                UserName = user.HoTen,
                 Email = user.Email,
                 MaGioiThieu = maGioiThieu,
                 QrCodeUri = qrCodeUri,
                 MembershipInfo = membershipInfo,
-                ReferralInfo = referralInfo
+                ReferralInfo = referralInfo,
+                KhuyenMaiDaNhan = khuyenMaiDaNhan,
+                KhuyenMaiSapToi = khuyenMaiSapToi,
             };
 
             return View(model);
-
-            //var userId = User.Identity.GetUserId();
-            //string maGioiThieu = null;
-
-            //if (User.IsInRole("HoiVien"))
-            //{
-            //    var hoivienProfile = await db.HoiViens.FirstOrDefaultAsync(h => h.ApplicationUserId == userId);
-            //    if (hoivienProfile != null)
-            //    {
-            //        maGioiThieu = hoivienProfile.MaGioiThieu;
-            //    }
-            //}
-
-            //var model = new IndexViewModel
-            //{
-            //    HasPassword = HasPassword(),
-            //    PhoneNumber = await UserManager.GetPhoneNumberAsync(userId),
-            //    TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),
-            //    Logins = await UserManager.GetLoginsAsync(userId),
-            //    BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId),
-            //    MaGioiThieu = maGioiThieu
-            //};
-            //return View(model);
         }
 
         // GET: /Manage/EditProfile
         public ActionResult Edit()
         {
-            // Tạo một ViewModel riêng cho trang này nếu cần, hoặc chỉ cần trả về View
             var userId = User.Identity.GetUserId();
             var model = new IndexViewModel { HasPassword = HasPassword() }; // Tận dụng lại ViewModel cũ
             return View(model);
         }
+        #endregion
 
         //
         // POST: /Manage/RemoveLogin
@@ -453,140 +450,6 @@ namespace GymManagementSystem.Controllers
             }
 
             base.Dispose(disposing);
-        }
-
-        //Khoa
-
-        // GET: /Manage/ShowQrCode
-        public ActionResult ShowQrCode()
-        {
-            // 1. Lấy ID của người dùng đang đăng nhập
-            string userId = User.Identity.GetUserId();
-
-            // 2. Sử dụng thư viện QRCoder để tạo mã QR từ userId
-            QRCodeGenerator qrGenerator = new QRCodeGenerator();
-            QRCodeData qrCodeData = qrGenerator.CreateQrCode(userId, QRCodeGenerator.ECCLevel.Q);
-            PngByteQRCode qrCode = new PngByteQRCode(qrCodeData);
-            byte[] qrCodeAsPngByteArr = qrCode.GetGraphic(20);
-
-            // 3. Chuyển byte array thành chuỗi Base64 để hiển thị trong thẻ <img>
-            string qrCodeAsBase64 = "data:image/png;base64," + Convert.ToBase64String(qrCodeAsPngByteArr);
-
-            // 4. Gửi chuỗi Base64 này tới View
-            ViewBag.QrCodeUri = qrCodeAsBase64;
-
-            return View();
-        }
-
-        public async Task<ActionResult> HangThanhVien()
-        {
-            // 1. Lấy thông tin người dùng đang đăng nhập
-            var userId = User.Identity.GetUserId();
-            var user = await UserManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            // 2. Tính tổng chi tiêu của người dùng
-            decimal tongChiTieu = await db.HoaDons
-                                          .Where(h => h.HoiVienId == userId && h.TrangThai == TrangThai.DaThanhToan)
-                                          .SumAsync(h => (decimal?)h.ThanhTien) ?? 0;
-
-            // 3. Lấy tất cả các hạng và sắp xếp theo ngưỡng để xử lý
-            var allRanks = await db.HangHoiViens.OrderBy(h => h.NguongChiTieu).ToListAsync();
-
-            // 4. Tìm hạng hiện tại và hạng tiếp theo
-            var hangHienTai = allRanks.Where(h => h.NguongChiTieu <= tongChiTieu).LastOrDefault();
-            var hangTiepTheo = allRanks.FirstOrDefault(h => h.NguongChiTieu > tongChiTieu);
-
-            // 5. Tính toán các số liệu cho ViewModel
-            decimal chiTieuCanThem = 0;
-            int phanTramHoanThanh = 0;
-
-            if (hangTiepTheo != null) // Nếu có hạng tiếp theo để phấn đấu
-            {
-                chiTieuCanThem = hangTiepTheo.NguongChiTieu - tongChiTieu;
-
-                // Tính % cho thanh tiến trình
-                decimal nguongTruoc = hangHienTai?.NguongChiTieu ?? 0;
-                decimal khoangCachNguong = hangTiepTheo.NguongChiTieu - nguongTruoc;
-
-                if (khoangCachNguong > 0)
-                {
-                    decimal phanTram = ((tongChiTieu - nguongTruoc) / khoangCachNguong) * 100;
-                    phanTramHoanThanh = (int)phanTram;
-                }
-            }
-            else // Đã đạt hạng cao nhất
-            {
-                phanTramHoanThanh = 100;
-            }
-
-            // 6. Tạo ViewModel và gán dữ liệu
-            var viewModel = new HangThanhVienViewModel
-            {
-                TenHoiVien = user.HoTen,
-                TongChiTieu = tongChiTieu,
-                HangHienTai = hangHienTai,
-                HangTiepTheo = hangTiepTheo,
-                ChiTieuCanThem = chiTieuCanThem,
-                PhanTramHoanThanh = phanTramHoanThanh
-            };
-
-            return View(viewModel);
-        }
-
-        // GET: /Manage/LichSuGioiThieu
-        public async Task<ActionResult> LichSuGioiThieu()
-        {
-            var userId = User.Identity.GetUserId();
-
-            // 1. Lấy danh sách những người đã được người dùng này giới thiệu
-            var danhSachNguoiDuocGioiThieu = await UserManager.Users
-                .Where(u => u.NguoiGioiThieuId == userId)
-                .Select(u => new NguoiDuocGioiThieuItem
-                {
-                    HoTen = u.HoTen,
-                    Email = u.Email,
-                    // LockoutEndDateUtc có thể được dùng tạm để lưu ngày tạo, hoặc bạn cần thêm trường NgayTao vào ApplicationUser
-                    NgayThamGia = u.LockoutEndDateUtc ?? System.DateTime.MinValue
-                })
-                .OrderByDescending(u => u.NgayThamGia)
-                .ToListAsync();
-
-            int tongSoNguoi = danhSachNguoiDuocGioiThieu.Count;
-
-            // 2. Định nghĩa các mốc thưởng (nên được lấy từ CSDL trong thực tế)
-            var cacMocThuong = new Dictionary<int, string>
-            {
-                { 5, "Khuyến mãi 10%" },
-                { 10, "Khuyến mãi 20%" },
-                { 15, "1 tháng miễn phí" }
-            };
-
-            // 3. Tìm mốc thưởng tiếp theo
-            int mocThuongTiepTheo = 0;
-            foreach (var moc in cacMocThuong.Keys.OrderBy(k => k))
-            {
-                if (tongSoNguoi < moc)
-                {
-                    mocThuongTiepTheo = moc;
-                    break;
-                }
-            }
-
-            // 4. Tạo ViewModel
-            var viewModel = new LichSuGioiThieuViewModel
-            {
-                TongSoNguoiDaGioiThieu = tongSoNguoi,
-                DanhSachNguoiDuocGioiThieu = danhSachNguoiDuocGioiThieu,
-                CacMocThuong = cacMocThuong,
-                MocThuongTiepTheo = mocThuongTiepTheo,
-                SoNguoiCanThem = mocThuongTiepTheo > 0 ? mocThuongTiepTheo - tongSoNguoi : 0
-            };
-
-            return View(viewModel);
         }
 
         #region Helpers

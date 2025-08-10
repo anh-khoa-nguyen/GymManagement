@@ -29,6 +29,8 @@ namespace GymManagementSystem.Models
         public string ImageUrl { get; set; }
 
         public virtual ICollection<DangKyGoiTap> DangKyGoiTaps { get; set; }
+        public virtual ICollection<KhuyenMaiCuaGoi> KhuyenMaisApDung { get; set; }
+
 
 
     }

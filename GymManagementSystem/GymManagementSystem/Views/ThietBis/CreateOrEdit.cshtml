@@ -25,6 +25,12 @@
 </div>
 
 <div class="mb-3">
+    @Html.LabelFor(model => model.PhongId, htmlAttributes: new { @class = "form-label" })
+    @Html.DropDownList("PhongId", null, "-- Chọn phòng --", htmlAttributes: new { @class = "form-select" })
+    @Html.ValidationMessageFor(model => model.PhongId, "", new { @class = "text-danger" })
+</div>
+
+<div class="mb-3">
     @Html.LabelFor(model => model.NgayMua, htmlAttributes: new { @class = "form-label" })
     @Html.EditorFor(model => model.NgayMua, new { htmlAttributes = new { @class = "form-control", @type = "date", @Value = Model.NgayMua?.ToString("yyyy-MM-dd") } })
 </div>

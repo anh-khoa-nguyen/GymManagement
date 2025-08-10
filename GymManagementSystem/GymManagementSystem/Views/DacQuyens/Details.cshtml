@@ -1,0 +1,28 @@
+﻿@model GymManagementSystem.Models.DacQuyen
+
+<h4>Chi tiết: @Model.TenDacQuyen</h4>
+
+<dl>
+    <dt class="text-muted">Tên Đặc Quyền</dt>
+    <dd class="mb-3">@Html.DisplayFor(model => model.TenDacQuyen)</dd>
+
+    <dt class="text-muted">Mô Tả</dt>
+    <dd class="mb-3">@Html.DisplayFor(model => model.MoTa)</dd>
+
+    <dt class="text-muted">Icon</dt>
+    <dd class="mb-3">
+        @if (!string.IsNullOrEmpty(Model.IconClass))
+        {
+            <i class="@Model.IconClass fa-2x"></i>
+            <span>(@Model.IconClass)</span>
+        }
+        else
+        {
+            <span>Không có</span>
+        }
+    </dd>
+</dl>
+
+<div class="offcanvas-footer">
+    <button type="button" class="btn btn-offcanvas-secondary" data-bs-dismiss="offcanvas">Đóng</button>
+</div>
