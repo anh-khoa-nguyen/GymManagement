@@ -437,6 +437,7 @@
     <Compile Include="Models\TienDoBaiTap.cs" />
     <Compile Include="Models\ViewModels\AdminPageHeaderViewModel.cs" />
     <Compile Include="Models\ViewModels\ChiTietKeHoachViewModel.cs" />
+    <Compile Include="Models\ViewModels\DatLichViewModel.cs" />
     <Compile Include="Models\ViewModels\GoiTapViewModel.cs" />
     <Compile Include="Models\ViewModels\HangHoiVienViewModel.cs" />
     <Compile Include="Models\ViewModels\HangThanhVienViewModel.cs" />
@@ -452,6 +453,7 @@
     <Compile Include="Models\ThongBao.cs" />
     <Compile Include="Models\ViewModels\XacNhanThanhToanViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\BookingService.cs" />
     <Compile Include="Services\CloudinaryService.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\HistoryReconstructionService.cs" />
@@ -553,7 +555,6 @@
     <Content Include="Views\GoiTaps\Index.cshtml" />
     <Content Include="Views\Shared\_LayoutAccount.cshtml" />
     <Content Include="Views\HoiVien\DanhSachGoiTap.cshtml" />
-    <Content Include="Views\PT\Dashboard.cshtml" />
     <Content Include="Views\HoiVien\DatLich.cshtml" />
     <Content Include="Views\Manage\ShowQrCode.cshtml" />
     <Content Include="Views\Checkin\Scan.cshtml" />
