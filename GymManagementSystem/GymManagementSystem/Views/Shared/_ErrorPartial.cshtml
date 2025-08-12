@@ -1,0 +1,11 @@
+﻿@model System.Web.Mvc.HandleErrorInfo
+
+<div class="alert alert-danger m-3">
+    <strong>Đã có lỗi xảy ra!</strong>
+    <p>Không thể tải form đặt lịch. Vui lòng thử lại sau.</p>
+    @if (Model != null && HttpContext.Current.IsDebuggingEnabled)
+    {
+        <hr>
+        <p class="mb-0"><b>Chi tiết lỗi (chỉ hiển thị ở chế độ debug):</b> @Model.Exception.Message</p>
+    }
+</div>

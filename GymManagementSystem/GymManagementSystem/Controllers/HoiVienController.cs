@@ -1,20 +1,28 @@
-﻿using System;
+﻿using GymManagementSystem.Models;
+using GymManagementSystem.Models.ViewModels;
+using GymManagementSystem.Services;
+using Microsoft.AspNet.Identity;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using GymManagementSystem.Models;
-using GymManagementSystem.Models.ViewModels;
-using Microsoft.AspNet.Identity;
 
 namespace GymManagementSystem.Controllers
 {
     [Authorize(Roles = "HoiVien")] 
     public class HoiVienController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private ApplicationDbContext db;
+        private readonly BookingService _bookingService; 
+
+        public HoiVienController()
+        {
+            this.db = new ApplicationDbContext();
+            _bookingService = new BookingService(db);
+        }
 
         // GET: HoiVien
         public ActionResult Index()
@@ -75,72 +83,75 @@ namespace GymManagementSystem.Controllers
         // GET: HoiVien/DatLich
         public ActionResult DatLich()
         {
-            // Lấy danh sách PT để đưa vào dropdown
-            var danhSachPT = db.HuanLuyenViens.Include(pt => pt.ApplicationUser).ToList();
-            ViewBag.DanhSachPT = new SelectList(danhSachPT, "Id", "ApplicationUser.HoTen");
-
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public JsonResult TaoLichTap(int huanLuyenVienId, string ngayDatLich, string gioBatDau, string ghiChu)
+        // SỬA LẠI TÊN CÁC THAM SỐ ĐỂ KHỚP VỚI VIEWMODEL
+        public async Task<JsonResult> TaoLichTap(int? HuanLuyenVienId, string NgayDatLich, string GioBatDau, string GhiChu)
         {
-            try
+            // 1. KIỂM TRA ĐẦU VÀO
+            if (!HuanLuyenVienId.HasValue)
             {
-                var currentUserId = User.Identity.GetUserId();
-                var hoiVienProfile = db.HoiViens.FirstOrDefault(hv => hv.ApplicationUserId == currentUserId);
-
-                if (hoiVienProfile == null)
-                {
-                    return Json(new { success = false, message = "Không tìm thấy hồ sơ hội viên." });
-                }
-
-                // Kiểm tra đầu vào
-                if (string.IsNullOrEmpty(ngayDatLich) || string.IsNullOrEmpty(gioBatDau))
-                {
-                    return Json(new { success = false, message = "Vui lòng chọn ngày và giờ." });
-                }
-
-                DateTime ngay = DateTime.Parse(ngayDatLich);
-                TimeSpan gio = TimeSpan.Parse(gioBatDau);
-                DateTime thoiGianBatDau = ngay.Add(gio);
-                DateTime thoiGianKetThuc = thoiGianBatDau.AddHours(1);
-
-                var lichTapMoi = new LichTap
-                {
-                    HoiVienId = hoiVienProfile.Id,
-                    HuanLuyenVienId = huanLuyenVienId,
-                    ThoiGianBatDau = thoiGianBatDau,
-                    ThoiGianKetThuc = thoiGianKetThuc,
-                    GhiChuHoiVien = ghiChu,
-                    TrangThai = TrangThaiLichTap.ChoDuyet
-                };
-
-                db.LichTaps.Add(lichTapMoi);
-                db.SaveChanges();
-
-                // Trả về kết quả thành công dưới dạng JSON
-                return Json(new { success = true, message = "Yêu cầu đặt lịch đã được gửi đi!" });
+                return Json(new { success = false, message = "Vui lòng chọn một Huấn luyện viên." });
             }
-            catch (Exception ex)
+            // Dùng IsNullOrWhiteSpace để kiểm tra an toàn hơn
+            if (string.IsNullOrWhiteSpace(NgayDatLich) || string.IsNullOrWhiteSpace(GioBatDau))
             {
-                // Ghi lại lỗi và trả về thông báo lỗi
-                System.Diagnostics.Debug.WriteLine(ex.ToString());
-                return Json(new { success = false, message = "Đã có lỗi hệ thống xảy ra. Vui lòng thử lại." });
+                return Json(new { success = false, message = "Vui lòng chọn ngày và giờ hẹn." });
             }
+
+            // 2. LẤY HỒ SƠ HỘI VIÊN
+            var currentUserId = User.Identity.GetUserId();
+            var hoiVienProfile = await this.db.HoiViens.FirstOrDefaultAsync(hv => hv.ApplicationUserId == currentUserId);
+
+            if (hoiVienProfile == null)
+            {
+                return Json(new { success = false, message = "Không tìm thấy hồ sơ hội viên của bạn." });
+            }
+
+            // 3. PARSE NGÀY GIỜ
+            // Dùng NgayDatLich thay vì ngayDatLich
+            if (!DateTime.TryParse($"{NgayDatLich} {GioBatDau}", out DateTime thoiGianBatDau))
+            {
+                return Json(new { success = false, message = "Định dạng ngày hoặc giờ không hợp lệ." });
+            }
+
+            // 4. GỌI SERVICE
+            var result = await _bookingService.CreateNewBookingAsync(
+                hoiVienProfile.Id,
+                HuanLuyenVienId.Value,
+                thoiGianBatDau,
+                GhiChu // Dùng GhiChu thay vì ghiChu
+            );
+
+            // 5. TRẢ VỀ KẾT QUẢ
+            return Json(new { success = result.Success, message = result.Message });
         }
 
         // GET: HoiVien/GetLichTapCuaHoiVien
-        public JsonResult GetLichTapCuaHoiVien()
+        public async Task<JsonResult> GetLichTapCuaHoiVien()
         {
             try
             {
                 var currentUserId = User.Identity.GetUserId();
 
-                // Lấy dữ liệu thô từ CSDL
-                var lichTapData = db.LichTaps
-                    .Where(l => l.HoiVien.ApplicationUserId == currentUserId)
+                // BƯỚC 1: Lấy hồ sơ hội viên trước.
+                var hoiVienProfile = await db.HoiViens.FirstOrDefaultAsync(h => h.ApplicationUserId == currentUserId);
+
+                if (hoiVienProfile == null)
+                {
+                    // Nếu không có hồ sơ, trả về danh sách rỗng một cách an toàn.
+                    return Json(new List<object>(), JsonRequestBehavior.AllowGet);
+                }
+
+                // BƯỚC 2: Viết lại câu lệnh LINQ để chống lỗi NullReferenceException.
+                var lichTapData = await db.LichTaps
+                    // Chỉ lấy lịch của hội viên này
+                    .Where(l => l.HoiVienId == hoiVienProfile.Id)
+                    // QUAN TRỌNG: Đảm bảo rằng PT liên quan và tài khoản của PT đó phải tồn tại.
+                    .Where(l => l.HuanLuyenVien != null && l.HuanLuyenVien.ApplicationUser != null)
                     .Select(l => new
                     {
                         Id = l.Id,
@@ -148,23 +159,28 @@ namespace GymManagementSystem.Controllers
                         ThoiGianBatDau = l.ThoiGianBatDau,
                         ThoiGianKetThuc = l.ThoiGianKetThuc,
                         TrangThai = l.TrangThai,
-                        GhiChuHoiVien = l.GhiChuHoiVien
+                        GhiChuHoiVien = l.GhiChuHoiVien,
+                        DanhGiaSao = l.DanhGiaSao
                     })
-                    .ToList();
+                    .ToListAsync();
 
-                // Xử lý dữ liệu trên bộ nhớ
+                // BƯỚC 3: Chuyển đổi dữ liệu sang định dạng mà FullCalendar hiểu.
                 var events = lichTapData.Select(l => new
                 {
                     id = l.Id,
-                    title = "Tập với PT " + (l.HoTenPT ?? "Chưa xác định"),
+                    title = $"{l.ThoiGianBatDau:HH:mm} - {l.HoTenPT.Split(' ').Last()}", // TIÊU ĐỀ MỚI: "14:00 - Triều"
                     start = l.ThoiGianBatDau.ToString("o"),
                     end = l.ThoiGianKetThuc.ToString("o"),
                     backgroundColor = GetEventColor(l.TrangThai),
                     borderColor = GetEventColor(l.TrangThai),
                     extendedProps = new
                     {
+                        // --- THÊM CÁC THÔNG TIN CHI TIẾT VÀO ĐÂY ---
+                        hoTenPTDayDu = $"PT. {l.HoTenPT}",
+                        thoiGianDayDu = $"{l.ThoiGianBatDau:HH:mm} - {l.ThoiGianKetThuc:HH:mm}, {l.ThoiGianBatDau:dd/MM/yyyy}",
                         trangThaiText = l.TrangThai.ToString(),
-                        ghiChu = l.GhiChuHoiVien ?? ""
+                        ghiChu = l.GhiChuHoiVien,
+                        daDanhGia = l.DanhGiaSao.HasValue
                     }
                 }).ToList();
 
@@ -172,9 +188,12 @@ namespace GymManagementSystem.Controllers
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex.ToString());
+                // Ghi lại lỗi chi tiết để bạn có thể xem trong cửa sổ Output của Visual Studio
+                System.Diagnostics.Debug.WriteLine("FATAL ERROR in GetLichTapCuaHoiVien: " + ex.ToString());
+
+                // Gửi một mã lỗi 500 về cho trình duyệt
                 Response.StatusCode = 500;
-                return Json(new { message = ex.Message }, JsonRequestBehavior.AllowGet);
+                return Json(new { message = "Đã xảy ra lỗi nghiêm trọng ở máy chủ khi tải dữ liệu lịch." }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -427,11 +446,39 @@ namespace GymManagementSystem.Controllers
         }
 
         // GET: HoiVien/GetBookingForm
-        public PartialViewResult GetBookingForm()
+        public async Task<PartialViewResult> GetBookingForm(string date)
         {
-            var danhSachPT = db.HuanLuyenViens.Include(pt => pt.ApplicationUser).ToList();
-            ViewBag.DanhSachPT = new SelectList(danhSachPT, "Id", "ApplicationUser.HoTen");
-            return PartialView("_BookingFormPartial");
+            try // Bọc trong khối try-catch để bắt lỗi chi tiết
+            {
+                // Câu lệnh LINQ an toàn hơn
+                var danhSachPT = await db.HuanLuyenViens
+                    .Where(pt => pt.ApplicationUser != null) // CHỈ LẤY NHỮNG PT CÓ TÀI KHOẢN TỒN TẠI
+                    .Select(pt => new SelectListItem
+                    {
+                        Value = pt.Id.ToString(),
+                        Text = pt.ApplicationUser.HoTen
+                    })
+                    .OrderBy(pt => pt.Text) // Sắp xếp theo tên cho thân thiện
+                    .ToListAsync();
+
+                var viewModel = new DatLichViewModel // Hoặc BookingFormViewModel
+                {
+                    DanhSachPT = danhSachPT,
+                    NgayDatLich = DateTime.TryParse(date, out var selectedDate) ? selectedDate : DateTime.Today
+                };
+
+                return PartialView("_BookingFormPartial", viewModel);
+            }
+            catch (Exception ex)
+            {
+                // GHI LOG LỖI CHI TIẾT ĐỂ DEBUG
+                // Khi bạn chạy ở chế độ Debug, lỗi sẽ hiện trong cửa sổ Output của Visual Studio
+                System.Diagnostics.Debug.WriteLine("ERROR in GetBookingForm: " + ex.ToString());
+
+                // Trả về một Partial View báo lỗi thân thiện thay vì làm sập trang
+                // Bạn cần tạo một file Partial View đơn giản cho việc này
+                return PartialView("_ErrorPartial", new HandleErrorInfo(ex, "HoiVien", "GetBookingForm"));
+            }
         }
 
         [HttpPost]
@@ -462,6 +509,38 @@ namespace GymManagementSystem.Controllers
             {
                 System.Diagnostics.Debug.WriteLine(ex.ToString());
                 return Json(new { success = false, message = "Đã có lỗi hệ thống xảy ra." });
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetAvailableSlots(int ptId, string date)
+        {
+            // GHI LOG: Đây là bước quan trọng để debug. 
+            // Khi bạn chạy, hãy xem cửa sổ Output của Visual Studio.
+            System.Diagnostics.Debug.WriteLine($"--- API GetAvailableSlots called with ptId: {ptId}, date: {date} ---");
+
+            try
+            {
+                if (!DateTime.TryParse(date, out DateTime selectedDate))
+                {
+                    // Trả về lỗi nếu ngày không hợp lệ, thay vì danh sách rỗng
+                    return Json(new { success = false, message = "Định dạng ngày không hợp lệ." }, JsonRequestBehavior.AllowGet);
+                }
+
+                // Gọi service (đảm bảo _bookingService đã được khởi tạo trong constructor)
+                var slots = await _bookingService.GetAvailableSlotsAsync(ptId, selectedDate);
+                var formattedSlots = slots.Select(s => s.ToString(@"hh\:mm")).ToList();
+
+                System.Diagnostics.Debug.WriteLine($"--- Found {formattedSlots.Count} available slots. ---");
+
+                // Trả về dữ liệu thành công
+                return Json(formattedSlots, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("--- ERROR in GetAvailableSlots: " + ex.ToString() + " ---");
+                Response.StatusCode = 500;
+                return Json(new { success = false, message = "Lỗi server khi lấy dữ liệu giờ trống." }, JsonRequestBehavior.AllowGet);
             }
         }
 

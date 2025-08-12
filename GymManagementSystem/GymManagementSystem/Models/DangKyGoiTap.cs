@@ -30,6 +30,12 @@ namespace GymManagementSystem.Models
         [Required]
         public TrangThaiDangKy TrangThai { get; set; }
 
+        [Display(Name = "Tổng số buổi PT")]
+        public int SoBuoiTapVoiPT { get; set; } // Sẽ được copy từ Gói Tập gốc khi mua
+
+        [Display(Name = "Số buổi PT đã sử dụng")]
+        public int SoBuoiPTDaSuDung { get; set; } = 0; // Mặc định là 0 khi mới đăng ký
+
         [ForeignKey("HoiVienId")]
         public virtual HoiVien HoiVien { get; set; }
 

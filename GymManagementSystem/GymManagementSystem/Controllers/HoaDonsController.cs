@@ -279,7 +279,9 @@ namespace GymManagementSystem.Controllers
                     GoiTapId = goiTap.Id,
                     NgayDangKy = DateTime.Today,
                     NgayHetHan = DateTime.Today.AddDays(goiTap.SoBuoiTapVoiPT),
-                    TrangThai = TrangThaiDangKy.HoatDong
+                    TrangThai = TrangThaiDangKy.HoatDong,
+                    SoBuoiTapVoiPT = goiTap.SoBuoiTapVoiPT, 
+                    SoBuoiPTDaSuDung = 0
                 };
                 db.DangKyGoiTaps.Add(dangKy);
             }

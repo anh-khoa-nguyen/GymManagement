@@ -1,34 +1,40 @@
-﻿@* File: Views/HoiVien/_BookingFormPartial.cshtml *@
+﻿@model GymManagementSystem.Models.ViewModels.DatLichViewModel
 
-@using (Html.BeginForm("TaoLichTap", "HoiVien", FormMethod.Post, new { id = "bookingFormAjax" }))
+@using (Html.BeginForm("TaoLichTap", "HoiVien", FormMethod.Post, new { id = "offcanvasForm", @class = "booking-form-light" }))
 {
     @Html.AntiForgeryToken()
-    <div class="modal-header">
-        <h5 class="modal-title">Đặt lịch tập</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-        </button>
+
+    @Html.HiddenFor(m => m.GioBatDau, new { id = "gioBatDau" })
+
+    <div class="mb-3">
+        @Html.LabelFor(m => m.HuanLuyenVienId, new { @class = "form-label fw-bold" })
+        @* SỬA LẠI ĐỂ DÙNG DropDownListFor *@
+        @Html.DropDownListFor(m => m.HuanLuyenVienId, Model.DanhSachPT, "--- Vui lòng chọn một PT ---", new { id = "bookingPtId", @class = "form-select" })
+        @Html.ValidationMessageFor(m => m.HuanLuyenVienId, "", new { @class = "text-danger small mt-1" })
     </div>
-    <div class="modal-body">
-        <input type="hidden" id="ngayDatLich" name="ngayDatLich" />
 
-        <div class="form-group">
-            <label>Chọn Huấn luyện viên</label>
-            @Html.DropDownList("huanLuyenVienId", (SelectList)ViewBag.DanhSachPT, "--- Chọn PT ---", new { @class = "form-control", required = "required" })
-        </div>
-
-        <div class="form-group">
-            <label>Giờ bắt đầu</label>
-            <input type="time" name="gioBatDau" class="form-control" required />
-        </div>
-
-        <div class="form-group">
-            <label>Ghi chú</label>
-            <textarea name="ghiChu" class="form-control" rows="3"></textarea>
-        </div>
+    <div class="mb-3">
+        @Html.LabelFor(m => m.NgayDatLich, new { @class = "form-label fw-bold" })
+        @* SỬA LẠI ĐỂ DÙNG EditorFor *@
+        @Html.EditorFor(m => m.NgayDatLich, new { htmlAttributes = new { @class = "form-control", id = "bookingDate" } })
+        @Html.ValidationMessageFor(m => m.NgayDatLich, "", new { @class = "text-danger small mt-1" })
     </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-        <button type="submit" class="btn btn-primary">Gửi Yêu Cầu</button>
+
+    <div class="mb-3">
+        <label class="form-label fw-bold">Giờ bắt đầu</label>
+        <div id="availableSlotsContainer" class="d-flex flex-wrap" style="gap: 10px;">
+            <div class="alert alert-secondary w-100 p-2 text-center">Vui lòng chọn PT và ngày để xem các giờ hẹn có sẵn.</div>
+        </div>
+        <div id="slotsLoader" class="d-none mt-2">
+            <div class="spinner-border spinner-border-sm" role="status"></div>
+            <span class="ms-2">Đang tìm giờ trống...</span>
+        </div>
+        @Html.ValidationMessageFor(m => m.GioBatDau, "", new { @class = "text-danger small mt-1" })
+    </div>
+
+    <div class="mb-4">
+        @Html.LabelFor(m => m.GhiChu, new { @class = "form-label fw-bold" })
+        @* SỬA LẠI ĐỂ DÙNG TextAreaFor *@
+        @Html.TextAreaFor(m => m.GhiChu, new { @class = "form-control", rows = 3, placeholder = "Ví dụ: Tôi muốn tập trung vào các bài tập bụng..." })
     </div>
 }

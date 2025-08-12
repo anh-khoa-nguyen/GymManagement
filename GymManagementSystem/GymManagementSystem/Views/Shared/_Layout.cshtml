@@ -1,5 +1,4 @@
 ﻿@{
-    // --- LOGIC KIỂM TRA TRANG CHỦ ---
     var currentController = ViewContext.RouteData.Values["controller"].ToString();
     var currentAction = ViewContext.RouteData.Values["action"].ToString();
     var isHomePage = currentController.Equals("Home", StringComparison.OrdinalIgnoreCase) &&
@@ -13,27 +12,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - FiTusion</title>
 
+    @* --- CSS CORE LIBRARIES (Tải từ CDN) --- *@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    @* --- CSS CHO CÁC PLUGIN PHỤ (Tải từ CDN) --- *@
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="~/Scripts/modernizr-2.8.3.js"></script>
-    <link href="@Url.Content("~/Content/Homepage/homepage.css")" rel="stylesheet" type="text/css" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
-    @Scripts.Render("~/bundles/modernizr")
+
+    @* --- CSS TÙY CHỈNH CỦA BẠN (Tải từ server của bạn) --- *@
+    <link href="@Url.Content("~/Content/Homepage/homepage.css")" rel="stylesheet" type="text/css" />
+    @* Bạn có thể thêm các file CSS tùy chỉnh khác ở đây, ví dụ: site.css *@
+    @* <link href="@Url.Content("~/Content/site.css")" rel="stylesheet" type="text/css" /> *@
+
+    @* Nơi để các trang con chèn CSS riêng của chúng (ví dụ: trang DatLich) *@
+    @RenderSection("Styles", required: false)
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+
 </head>
 <body>
     <header>
-        <!-- Navbar sẽ có class 'navbar-transparent' ở trang chủ, và 'bg-dark' ở các trang khác -->
         <nav class="navbar navbar-expand-lg navbar-dark @(isHomePage ? "navbar-transparent" : "bg-dark")">
             <div class="container-fluid px-5 py-2">
                 <a class="navbar-brand" href="@Url.Action("Index", "Home")">FiTusion</a>
-
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav mx-auto">
                         <li class="nav-item">@Html.ActionLink("Trang Chủ", "Index", "Home", null, new { @class = "nav-link" })</li>
@@ -44,24 +50,21 @@
                                     Quản lý Thanh toán
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="paymentDropdown">
-                                    <!-- Đổi tên các mục cho rõ ràng hơn -->
                                     <li>@Html.ActionLink("Quản lý Hóa đơn", "Index", "HoaDons", null, new { @class = "dropdown-item" })</li>
                                     <li>@Html.ActionLink("Quản Lý Gói tập", "Index", "GoiTaps", null, new { @class = "dropdown-item" })</li>
                                     <li>@Html.ActionLink("Quản lý Khuyến mãi", "Index", "KhuyenMais", null, new { @class = "dropdown-item" })</li>
                                 </ul>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="paymentDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle" href="#" id="memberDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     Quản lý Thành viên
                                 </a>
-                                <ul class="dropdown-menu" aria-labelledby="paymentDropdown">
-                                    <!-- Đổi tên các mục cho rõ ràng hơn -->
+                                <ul class="dropdown-menu" aria-labelledby="memberDropdown">
                                     <li>@Html.ActionLink("Quản lý Tài khoản", "Index", "UserManagement", null, new { @class = "dropdown-item" })</li>
                                     <li>@Html.ActionLink("Quản Lý VIP", "Index", "HangHoiViens", null, new { @class = "dropdown-item" })</li>
                                     <li>@Html.ActionLink("Quét mã QR", "Scan", "Checkin", null, new { @class = "dropdown-item" })</li>
                                 </ul>
                             </li>
-
                             <li class="nav-item">@Html.ActionLink("Quản lý Kế Hoạch", "Index", "KeHoachsAdmin", null, new { @class = "nav-link" })</li>
                             <li class="nav-item">@Html.ActionLink("Quản lý Bài Tập", "Index", "BaiTaps", null, new { @class = "nav-link" })</li>
                             <li class="nav-item">@Html.ActionLink("Quản lý Thiết Bị", "Index", "ThietBis", null, new { @class = "nav-link" })</li>
@@ -76,17 +79,13 @@
                         }
                         @if (Request.IsAuthenticated && User.IsInRole("PT"))
                         {
-                            <li class="nav-item">@Html.ActionLink("Dashboard", "Dashboard", "PT", null, new { @class = "nav-link" })</li>
                             <li class="nav-item">@Html.ActionLink("Lịch Làm Việc", "LichLamViec", "PT", null, new { @class = "nav-link" })</li>
                         }
                     </ul>
-
                     @if (Request.IsAuthenticated)
                     {
                         @Html.Action("NotificationBell", "Home")
                     }
-
-
                     <div class="d-flex align-items-center">
                         @if (Request.IsAuthenticated)
                         {
@@ -103,12 +102,10 @@
         </nav>
     </header>
 
-    <!-- Thẻ main sẽ có class 'main-content-padding' ở các trang con để đẩy nội dung xuống -->
     <main role="main" class="@(isHomePage ? "" : "main-content-padding container")">
         @RenderBody()
     </main>
 
-    <!-- Bootstrap 5 Offcanvas Component -->
     <div class="offcanvas offcanvas-end" tabindex="-1" id="crudOffcanvas" aria-labelledby="offcanvasLabel" style="width: 500px;">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="offcanvasLabel">Loading...</h5>
@@ -119,34 +116,44 @@
         </div>
     </div>
 
-    <script src="~/Scripts/jquery-3.7.0.min.js"></script>
-    <script src="~/Scripts/bootstrap.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="@Url.Content("~/Scripts/crud.js")"></script>
-    <script src="@Url.Content("~/Scripts/tb-features.js")"></script> <!-- DÒNG MỚI -->
+    @* ======================================================= *@
+    @*          KHU VỰC SCRIPT ĐÃ ĐƯỢC CHUẨN HÓA LẠI           *@
+    @* ======================================================= *@
 
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="~/Scripts/modernizr-2.8.3.js"></script>
+    @* BƯỚC 1: Tải jQuery (CHỈ MỘT LẦN DUY NHẤT, VÀ LUÔN LÀ ĐẦU TIÊN) *@
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    @* BƯỚC 2: Tải Bootstrap 5 Bundle (đã bao gồm Popper.js) *@
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    @* BƯỚC 3: Tải các thư viện validation (cần cho form đăng ký, đăng nhập) *@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
+    @* BƯỚC 4: Tải các thư viện plugin phụ thuộc *@
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    @* BƯỚC 5: Tải các script tùy chỉnh của bạn *@
+    <script src="@Url.Content("~/Scripts/crud.js")"></script>
+    <script src="@Url.Content("~/Scripts/tb-features.js")"></script>
+
+    @* BƯỚC 6: Render section "scripts" để các trang con có thể chèn script của riêng mình *@
     @RenderSection("scripts", required: false)
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @* Script xử lý thông báo (giữ nguyên) *@
     <script>
     $(document).ready(function() {
-        // Khi người dùng click vào dropdown thông báo
         $('.notification-dropdown').on('show.bs.dropdown', function () {
             var badge = $(this).find('.badge');
-            // Chỉ gửi yêu cầu nếu thực sự có thông báo mới
             if (badge.length > 0) {
                 $.ajax({
                     url: '@Url.Action("MarkNotificationsAsRead", "Home")',
                     method: 'POST',
-                    // Không cần gửi token vì đây là PartialView trong một trang đã có token
                     success: function(response) {
                         if (response.success) {
-                            // Xóa số trên chuông sau khi server xác nhận
                             badge.remove();
                         }
                     }
