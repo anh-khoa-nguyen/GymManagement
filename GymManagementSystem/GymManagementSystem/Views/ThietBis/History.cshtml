@@ -4,6 +4,7 @@
 @model IEnumerable<GymManagementSystem.Models.LichSuThietBi>
 @{
     ViewBag.Title = "Lịch Sử Thay Đổi Thiết Bị";
+    var equipmentStates = ViewBag.EquipmentStates as List<ThietBiStateViewModel>;
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -14,21 +15,59 @@
 @using (Html.BeginForm("History", "ThietBis", FormMethod.Get, new { @class = "filter-section" }))
 {
     <input type="date" name="ngayLoc" id="ngayLoc" class="form-control-dark"
-           value="@(ViewBag.NgayLoc != null ? ((DateTime)ViewBag.NgayLoc).ToString("yyyy-MM-dd") : "")" />
+           value="@(ViewBag.NgayLoc != null ? ViewBag.NgayLoc.ToString("yyyy-MM-dd") : "")" />
 
     <button type="submit" class="btn-filter-primary">Lọc</button>
 
     @Html.ActionLink("Xóa bộ lọc", "History", null, new { @class = "btn-filter-secondary" })
 }
 
+<h4 class="mt-5">Trạng thái thiết bị vào cuối ngày @(((DateTime?)ViewBag.NgayLoc)?.ToString("dd/MM/yyyy") ?? DateTime.Now.ToString("dd/MM/yyyy"))</h4>
+<table class="modern-table">
+    <thead>
+        <tr>
+            <th>Tên Thiết Bị</th>
+            <th>ID Thiết Bị</th>
+            <th>Tình Trạng</th>
+            <th>Phòng</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in equipmentStates.OrderBy(e => e.ThietBi.TenThietBi))
+        {
+            <tr>
+                <td>@item.ThietBi.TenThietBi</td>
+                <td>@item.ThietBi.Id</td>
+                <td>
+                    @if (item.ThietBi.TinhTrang == GymManagementSystem.Models.TinhTrangThietBi.CanBaoTri)
+                    {
+                        <span class="status-badge status-warning">Cần bảo trì</span>
+                    }
+                    else if (item.ThietBi.TinhTrang == GymManagementSystem.Models.TinhTrangThietBi.HoatDongTot)
+                    {
+                        <span class="status-badge status-active">Hoạt động tốt</span>
+                    }
+                    else
+                    {
+                        <span class="status-badge status-inactive">Hư hỏng</span>
+                    }
+                </td>
+                <td>@item.TenPhong</td>
+            </tr>
+        }
+    </tbody>
+</table>
 
+<hr />
+
+<h4 class="mt-4">Log thay đổi trong ngày</h4>
 <table class="modern-table">
     <thead>
         <tr>
             <th>Ngày Thực Hiện</th>
             <th>ID Thiết Bị</th>
             <th>Hành Động</th>
-            <th>Mô Tả Thay Đổi</th>
+            <th>Chi Tiết Thay Đổi</th>
             <th>Người Thực Hiện</th>
         </tr>
     </thead>
@@ -57,7 +96,8 @@
                         @Html.DisplayFor(modelItem => item.HanhDong)
                     }
                 </td>
-                <td>@item.MoTaThayDoi</td>
+                <td>@HistoryHelper.GenerateChangeDescription(item)</td>
+
                 <td>@item.NguoiThucHien.HoTen</td>
             </tr>
         }

@@ -152,6 +152,16 @@
     box-shadow: 0 0 15px #a5ff36, 0 0 30px #a5ff36;
 }
 
+.profile-info {
+    flex-grow: 1; /* Cho phép phần info chiếm hết không gian thừa */
+}
+
+.profile-actions {
+    display: flex;
+    gap: 1rem;
+    margin-left: auto; /* Đẩy nhóm nút về cuối */
+}
+
 .profile-info h3 {
     margin: 0;
     font-size: 1.8rem;
@@ -174,12 +184,12 @@
     transition: all 0.3s ease;
 }
 
-.btn-edit-profile:hover {
-    color: #000;
-    background: #a5ff36;
-    border-color: #a5ff36;
-    box-shadow: 0 0 15px rgba(165, 255, 54, 0.5);
-}
+    .btn-edit-profile:hover {
+        color: #000; /* Chữ đen */
+        background: var(--neon-green); /* Nền xanh neon */
+        border-color: var(--neon-green); /* Viền xanh neon */
+        box-shadow: 0 0 15px var(--glow-green); /* Hiệu ứng glow */
+    }
 
 /* --- Membership Card --- */
 .membership-card {
@@ -204,6 +214,17 @@
     font-weight: 500;
     display: inline-block;
     margin-bottom: 1rem;
+}
+
+.membership-card .btn-upgrade {
+    background: #a5ff36;
+    color: #000;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 8px;
+    font-weight: 700;
+    box-shadow: 0 0 15px rgba(165, 255, 54, 0.5);
+    text-decoration: none !important; /* SỬA LỖI 2: Bỏ gạch chân */
 }
 
 .membership-card .tier-name {
@@ -247,47 +268,42 @@
 }
 
 /* --- Benefits Grid --- */
+.member-benefits {
+    margin-top: 2.5rem; /* SỬA LỖI 5: Thêm khoảng cách */
+}
+
 .benefits-grid {
+    margin-top: 1rem;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem; /* Giữ lại khoảng cách giữa các item */
 }
 
 .benefit-item {
-    background-color: rgba(30, 30, 30, 0.6);
+    background-color: #1c1c1c; /* Nền tối hơn */
     border: 1px solid #2c2c2c;
     border-radius: 12px;
     padding: 1.5rem 1rem;
     text-align: center;
+    /* Dùng Flexbox để căn chỉnh nội dung bên trong */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
     transition: all 0.2s ease;
 }
-
-.benefit-item:hover {
-    transform: translateY(-5px);
-    background-color: #252525;
-}
-
-.benefit-item i {
-    font-size: 2rem;
-    color: #f0e6d2;
-    margin-bottom: 0.75rem;
-}
-
-.benefit-item p {
-    margin: 0;
-    font-weight: 500;
-}
+.benefit-item:hover { transform: translateY(-5px); background-color: #252525; }
+.benefit-item i { font-size: 2rem; color: #f0e6d2; margin-bottom: 0.75rem; }
+.benefit-item p { margin: 0; font-weight: 500; }
 
 /* --- Right Column Cards --- */
 .side-card {
-    background: rgba(30, 30, 30, 0.45);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 0 50px rgba(138, 43, 226, 0.15);
+    background: #1c1c1c; /* Nền tối hơn */
+    border: 1px solid #2c2c2c;
     padding: 1.5rem;
-    margin-bottom: 2rem;
+    border-radius: 16px;
+    margin-bottom: 2.5rem; /* SỬA LỖI 5: Thêm khoảng cách */
     position: relative;
     z-index: 1;
 }
@@ -319,6 +335,26 @@
     border: 2px solid #555;
 }
 
+.btn-view-more {
+    display: block;
+    text-align: center;
+    background: #2b2b2b;
+    color: #fff;
+    border: 1px solid #444;
+    padding: 10px;
+    border-radius: 8px;
+    text-decoration: none !important;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+    .btn-view-more:hover {
+        color: #000; /* Chữ đen */
+        background-color: var(--neon-green); /* Nền xanh neon */
+        border-color: var(--neon-green); /* Viền xanh neon */
+        box-shadow: 0 0 15px var(--glow-green); /* Hiệu ứng glow */
+    }
+
 .profile-dashboard-wrapper .text-muted,
 .side-card .text-muted {
     color: #9e9e9e !important;
@@ -329,4 +365,63 @@
     font-size: 0.8rem;
     letter-spacing: 0.5px;
     margin-bottom: 0.25rem;
+}
+
+.vouchers-card{
+    margin-top: 2.5rem;
+}
+
+.vouchers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem; /* Tạo khoảng cách giữa các voucher */
+}
+
+.voucher-item {
+    background-color: #252525;
+    padding: 10px 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+}
+
+    .voucher-item.locked {
+        opacity: 0.6;
+    }
+
+    .voucher-item i {
+        font-size: 1.1rem;
+    }
+
+
+.non-member-dashboard {
+    background-color: #1c1c1c;
+    border: 1px solid #2c2c2c;
+    border-radius: 16px;
+    padding: 2.5rem; /* Giảm padding một chút */
+    text-align: left; /* Căn lề trái cho tự nhiên hơn */
+    height: 100%; /* Đảm bảo chiều cao bằng với card QR */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Căn giữa nội dung theo chiều dọc */
+}
+
+    .non-member-dashboard h4 {
+        font-size: 2rem;
+        font-weight: 700;
+    }
+
+.qr-code-card-admin {
+    margin-top: 0; 
+    height: 100%; 
+}
+
+.qr-code-card-admin img {
+    background-color: #fff; 
+    padding: 10px;
+    border-radius: 16px !important;
+    max-width: 250px;
+    width: 100% !important;
 }

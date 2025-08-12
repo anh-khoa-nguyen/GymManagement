@@ -5,6 +5,8 @@
     <dd class="mb-3">@Model.MoTa</dd>
     <dt class="text-muted">Ngày Mua</dt>
     <dd class="mb-3">@(Model.NgayMua.HasValue ? Model.NgayMua.Value.ToShortDateString() : "Không rõ")</dd>
+    <dt class="text-muted">Thuộc phòng</dt>
+    <dd class="mb-3">@Model.Phong.TenPhong</dd>
     <dt class="text-muted">Tình Trạng</dt>
     <dd class="mb-3">
         @* --- LOGIC HIỂN THỊ TRẠNG THÁI --- *@

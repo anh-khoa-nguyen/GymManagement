@@ -1,0 +1,71 @@
+﻿@model IEnumerable<GymManagementSystem.Models.KhuyenMaiCuaHoiVien>
+@{
+    ViewBag.Title = "Khuyến Mãi Của Tôi";
+}
+
+<h2>@ViewBag.Title</h2>
+<p class="text-muted">Danh sách các voucher và ưu đãi bạn đang sở hữu và có thể sử dụng.</p>
+
+<div class="row mt-4">
+    @if (Model.Any())
+    {
+        foreach (var voucher in Model)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="voucher-card">
+                    <div class="voucher-icon">
+                        <i class="fas fa-ticket-alt"></i>
+                    </div>
+                    <div class="voucher-details">
+                        <strong>@voucher.KhuyenMai.TenKhuyenMai</strong>
+                        <p class="voucher-code">Mã: @voucher.KhuyenMai.MaKhuyenMai</p>
+                        <p class="voucher-expiry">Hết hạn ngày: @voucher.NgayHetHan.ToString("dd/MM/yyyy")</p>
+                        <p class="voucher-expiry">Mô tả: @voucher.KhuyenMai.MoTa</p>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <div class="alert alert-info">
+                <p class="mb-0">Bạn hiện không có voucher nào có thể sử dụng. Hãy tham gia các kế hoạch tập luyện hoặc giới thiệu bạn bè để nhận thêm ưu đãi!</p>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- (Tùy chọn) Thêm CSS cho voucher card -->
+<style>
+    .voucher-card {
+        background-color: #2c2c2e;
+        border-radius: 12px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        border-left: 5px solid var(--neon-green); /* Màu xanh neon */
+    }
+
+    .voucher-icon {
+        font-size: 2.5em;
+        color: var(--neon-green);
+        margin-right: 20px;
+    }
+
+    .voucher-details strong {
+        font-size: 1.1em;
+        color: #fff;
+        display: block;
+    }
+
+    .voucher-details p {
+        margin: 0;
+        color: #aaa;
+    }
+
+    .voucher-code {
+        font-family: monospace;
+        font-size: 0.9em;
+    }
+</style>

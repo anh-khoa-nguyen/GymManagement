@@ -10,6 +10,8 @@ namespace GymManagementSystem.Models.ViewModels
         public string HoTen { get; set; }
         public string Email { get; set; }
         public System.DateTime NgayThamGia { get; set; }
+        public string AvatarUrl { get; set; }
+
     }
 
     public class LichSuGioiThieuViewModel
@@ -21,5 +23,10 @@ namespace GymManagementSystem.Models.ViewModels
         public Dictionary<int, string> CacMocThuong { get; set; }
         public int MocThuongTiepTheo { get; set; }
         public int SoNguoiCanThem { get; set; }
+        public LichSuGioiThieuViewModel()
+        {
+            DanhSachNguoiDuocGioiThieu = new List<NguoiDuocGioiThieuItem>();
+        }
     }
+
 }

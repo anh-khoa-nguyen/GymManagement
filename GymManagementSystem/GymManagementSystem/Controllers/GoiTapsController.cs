@@ -14,6 +14,7 @@ namespace GymManagementSystem.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
+        #region CRUD
         // GET: GoiTaps
         public async Task<ActionResult> Index(string searchString)
         {
@@ -26,20 +27,6 @@ namespace GymManagementSystem.Controllers
             return View(await goiTaps.OrderBy(g => g.GiaTien).ToListAsync());
         }
 
-        // GET: GoiTaps/Details/5
-        public async Task<ActionResult> Details(int? id)
-        {
-            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            GoiTap goiTap = await db.GoiTaps.FindAsync(id);
-            if (goiTap == null) return HttpNotFound();
-
-            // KIỂM TRA AJAX REQUEST
-            if (Request.IsAjaxRequest())
-            {
-                return PartialView("Details", goiTap);
-            }
-            return View(goiTap);
-        }
 
         // GET: GoiTaps/Create
         public ActionResult Create()
@@ -77,6 +64,20 @@ namespace GymManagementSystem.Controllers
             if (Request.IsAjaxRequest())
             {
                 return PartialView("CreateOrEdit", goiTap);
+            }
+            return View(goiTap);
+        }
+
+        // GET: GoiTaps/Details/5
+        public async Task<ActionResult> Details(int? id)
+        {
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            GoiTap goiTap = await db.GoiTaps.FindAsync(id);
+            if (goiTap == null) return HttpNotFound();
+
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("Details", goiTap);
             }
             return View(goiTap);
         }
@@ -156,6 +157,7 @@ namespace GymManagementSystem.Controllers
             }
             return RedirectToAction("Index");
         }
+        #endregion
 
         protected override void Dispose(bool disposing)
         {

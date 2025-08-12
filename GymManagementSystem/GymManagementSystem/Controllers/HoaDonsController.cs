@@ -1,14 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 using GymManagementSystem.Models;
 using GymManagementSystem.Models.ViewModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
-using System.Web;
 
 namespace GymManagementSystem.Controllers
 {
@@ -30,62 +32,53 @@ namespace GymManagementSystem.Controllers
             }
         }
 
-        // GET: HoaDons (Hiển thị danh sách hóa đơn đã tạo)
-        public async Task<ActionResult> Index()
+        #region CR
+        // GET: HoaDons
+        public async Task<ActionResult> Index(string searchString)
         {
-            var hoaDons = db.HoaDons.Include(h => h.GoiTap).Include(h => h.HoiVien).Include(h => h.KhuyenMai);
-            return View(await hoaDons.ToListAsync());
+            var hoaDons = db.HoaDons
+                .Include(h => h.GoiTap)
+                .Include(h => h.HoiVien);
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                hoaDons = hoaDons.Where(
+                    h => h.HoiVien.HoTen.Contains(searchString) || h.HoiVien.Email.Contains(searchString));
+            }
+            ViewBag.CurrentFilter = searchString;
+            return View(await hoaDons.OrderByDescending(h => h.NgayTao).ToListAsync());
         }
 
-        // GET: HoaDons/Create (Hiển thị form lập hóa đơn)
+        // GET: HoaDons/Create
         public async Task<ActionResult> Create()
         {
-            // Lấy danh sách hội viên (những người có vai trò "HoiVien")
-            var danhSachHoiVien = await db.Users
-                                          .Where(u => u.VaiTro == "HoiVien")
-                                          .Select(u => new SelectListItem { Value = u.Id, Text = u.HoTen + " (" + u.UserName + ")" })
-                                          .ToListAsync();
-
-            // Lấy danh sách gói tập
-            var danhSachGoiTap = await db.GoiTaps
-                                         .Select(g => new SelectListItem { Value = g.Id.ToString(), Text = g.TenGoi })
-                                         .ToListAsync();
-
-            // === SỬA LẠI LOGIC LẤY DANH SÁCH KHUYẾN MÃI ===
-            // Logic mới: Chỉ cần lấy các khuyến mãi đang hoạt động, không cần check ngày
-            var danhSachKhuyenMai = await db.KhuyenMais
-                                            .Where(k => k.IsActive)
-                                            .Select(k => new SelectListItem { Value = k.Id.ToString(), Text = k.TenKhuyenMai })
-                                            .ToListAsync();
-            // Thêm một lựa chọn "Không áp dụng" vào đầu danh sách khuyến mãi
-            danhSachKhuyenMai.Insert(0, new SelectListItem { Value = "", Text = "-- Không áp dụng --" });
-
-
-            // Tạo ViewModel và gán các danh sách đã lấy được
             var viewModel = new TaoHoaDonViewModel
             {
-                DanhSachHoiVien = danhSachHoiVien,
-                DanhSachGoiTap = danhSachGoiTap,
-                DanhSachKhuyenMai = danhSachKhuyenMai
+                DanhSachHoiVien = await db.Users
+                    .Where(u => u.VaiTro == "HoiVien")
+                    .Select(u => new SelectListItem { Value = u.Id, Text = u.HoTen + " (" + u.Email + ")" })
+                    .ToListAsync(),
+
+                DanhSachGoiTap = await db.GoiTaps
+                    .Select(g => new SelectListItem { Value = g.Id.ToString(), Text = g.TenGoi })
+                    .ToListAsync(),
+
+                DanhSachKhuyenMai = new List<SelectListItem> { new SelectListItem { Value = "", Text = "-- Chọn Hội viên và Gói tập --" } }
             };
 
             if (Request.IsAjaxRequest())
             {
                 return PartialView("Create", viewModel);
             }
-
-            // Bỏ logic IsAjaxRequest không cần thiết nếu bạn không dùng partial view
             return View(viewModel);
         }
 
-        // POST: HoaDons/Create (Xử lý khi nhấn nút tạo)
+        // POST: HoaDons/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(TaoHoaDonViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                // Lấy thông tin gói tập và khuyến mãi từ DB
                 var goiTap = await db.GoiTaps.FindAsync(viewModel.GoiTapId);
                 KhuyenMai khuyenMai = null;
                 if (viewModel.KhuyenMaiId.HasValue)
@@ -93,12 +86,10 @@ namespace GymManagementSystem.Controllers
                     khuyenMai = await db.KhuyenMais.FindAsync(viewModel.KhuyenMaiId);
                 }
 
-                // Tính toán giá trị hóa đơn
                 decimal giaGoc = goiTap.GiaTien;
                 decimal soTienGiam = 0;
                 if (khuyenMai != null)
                 {
-                    // === LOGIC TÍNH TOÁN GIẢM GIÁ MỚI ===
                     decimal soTienGiamTheoPhanTram = (decimal)khuyenMai.PhanTramGiamGia * giaGoc / 100;
                     decimal soTienGiamToiDa = khuyenMai.SoTienGiamToiDa; // <-- Sử dụng trường mới
 
@@ -110,7 +101,6 @@ namespace GymManagementSystem.Controllers
                 }
                 decimal thanhTien = giaGoc - soTienGiam;
 
-                // Tạo đối tượng hóa đơn mới
                 var hoaDon = new HoaDon
                 {
                     HoiVienId = viewModel.HoiVienId,
@@ -120,34 +110,17 @@ namespace GymManagementSystem.Controllers
                     GiaGoc = giaGoc,
                     SoTienGiam = soTienGiam,
                     ThanhTien = thanhTien,
-                    TrangThai = TrangThai.ChoThanhToan // Mặc định
+                    TrangThai = TrangThai.ChoThanhToan
                 };
 
                 db.HoaDons.Add(hoaDon);
                 await db.SaveChangesAsync();
+                if (Request.IsAjaxRequest())
+                {
+                    return Json(new { success = true });
+                }
                 return RedirectToAction("Index");
             }
-
-            // --- SỬA LẠI LOGIC LẤY DANH SÁCH KHUYẾN MÃI KHI MODELSTATE LỖI ---
-
-            // Nếu model không hợp lệ, tải lại các danh sách và trả về view
-            viewModel.DanhSachHoiVien = await db.Users
-                .Where(u => u.VaiTro == "HoiVien")
-                .Select(u => new SelectListItem { Value = u.Id, Text = u.HoTen + " (" + u.UserName + ")" })
-                .ToListAsync();
-
-            viewModel.DanhSachGoiTap = await db.GoiTaps
-                .Select(g => new SelectListItem { Value = g.Id.ToString(), Text = g.TenGoi })
-                .ToListAsync();
-
-            // Logic mới: Chỉ cần lấy các khuyến mãi đang hoạt động, không cần check ngày
-            viewModel.DanhSachKhuyenMai = await db.KhuyenMais
-                .Where(k => k.IsActive)
-                .Select(k => new SelectListItem { Value = k.Id.ToString(), Text = k.TenKhuyenMai })
-                .ToListAsync();
-
-            viewModel.DanhSachKhuyenMai.ToList().Insert(0, new SelectListItem { Value = "", Text = "-- Không áp dụng --" });
-
             return View(viewModel);
         }
 
@@ -159,31 +132,44 @@ namespace GymManagementSystem.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            // Dùng .Include() để lấy kèm thông tin của các bảng liên quan
-            // Điều này rất quan trọng để tránh lỗi khi truy cập item.HoiVien, item.GoiTap...
             HoaDon hoaDon = db.HoaDons
                              .Include(h => h.HoiVien)
                              .Include(h => h.GoiTap)
-                             .Include(h => h.KhuyenMai) // Lấy cả thông tin khuyến mãi nếu có
+                             .Include(h => h.KhuyenMai)
                              .FirstOrDefault(h => h.Id == id);
 
-            if (hoaDon == null)
-            {
-                return HttpNotFound();
-            }
+            if (hoaDon == null) return HttpNotFound();
 
-            // Logic cốt lõi: Trả về PartialView nếu là request từ JavaScript
             if (Request.IsAjaxRequest())
             {
                 return PartialView("Details", hoaDon);
             }
 
-            // Trả về View đầy đủ nếu truy cập trực tiếp
             return View(hoaDon);
         }
 
-        // --- CÁC ACTION HỖ TRỢ AJAX ---
+        #endregion
 
+        private async Task PopulateTaoHoaDonViewModel(TaoHoaDonViewModel viewModel)
+        {
+            viewModel.DanhSachHoiVien = await db.Users
+                .Where(u => u.VaiTro == "HoiVien")
+                .Select(u => new SelectListItem { Value = u.Id, Text = u.HoTen + " (" + u.Email + ")" })
+                .ToListAsync();
+
+            viewModel.DanhSachGoiTap = await db.GoiTaps
+                .Select(g => new SelectListItem { Value = g.Id.ToString(), Text = g.TenGoi })
+                .ToListAsync();
+
+            var danhSachKhuyenMai = await db.KhuyenMais
+                .Where(k => k.IsActive)
+                .Select(k => new SelectListItem { Value = k.Id.ToString(), Text = k.TenKhuyenMai })
+                .ToListAsync();
+            danhSachKhuyenMai.Insert(0, new SelectListItem { Value = "", Text = "-- Không áp dụng --" });
+            viewModel.DanhSachKhuyenMai = danhSachKhuyenMai;
+        }
+
+        #region Support AJAX
         [HttpGet]
         public async Task<JsonResult> GetGoiTapInfo(int id)
         {
@@ -198,19 +184,11 @@ namespace GymManagementSystem.Controllers
             var khuyenMai = await db.KhuyenMais.FindAsync(id);
             if (khuyenMai == null)
             {
-                // Trả về 0 nếu không tìm thấy khuyến mãi
                 return Json(new { soTienGiam = 0 }, JsonRequestBehavior.AllowGet);
             }
 
-            // === LOGIC TÍNH TOÁN GIẢM GIÁ MỚI ===
-
-            // 1. Tính số tiền giảm theo phần trăm
             decimal soTienGiamTheoPhanTram = (decimal)khuyenMai.PhanTramGiamGia * giaGoc / 100;
-
-            // 2. Lấy số tiền giảm tối đa từ khuyến mãi
             decimal soTienGiamToiDa = khuyenMai.SoTienGiamToiDa;
-
-            // 3. So sánh và chọn ra số tiền giảm cuối cùng
             decimal soTienGiamCuoiCung = soTienGiamTheoPhanTram;
             if (soTienGiamToiDa > 0 && soTienGiamTheoPhanTram > soTienGiamToiDa)
             {
@@ -273,26 +251,75 @@ namespace GymManagementSystem.Controllers
 
             if (goiTap != null && hoivienProfile != null)
             {
-                var dangKy = new DangKyGoiTap
+                var dangKyHienTai = await db.DangKyGoiTaps
+                    .FirstOrDefaultAsync(d => d.HoiVienId == hoivienProfile.Id &&
+                                              d.GoiTapId == goiTap.Id &&
+                                              d.TrangThai == TrangThaiDangKy.HoatDong);
+                if (dangKyHienTai != null)
                 {
-                    HoiVienId = hoivienProfile.Id,
-                    GoiTapId = goiTap.Id,
-                    NgayDangKy = DateTime.Today,
-                    NgayHetHan = DateTime.Today.AddDays(goiTap.SoBuoiTapVoiPT),
-                    TrangThai = TrangThaiDangKy.HoatDong,
-                    SoBuoiTapVoiPT = goiTap.SoBuoiTapVoiPT, 
-                    SoBuoiPTDaSuDung = 0
-                };
-                db.DangKyGoiTaps.Add(dangKy);
+                    DateTime ngayBatDauCongDon = dangKyHienTai.NgayHetHan > DateTime.Today
+                                                ? dangKyHienTai.NgayHetHan
+                                                : DateTime.Today;
+                    dangKyHienTai.NgayHetHan = ngayBatDauCongDon.AddDays(goiTap.SoBuoiTapVoiPT);
+                }
+                else
+                {
+                    var dangKyMoi = new DangKyGoiTap
+                    {
+                        HoiVienId = hoivienProfile.Id,
+                        GoiTapId = goiTap.Id,
+                        NgayDangKy = DateTime.Today,
+                        NgayHetHan = DateTime.Today.AddDays(goiTap.SoBuoiTapVoiPT),
+                        TrangThai = TrangThaiDangKy.HoatDong
+                    };
+                    db.DangKyGoiTaps.Add(dangKyMoi);
+                }
             }
-            // ========================================================
 
             await db.SaveChangesAsync();
             // await UpdateHoiVienRankAsync(hoaDon.HoiVienId);
 
             TempData["SuccessMessage"] = "Đã xác nhận thanh toán và kích hoạt gói tập!";
+            Debug.WriteLine("Hello");
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        public async Task<JsonResult> GetAvailableVouchers(string hoiVienId, int goiTapId)
+        {
+            if (string.IsNullOrEmpty(hoiVienId) || goiTapId == 0)
+            {
+                return Json(new List<SelectListItem>(), JsonRequestBehavior.AllowGet);
+            }
+
+            var hoivienProfile = await db.HoiViens.FirstOrDefaultAsync(h => h.ApplicationUserId == hoiVienId);
+            if (hoivienProfile == null)
+            {
+                return Json(new List<SelectListItem>(), JsonRequestBehavior.AllowGet);
+            }
+
+            var userVouchers = await db.KhuyenMaiCuaHoiViens
+                .Include(v => v.KhuyenMai.ApDungChoGoiTap)
+                .Where(v => v.HoiVienId == hoivienProfile.Id &&
+                            v.TrangThai == TrangThaiKhuyenMaiHV.ChuaSuDung &&
+                            v.NgayHetHan >= DateTime.Today)
+                .ToListAsync();
+
+            var validVouchers = userVouchers.Where(v =>
+            {
+                var linkedGoiTaps = v.KhuyenMai.ApDungChoGoiTap;
+                if (!linkedGoiTaps.Any()) return true;
+                return linkedGoiTaps.Any(gt => gt.GoiTapId == goiTapId);
+            })
+            .Select(v => new SelectListItem
+            {
+                Value = v.KhuyenMaiId.ToString(),
+                Text = v.KhuyenMai.TenKhuyenMai
+            }).ToList();
+
+            return Json(validVouchers, JsonRequestBehavior.AllowGet);
+        }
+        #endregion
 
         protected override void Dispose(bool disposing)
         {

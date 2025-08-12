@@ -30,16 +30,11 @@
 }
 
 <!-- Form xóa hàng loạt chỉ bao bọc nút và bảng -->
-@using (Html.BeginForm("DeleteMultiple", "HoaDons", FormMethod.Post))
-{
-    @Html.AntiForgeryToken()
 
-    @Html.Partial("_DeleteSelectedButton")
 
     <table class="modern-table">
         <thead>
             <tr>
-                <th style="width: 40px;"><input type="checkbox" class="form-check-input" id="checkAll" /></th>
                 <th>Hội viên</th>
                 <th>Gói tập</th>
                 <th>Ngày tạo</th>
@@ -52,7 +47,6 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td><input type="checkbox" class="form-check-input row-checkbox" name="idsToDelete" value="@item.Id" /></td>
                     <td>@Html.DisplayFor(modelItem => item.HoiVien.HoTen)</td>
                     <td>@Html.DisplayFor(modelItem => item.GoiTap.TenGoi)</td>
                     <td>@item.NgayTao.ToString("dd/MM/yyyy HH:mm")</td>
@@ -93,7 +87,6 @@
         </tbody>
     </table>
 
-}
 
 <style>
     .btn-momo {

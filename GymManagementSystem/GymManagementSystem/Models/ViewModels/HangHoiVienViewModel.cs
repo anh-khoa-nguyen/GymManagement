@@ -8,16 +8,17 @@ namespace GymManagementSystem.Models.ViewModels
     {
         public HangHoiVien HangHoiVien { get; set; }
 
-        // Dùng để nhận danh sách ID từ multi-select dropdown
         public List<int> SelectedKhuyenMaiIds { get; set; }
-
-        // Dùng để đổ dữ liệu vào multi-select dropdown
         public IEnumerable<SelectListItem> DanhSachKhuyenMai { get; set; }
+
+        public List<int> SelectedDacQuyenIds { get; set; }
+        public IEnumerable<SelectListItem> DanhSachDacQuyen { get; set; }
 
         public HangHoiVienViewModel()
         {
             HangHoiVien = new HangHoiVien();
             SelectedKhuyenMaiIds = new List<int>();
+            SelectedDacQuyenIds = new List<int>(); // Khởi tạo
         }
     }
 }

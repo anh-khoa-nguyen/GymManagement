@@ -16,12 +16,14 @@ namespace GymManagementSystem.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private ApplicationUserManager _userManager;
+
         public ApplicationUserManager UserManager
         {
             get => _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             private set => _userManager = value;
         }
 
+        #region CRUD
         // GET: UserManagement
         public async Task<ActionResult> Index(string searchString)
         {
@@ -37,41 +39,12 @@ namespace GymManagementSystem.Controllers
                 HoTen = u.HoTen,
                 Email = u.Email,
                 VaiTro = u.VaiTro,
-                IsLockedOut = u.LockoutEndDateUtc.HasValue && u.LockoutEndDateUtc.Value > System.DateTime.UtcNow
+                IsLockedOut = u.LockoutEndDateUtc.HasValue && u.LockoutEndDateUtc.Value > System.DateTime.UtcNow,
+                AvatarUrl = u.AvatarUrl
             }).OrderBy(u => u.HoTen).ToListAsync();
 
             ViewBag.CurrentFilter = searchString;
             return View(users);
-        }
-
-        // GET: UserManagement/Details/string
-        public async Task<ActionResult> Details(string id)
-        {
-            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-
-            var userAccount = await db.Users.FirstOrDefaultAsync(u => u.Id == id);
-            if (userAccount == null) return HttpNotFound();
-
-            HoiVien hoiVienProfile = null;
-            if (userAccount.VaiTro == "HoiVien")
-            {
-                // Dùng Include để lấy cả thông tin Hạng Hội Viên
-                hoiVienProfile = await db.HoiViens
-                                         .Include(h => h.HangHoiVien)
-                                         .FirstOrDefaultAsync(h => h.ApplicationUserId == id);
-            }
-
-            var viewModel = new UserDetailsViewModel
-            {
-                UserAccount = userAccount,
-                HoiVienProfile = hoiVienProfile
-            };
-
-            if (Request.IsAjaxRequest())
-            {
-                return PartialView("Details", viewModel);
-            }
-            return View(viewModel);
         }
 
         // GET: UserManagement/Create
@@ -93,11 +66,13 @@ namespace GymManagementSystem.Controllers
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email, HoTen = model.HoTen, VaiTro = model.VaiTro };
+
                 if (avatarFile != null && avatarFile.ContentLength > 0)
                 {
                     var cloudinaryService = new CloudinaryService();
                     user.AvatarUrl = await cloudinaryService.UploadImageAsync(avatarFile);
                 }
+
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -131,7 +106,8 @@ namespace GymManagementSystem.Controllers
                 Id = user.Id,
                 Email = user.Email,
                 HoTen = user.HoTen,
-                VaiTro = user.VaiTro
+                VaiTro = user.VaiTro,
+                AvatarUrl = user.AvatarUrl // Thêm dòng này
             };
 
             if (Request.IsAjaxRequest())
@@ -215,6 +191,36 @@ namespace GymManagementSystem.Controllers
             return RedirectToAction("Index");
         }
 
+        // GET: UserManagement/Details/<id>
+        public async Task<ActionResult> Details(string id)
+        {
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            var userAccount = await db.Users.FirstOrDefaultAsync(u => u.Id == id);
+            if (userAccount == null) return HttpNotFound();
+
+            HoiVien hoiVienProfile = null;
+            if (userAccount.VaiTro == "HoiVien")
+            {
+                hoiVienProfile = await db.HoiViens
+                                         .Include(h => h.HangHoiVien)
+                                         .FirstOrDefaultAsync(h => h.ApplicationUserId == id);
+            }
+
+            var viewModel = new UserDetailsViewModel
+            {
+                UserAccount = userAccount,
+                HoiVienProfile = hoiVienProfile
+            };
+
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("Details", viewModel);
+            }
+            return View(viewModel);
+        }
+        #endregion
+   
         private void AddErrors(IdentityResult result)
         {
             foreach (var error in result.Errors)

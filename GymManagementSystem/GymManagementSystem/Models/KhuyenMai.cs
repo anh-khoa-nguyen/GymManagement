@@ -30,5 +30,7 @@ namespace GymManagementSystem.Models
         public bool IsActive { get; set; }
 
         public virtual ICollection<HangCoKhuyenMai> ApDungChoHangHoiVien { get; set; }
+        public virtual ICollection<KhuyenMaiCuaGoi> ApDungChoGoiTap { get; set; }
+
     }
 }

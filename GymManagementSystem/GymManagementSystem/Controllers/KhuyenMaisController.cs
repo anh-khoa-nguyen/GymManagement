@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using GymManagementSystem.Models;
+using GymManagementSystem.Models.ViewModels;
 
 namespace GymManagementSystem.Controllers
 {
@@ -16,6 +17,7 @@ namespace GymManagementSystem.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
+        #region CRUD
         // GET: KhuyenMais
         public async Task<ActionResult> Index(string searchString)
         {
@@ -26,11 +28,70 @@ namespace GymManagementSystem.Controllers
                 khuyenMais = khuyenMais.Where(k => k.TenKhuyenMai.Contains(searchString) ||
                                                    k.MaKhuyenMai.Contains(searchString));
             }
-
             ViewBag.CurrentFilter = searchString;
 
-            // Sửa lại để dùng ToListAsync cho nhất quán
             return View(await khuyenMais.ToListAsync());
+        }
+
+        // GET: KhuyenMais/Create
+        public async Task<ActionResult> Create()
+        {
+            var viewModel = new KhuyenMaiViewModel();
+            //viewModel.KhuyenMai.IsActive = true;
+            //viewModel.KhuyenMai.SoNgayHieuLuc = 30;
+
+            await PopulateGoiTapDropdown(viewModel);
+
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("CreateOrEdit", viewModel);
+            }
+            return View(viewModel);
+        }
+
+        // POST: KhuyenMais/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Create(KhuyenMaiViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                db.KhuyenMais.Add(viewModel.KhuyenMai);
+                await db.SaveChangesAsync();
+
+                var selectedIds = viewModel.SelectedGoiTapIds ?? new List<int>();
+                
+                if (viewModel.ApplyType == "include")
+                {
+                    foreach (var goiTapId in selectedIds)
+                    {
+                        db.KhuyenMaiCuaGois.Add(new KhuyenMaiCuaGoi { KhuyenMaiId = viewModel.KhuyenMai.Id, GoiTapId = goiTapId });
+                    }
+                }
+                else if (viewModel.ApplyType == "exclude")
+                {
+                    var allGoiTapIds = await db.GoiTaps.Select(g => g.Id).ToListAsync();
+                    var idsToInclude = allGoiTapIds.Except(selectedIds);
+                    foreach (var goiTapId in idsToInclude)
+                    {
+                        db.KhuyenMaiCuaGois.Add(new KhuyenMaiCuaGoi { KhuyenMaiId = viewModel.KhuyenMai.Id, GoiTapId = goiTapId });
+                    }
+                }
+                await db.SaveChangesAsync();
+
+                if (Request.IsAjaxRequest())
+                {
+                    return Json(new { success = true });
+                }
+                return RedirectToAction("Index");
+            }
+ 
+            await PopulateGoiTapDropdown(viewModel);
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("CreateOrEdit", viewModel);
+            }
+            return View(viewModel);
         }
 
         // GET: KhuyenMais/Details/5
@@ -38,7 +99,10 @@ namespace GymManagementSystem.Controllers
         {
             if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-            KhuyenMai khuyenMai = await db.KhuyenMais.FindAsync(id);
+            var khuyenMai = await db.KhuyenMais
+                .Include(k => k.ApDungChoGoiTap.Select(gt => gt.GoiTap))
+                .FirstOrDefaultAsync(k => k.Id == id);
+            
             if (khuyenMai == null) return HttpNotFound();
 
             if (Request.IsAjaxRequest())
@@ -49,73 +113,61 @@ namespace GymManagementSystem.Controllers
             return View(khuyenMai);
         }
 
-        // GET: KhuyenMais/Create
-        public ActionResult Create()
-        {
-            // Gán giá trị mặc định mới
-            var model = new KhuyenMai
-            {
-                IsActive = true,
-                SoNgayHieuLuc = 30 // Mặc định là 30 ngày
-            };
-
-            if (Request.IsAjaxRequest())
-            {
-                return PartialView("Create", model);
-            }
-            return View(model);
-        }
-
-        // POST: KhuyenMais/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        // SỬA LẠI THUỘC TÍNH BIND
-        public async Task<ActionResult> Create([Bind(Include = "Id,TenKhuyenMai,MoTa,MaKhuyenMai,PhanTramGiamGia,SoTienGiamToiDa,SoNgayHieuLuc,IsActive")] KhuyenMai khuyenMai)
-        {
-            if (ModelState.IsValid)
-            {
-                db.KhuyenMais.Add(khuyenMai);
-                await db.SaveChangesAsync();
-                if (Request.IsAjaxRequest())
-                {
-                    return Json(new { success = true });
-                }
-                return RedirectToAction("Index");
-            }
-
-            if (Request.IsAjaxRequest())
-            {
-                return PartialView("_Create", khuyenMai);
-            }
-
-            return View(khuyenMai);
-        }
-
         // GET: KhuyenMais/Edit/5
         public async Task<ActionResult> Edit(int? id)
         {
             if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-            KhuyenMai khuyenMai = await db.KhuyenMais.FindAsync(id);
+            var khuyenMai = await db.KhuyenMais.Include(k => k.ApDungChoGoiTap).FirstOrDefaultAsync(k => k.Id == id);
             if (khuyenMai == null) return HttpNotFound();
+
+            var viewModel = new KhuyenMaiViewModel
+            {
+                KhuyenMai = khuyenMai,
+                SelectedGoiTapIds = khuyenMai.ApDungChoGoiTap.Select(gt => gt.GoiTapId).ToList()
+            };
+            await PopulateGoiTapDropdown(viewModel);
 
             if (Request.IsAjaxRequest())
             {
-                return PartialView("Edit", khuyenMai);
+                return PartialView("CreateOrEdit", viewModel);
             }
-            return View(khuyenMai);
+            return View(viewModel);
         }
 
         // POST: KhuyenMais/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        // SỬA LẠI THUỘC TÍNH BIND
-        public async Task<ActionResult> Edit([Bind(Include = "Id,TenKhuyenMai,MoTa,MaKhuyenMai,PhanTramGiamGia,SoTienGiamToiDa,SoNgayHieuLuc,IsActive")] KhuyenMai khuyenMai)
+        public async Task<ActionResult> Edit(KhuyenMaiViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(khuyenMai).State = EntityState.Modified;
+                var khuyenMaiInDb = await db.KhuyenMais
+                    .Include(k => k.ApDungChoGoiTap)
+                    .FirstOrDefaultAsync(k => k.Id == viewModel.KhuyenMai.Id);
+
+                db.Entry(khuyenMaiInDb).CurrentValues.SetValues(viewModel.KhuyenMai);
+                db.KhuyenMaiCuaGois.RemoveRange(khuyenMaiInDb.ApDungChoGoiTap);
+
+                var selectedIds = viewModel.SelectedGoiTapIds ?? new List<int>();
+                if (viewModel.ApplyType == "include")
+                {
+                    foreach (var goiTapId in selectedIds)
+                    {
+                        db.KhuyenMaiCuaGois.Add(new KhuyenMaiCuaGoi { KhuyenMaiId = khuyenMaiInDb.Id, GoiTapId = goiTapId });
+                    }
+                }
+                else if (viewModel.ApplyType == "exclude")
+                {
+                    var allGoiTapIds = await db.GoiTaps.Select(g => g.Id).ToListAsync();
+                    var idsToInclude = allGoiTapIds.Except(selectedIds);
+                    foreach (var goiTapId in idsToInclude)
+                    {
+                        db.KhuyenMaiCuaGois.Add(new KhuyenMaiCuaGoi { KhuyenMaiId = khuyenMaiInDb.Id, GoiTapId = goiTapId });
+                    }
+                }
                 await db.SaveChangesAsync();
+
                 if (Request.IsAjaxRequest())
                 {
                     return Json(new { success = true });
@@ -123,11 +175,12 @@ namespace GymManagementSystem.Controllers
                 return RedirectToAction("Index");
             }
 
+            await PopulateGoiTapDropdown(viewModel);
             if (Request.IsAjaxRequest())
             {
-                return PartialView("Edit", khuyenMai);
+                return PartialView("CreateOrEdit", viewModel);
             }
-            return View(khuyenMai);
+            return View(viewModel);
         }
 
         // GET: KhuyenMais/Delete/5
@@ -152,8 +205,11 @@ namespace GymManagementSystem.Controllers
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
             KhuyenMai khuyenMai = await db.KhuyenMais.FindAsync(id);
-            db.KhuyenMais.Remove(khuyenMai);
-            await db.SaveChangesAsync();
+            if (khuyenMai != null)
+            {
+                db.KhuyenMais.Remove(khuyenMai);
+                await db.SaveChangesAsync();
+            }
             if (Request.IsAjaxRequest())
             {
                 return Json(new { success = true });
@@ -176,6 +232,15 @@ namespace GymManagementSystem.Controllers
                 }
             }
             return RedirectToAction("Index");
+        }
+
+        #endregion
+
+        private async Task PopulateGoiTapDropdown(KhuyenMaiViewModel viewModel)
+        {
+            viewModel.DanhSachGoiTap = await db.GoiTaps
+                .Select(g => new SelectListItem { Value = g.Id.ToString(), Text = g.TenGoi })
+                .ToListAsync();
         }
 
         protected override void Dispose(bool disposing)
