@@ -161,6 +161,8 @@ namespace GymManagementSystem.Controllers
             if (ModelState.IsValid)
             {
                 string nguoiGioiThieuId = null;
+                bool duocHuongUuDaiNguoiMoi = false;
+
 
                 if (!string.IsNullOrWhiteSpace(model.MaGioiThieuNhapVao))
                 {
@@ -170,6 +172,7 @@ namespace GymManagementSystem.Controllers
                     {
                         // Lấy ApplicationUserId của người giới thiệu
                         nguoiGioiThieuId = hoivienGioiThieu.ApplicationUserId;
+                        duocHuongUuDaiNguoiMoi = true; // Đánh dấu là người này được hưởng ưu đãi
                     }
                     else
                     {
@@ -213,10 +216,30 @@ namespace GymManagementSystem.Controllers
                             MaGioiThieu = await GenerateUniqueReferralCode()
                         };
                         db.HoiViens.Add(hoiVienProfile);
+                        await db.SaveChangesAsync();
 
                         // Cập nhật lại user để lưu Id của hồ sơ hội viên
                         user.HoiVienId = hoiVienProfile.Id;
                         await UserManager.UpdateAsync(user);
+
+                        if (duocHuongUuDaiNguoiMoi)
+                        {
+                            // Tìm khuyến mãi "HOIVIENMOI2025"
+                            var khuyenMaiNguoiMoi = await db.KhuyenMais.FirstOrDefaultAsync(k => k.MaKhuyenMai == "HOIVIENMOI2025" && k.IsActive);
+                            if (khuyenMaiNguoiMoi != null)
+                            {
+                                var voucher = new KhuyenMaiCuaHoiVien
+                                {
+                                    HoiVienId = hoiVienProfile.Id,
+                                    KhuyenMaiId = khuyenMaiNguoiMoi.Id,
+                                    NgayNhan = DateTime.Now,
+                                    NgayHetHan = DateTime.Now.AddDays(khuyenMaiNguoiMoi.SoNgayHieuLuc),
+                                    TrangThai = TrangThaiKhuyenMaiHV.ChuaSuDung
+                                };
+                                db.KhuyenMaiCuaHoiViens.Add(voucher);
+                                await db.SaveChangesAsync();
+                            }
+                        }
 
                         try
                         {
@@ -520,18 +543,45 @@ namespace GymManagementSystem.Controllers
         private async Task CheckAndGrantReferralRewardAsync(string referrerId)
         {
             int referralCount = await UserManager.Users.CountAsync(u => u.NguoiGioiThieuId == referrerId);
-
-            // LẤY CÁC MỐC THƯỞNG TỪ REFERRALSERVICE
             var rewardTiers = ReferralService.RewardTiers;
 
             if (rewardTiers.ContainsKey(referralCount))
             {
                 string maKhuyenMai = rewardTiers[referralCount];
-                var khuyenMai = await db.KhuyenMais.FirstOrDefaultAsync(k => k.MaKhuyenMai == maKhuyenMai);
+                var khuyenMai = await db.KhuyenMais
+                    .FirstOrDefaultAsync(k => k.MaKhuyenMai == maKhuyenMai && k.IsActive);
 
-                if (khuyenMai != null)
+                var referrerProfile = await db.HoiViens.
+                    FirstOrDefaultAsync(h => h.ApplicationUserId == referrerId);
+
+                if (khuyenMai != null && referrerProfile != null)
                 {
-                    // ... logic tặng khuyến mãi ...
+                    var voucher = new KhuyenMaiCuaHoiVien
+                    {
+                        HoiVienId = referrerProfile.Id,
+                        KhuyenMaiId = khuyenMai.Id,
+                        NgayNhan = DateTime.Now,
+                        NgayHetHan = DateTime.Now.AddDays(khuyenMai.SoNgayHieuLuc),
+                        TrangThai = TrangThaiKhuyenMaiHV.ChuaSuDung
+                    };
+
+                    db.KhuyenMaiCuaHoiViens.Add(voucher);
+                    await db.SaveChangesAsync();
+
+                    var referrerUser = await UserManager.FindByIdAsync(referrerId);
+                    if (referrerUser != null)
+                    {
+                        var emailService = new EmailService();
+                        var subject = "Bạn đã nhận được phần thưởng giới thiệu!";
+                        var htmlContent = $"<h3>Xin chào {referrerUser.HoTen},</h3>" +
+                                          $"<p>Cảm ơn bạn đã giới thiệu thành công một thành viên mới! Bạn đã đạt mốc {referralCount} lượt giới thiệu và nhận được một voucher: <strong>{khuyenMai.TenKhuyenMai}</strong>.</p>" +
+                                          "<p>Hãy kiểm tra ví voucher của bạn để sử dụng nhé!</p>";
+                        await emailService.SendCustomEmailAsync(referrerUser.Email, referrerUser.HoTen, subject, htmlContent);
+                    }
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"Warning: Referral reward promotion with code '{maKhuyenMai}' not found or is inactive.");
                 }
             }
         }

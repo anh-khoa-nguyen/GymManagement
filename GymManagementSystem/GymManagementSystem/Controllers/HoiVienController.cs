@@ -454,8 +454,26 @@ namespace GymManagementSystem.Controllers
                 ViewBag.CanNangBatDau = chiSoDauTien.CanNang;
                 ViewBag.CanNangHienTai = chiSoMoiNhat.CanNang;
                 ViewBag.ThayDoiCanNang = Math.Round(chiSoMoiNhat.CanNang - chiSoDauTien.CanNang, 1);
-
                 ViewBag.SoNgayTheoDoi = (chiSoMoiNhat.NgayCapNhat - chiSoDauTien.NgayCapNhat).Days;
+                
+                double chieuCaoCm = hoiVien.ChieuCao;
+                if (chieuCaoCm > 0)
+                {
+                    double chieuCaoM = chieuCaoCm / 100.0; // Đổi cm sang mét
+                    double bmi = Math.Round(chiSoMoiNhat.CanNang / (chieuCaoM * chieuCaoM), 2);
+
+                    ViewBag.BMI = bmi;
+
+                    // Diễn giải kết quả BMI
+                    if (bmi < 16) ViewBag.PhanLoaiBMI = "Gầy độ III";
+                    else if (bmi < 17) ViewBag.PhanLoaiBMI = "Gầy độ II";
+                    else if (bmi < 18.5) ViewBag.PhanLoaiBMI = "Gầy độ I (Hơi gầy)";
+                    else if (bmi < 25) ViewBag.PhanLoaiBMI = "Bình thường";
+                    else if (bmi < 30) ViewBag.PhanLoaiBMI = "Thừa cân";
+                    else if (bmi < 35) ViewBag.PhanLoaiBMI = "Béo phì độ I";
+                    else if (bmi < 40) ViewBag.PhanLoaiBMI = "Béo phì độ II";
+                    else ViewBag.PhanLoaiBMI = "Béo phì độ III";
+                }
             }
             else
             {

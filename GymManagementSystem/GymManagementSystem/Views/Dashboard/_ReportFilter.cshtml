@@ -1,0 +1,13 @@
+﻿@model GymManagementSystem.Models.ViewModels.DashboardViewModel
+@using (Html.BeginForm("Index", "Dashboard", FormMethod.Get, new { @class = "d-flex gap-2 mb-3" }))
+{
+    @Html.DropDownList("reportYear", new SelectList(Model.AvailableYears, "Value", "Text", Model.SelectedReportYear), new { @class = "form-select", style = "max-width: 150px;" })
+    <select name="reportMonth" class="form-select" style="max-width: 150px;">
+        <option value="">Tất cả các tháng</option>
+        @for (int m = 1; m <= 12; m++)
+        {
+            <option value="@m" selected="@(m == Model.SelectedReportMonth)">Tháng @m</option>
+        }
+    </select>
+    <button type="submit" class="btn btn-secondary">Xem Báo Cáo</button>
+}

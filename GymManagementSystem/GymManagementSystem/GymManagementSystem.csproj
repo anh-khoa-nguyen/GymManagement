@@ -56,7 +56,61 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.5.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Google.Api.CommonProtos, Version=2.17.0.0, Culture=neutral, PublicKeyToken=3ec5ea7f18953e47, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Api.CommonProtos.2.17.0\lib\net461\Google.Api.CommonProtos.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Api.Gax, Version=4.11.0.0, Culture=neutral, PublicKeyToken=3ec5ea7f18953e47, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Api.Gax.4.11.0\lib\net462\Google.Api.Gax.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Api.Gax.Grpc, Version=4.11.0.0, Culture=neutral, PublicKeyToken=3ec5ea7f18953e47, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Api.Gax.Grpc.4.11.0\lib\net462\Google.Api.Gax.Grpc.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis, Version=1.69.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.69.0\lib\net462\Google.Apis.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth, Version=1.69.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.69.0\lib\net462\Google.Apis.Auth.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Core, Version=1.69.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Core.1.69.0\lib\net462\Google.Apis.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Cloud.Iam.V1, Version=3.4.0.0, Culture=neutral, PublicKeyToken=185c282632e132a0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Cloud.Iam.V1.3.4.0\lib\net462\Google.Cloud.Iam.V1.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Cloud.Location, Version=2.3.0.0, Culture=neutral, PublicKeyToken=185c282632e132a0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Cloud.Location.2.3.0\lib\net462\Google.Cloud.Location.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.LongRunning, Version=3.3.0.0, Culture=neutral, PublicKeyToken=185c282632e132a0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.LongRunning.3.3.0\lib\net462\Google.LongRunning.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Protobuf, Version=3.31.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Protobuf.3.31.1\lib\net45\Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="Grpc.Auth, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d754f35622e28bad, processorArchitecture=MSIL">
+      <HintPath>..\packages\Grpc.Auth.2.71.0\lib\net462\Grpc.Auth.dll</HintPath>
+    </Reference>
+    <Reference Include="Grpc.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d754f35622e28bad, processorArchitecture=MSIL">
+      <HintPath>..\packages\Grpc.Core.2.46.6\lib\net45\Grpc.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Grpc.Core.Api, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d754f35622e28bad, processorArchitecture=MSIL">
+      <HintPath>..\packages\Grpc.Core.Api.2.71.0\lib\net462\Grpc.Core.Api.dll</HintPath>
+    </Reference>
+    <Reference Include="Grpc.Net.Client, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d754f35622e28bad, processorArchitecture=MSIL">
+      <HintPath>..\packages\Grpc.Net.Client.2.71.0\lib\net462\Grpc.Net.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Grpc.Net.Common, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d754f35622e28bad, processorArchitecture=MSIL">
+      <HintPath>..\packages\Grpc.Net.Common.2.71.0\lib\netstandard2.0\Grpc.Net.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.6.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.6.0.0\lib\net461\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\lib\net461\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json.Bson, Version=1.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.Bson.1.0.2\lib\net45\Newtonsoft.Json.Bson.dll</HintPath>
     </Reference>
@@ -80,12 +134,16 @@
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=6.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.6.0.2\lib\net461\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Management" />
     <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
     </Reference>
@@ -97,6 +155,9 @@
     <Reference Include="System.Net.Http.Formatting, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.6.0.0\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
+    <Reference Include="System.Net.Http.WinHttpHandler, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Http.WinHttpHandler.8.0.0\lib\net462\System.Net.Http.WinHttpHandler.dll</HintPath>
+    </Reference>
     <Reference Include="System.Numerics" />
     <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
@@ -106,8 +167,8 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
@@ -264,9 +325,12 @@
     <Compile Include="Attributes\AjaxAuthorizeAttribute.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaiTapsController.cs" />
+    <Compile Include="Controllers\ChatbotController.cs" />
     <Compile Include="Controllers\CheckinApiController.cs" />
     <Compile Include="Controllers\CheckinController.cs" />
+    <Compile Include="Controllers\ChiSoSucKhoesController.cs" />
     <Compile Include="Controllers\DacQuyensController.cs" />
+    <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\GoiTapsController.cs" />
     <Compile Include="Controllers\HangHoiViensController.cs" />
     <Compile Include="Controllers\HoaDonsController.cs" />
@@ -406,6 +470,14 @@
     <Compile Include="Migrations\202508101442224_AddLink_KhuyenMai_GoiTap.Designer.cs">
       <DependentUpon>202508101442224_AddLink_KhuyenMai_GoiTap.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202508121833259_Add.cs" />
+    <Compile Include="Migrations\202508121833259_Add.Designer.cs">
+      <DependentUpon>202508121833259_Add.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202508131625217_add ChieuCao&amp;LoiKhuyen to ChiSoSK.cs" />
+    <Compile Include="Migrations\202508131625217_add ChieuCao&amp;LoiKhuyen to ChiSoSK.Designer.cs">
+      <DependentUpon>202508131625217_add ChieuCao&amp;LoiKhuyen to ChiSoSK.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ChiSoSucKhoe.cs" />
@@ -435,9 +507,12 @@
     <Compile Include="Models\PTDashboardViewModel.cs" />
     <Compile Include="Models\ThietBi.cs" />
     <Compile Include="Models\TienDoBaiTap.cs" />
+    <Compile Include="Models\TopItemViewModel.cs" />
     <Compile Include="Models\ViewModels\AdminPageHeaderViewModel.cs" />
     <Compile Include="Models\ViewModels\ChiTietKeHoachViewModel.cs" />
+    <Compile Include="Models\ViewModels\DashboardViewModel.cs" />
     <Compile Include="Models\ViewModels\DatLichViewModel.cs" />
+    <Compile Include="Models\ViewModels\GeminiApiResponse.cs" />
     <Compile Include="Models\ViewModels\GoiTapViewModel.cs" />
     <Compile Include="Models\ViewModels\HangHoiVienViewModel.cs" />
     <Compile Include="Models\ViewModels\HangThanhVienViewModel.cs" />
@@ -456,6 +531,7 @@
     <Compile Include="Services\BookingService.cs" />
     <Compile Include="Services\CloudinaryService.cs" />
     <Compile Include="Services\EmailService.cs" />
+    <Compile Include="Services\GoogleAIService.cs" />
     <Compile Include="Services\HistoryReconstructionService.cs" />
     <Compile Include="Services\MomoService.cs" />
     <Compile Include="Services\PrivilegeService.cs" />
@@ -464,6 +540,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\AccountLayout.css" />
+    <Content Include="Content\Admin\dashboard.css" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />
@@ -480,6 +557,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\Calender\custom.css" />
     <Content Include="Content\CRUD\crud.css" />
     <Content Include="Content\Homepage\homepage.css" />
     <Content Include="Content\Manage\invite.css" />
@@ -490,6 +568,7 @@
     <Content Include="Content\Workout\exer.css" />
     <Content Include="Content\Workout\package.css" />
     <Content Include="Content\Workout\plan.css" />
+    <Content Include="Content\Workout\progress.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -503,6 +582,62 @@
     <Content Include="Scripts\bootstrap.esm.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="protos\google\type\timeofday.proto" />
+    <Content Include="protos\google\type\quaternion.proto" />
+    <Content Include="protos\google\type\postal_address.proto" />
+    <Content Include="protos\google\type\phone_number.proto" />
+    <Content Include="protos\google\type\month.proto" />
+    <Content Include="protos\google\type\money.proto" />
+    <Content Include="protos\google\type\localized_text.proto" />
+    <Content Include="protos\google\type\latlng.proto" />
+    <Content Include="protos\google\type\interval.proto" />
+    <Content Include="protos\google\type\fraction.proto" />
+    <Content Include="protos\google\type\expr.proto" />
+    <Content Include="protos\google\type\decimal.proto" />
+    <Content Include="protos\google\type\dayofweek.proto" />
+    <Content Include="protos\google\type\datetime.proto" />
+    <Content Include="protos\google\type\date.proto" />
+    <Content Include="protos\google\type\color.proto" />
+    <Content Include="protos\google\type\calendar_period.proto" />
+    <Content Include="protos\google\rpc\status.proto" />
+    <Content Include="protos\google\rpc\http.proto" />
+    <Content Include="protos\google\rpc\error_details.proto" />
+    <Content Include="protos\google\rpc\context\audit_context.proto" />
+    <Content Include="protos\google\rpc\context\attribute_context.proto" />
+    <Content Include="protos\google\rpc\code.proto" />
+    <Content Include="protos\google\api\visibility.proto" />
+    <Content Include="protos\google\api\usage.proto" />
+    <Content Include="protos\google\api\system_parameter.proto" />
+    <Content Include="protos\google\api\source_info.proto" />
+    <Content Include="protos\google\api\service.proto" />
+    <Content Include="protos\google\api\routing.proto" />
+    <Content Include="protos\google\api\resource.proto" />
+    <Content Include="protos\google\api\quota.proto" />
+    <Content Include="protos\google\api\policy.proto" />
+    <Content Include="protos\google\api\monitoring.proto" />
+    <Content Include="protos\google\api\monitored_resource.proto" />
+    <Content Include="protos\google\api\metric.proto" />
+    <Content Include="protos\google\api\logging.proto" />
+    <Content Include="protos\google\api\log.proto" />
+    <Content Include="protos\google\api\launch_stage.proto" />
+    <Content Include="protos\google\api\label.proto" />
+    <Content Include="protos\google\api\httpbody.proto" />
+    <Content Include="protos\google\api\http.proto" />
+    <Content Include="protos\google\api\field_info.proto" />
+    <Content Include="protos\google\api\field_behavior.proto" />
+    <Content Include="protos\google\api\error_reason.proto" />
+    <Content Include="protos\google\api\endpoint.proto" />
+    <Content Include="protos\google\api\documentation.proto" />
+    <Content Include="protos\google\api\distribution.proto" />
+    <Content Include="protos\google\api\control.proto" />
+    <Content Include="protos\google\api\context.proto" />
+    <Content Include="protos\google\api\consumer.proto" />
+    <Content Include="protos\google\api\config_change.proto" />
+    <Content Include="protos\google\api\client.proto" />
+    <Content Include="protos\google\api\billing.proto" />
+    <Content Include="protos\google\api\backend.proto" />
+    <Content Include="protos\google\api\auth.proto" />
+    <Content Include="protos\google\api\annotations.proto" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\crud.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
@@ -619,13 +754,22 @@
     <Content Include="Views\Phongs\CreateOrEdit.cshtml" />
     <Content Include="Views\Phongs\Details.cshtml" />
     <Content Include="Views\Phongs\Delete.cshtml" />
+    <Content Include="Views\Dashboard\Index.cshtml" />
+    <Content Include="Views\Dashboard\_ReportFilter.cshtml" />
+    <Content Include="Views\ChiSoSucKhoes\Create.cshtml" />
+    <Content Include="Views\ChiSoSucKhoes\Delete.cshtml" />
+    <Content Include="Views\ChiSoSucKhoes\Details.cshtml" />
+    <Content Include="Views\ChiSoSucKhoes\Edit.cshtml" />
+    <Content Include="Views\ChiSoSucKhoes\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\App_LocalResources\" />
+    <Folder Include="Views\Chatbot\" />
     <Folder Include="Views\CheckinApi\" />
     <Folder Include="Views\Index\" />
     <Folder Include="Views\KeHoachViewModel\" />
+    <Folder Include="Views\NewFolder1\" />
     <Folder Include="Views\_EmailLayout\" />
   </ItemGroup>
   <ItemGroup>
@@ -743,6 +887,12 @@
     <EmbeddedResource Include="Migrations\202508101442224_AddLink_KhuyenMai_GoiTap.resx">
       <DependentUpon>202508101442224_AddLink_KhuyenMai_GoiTap.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202508121833259_Add.resx">
+      <DependentUpon>202508121833259_Add.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202508131625217_add ChieuCao&amp;LoiKhuyen to ChiSoSK.resx">
+      <DependentUpon>202508131625217_add ChieuCao&amp;LoiKhuyen to ChiSoSK.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -779,8 +929,16 @@
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
     <Error Condition="!Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.5.1\build\EntityFramework.props'))" />
     <Error Condition="!Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.5.1\build\EntityFramework.targets'))" />
+    <Error Condition="!Exists('..\packages\Google.Api.CommonProtos.2.17.0\build\Google.Api.CommonProtos.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Google.Api.CommonProtos.2.17.0\build\Google.Api.CommonProtos.targets'))" />
+    <Error Condition="!Exists('..\packages\Grpc.Core.2.46.6\build\net45\Grpc.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Grpc.Core.2.46.6\build\net45\Grpc.Core.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets'))" />
+    <Error Condition="!Exists('..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets'))" />
   </Target>
   <Import Project="..\packages\EntityFramework.6.5.1\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.targets')" />
+  <Import Project="..\packages\Google.Api.CommonProtos.2.17.0\build\Google.Api.CommonProtos.targets" Condition="Exists('..\packages\Google.Api.CommonProtos.2.17.0\build\Google.Api.CommonProtos.targets')" />
+  <Import Project="..\packages\Grpc.Core.2.46.6\build\net45\Grpc.Core.targets" Condition="Exists('..\packages\Grpc.Core.2.46.6\build\net45\Grpc.Core.targets')" />
+  <Import Project="..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets" Condition="Exists('..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets')" />
+  <Import Project="..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets" Condition="Exists('..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

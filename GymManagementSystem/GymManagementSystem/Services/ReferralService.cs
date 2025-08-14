@@ -6,7 +6,7 @@ public class ReferralService
 {
     public static Dictionary<int, string> RewardTiers { get; } = new Dictionary<int, string>
     {
-        { 5, "REFERRAL_5" },   // Mã KM cho mốc 5 người
+        { 1, "REFERRAL_5" },   // Mã KM cho mốc 5 người
         { 10, "REFERRAL_10" }, // Mã KM cho mốc 10 người
         { 15, "REFERRAL_15" }  // Mã KM cho mốc 15 người
     };

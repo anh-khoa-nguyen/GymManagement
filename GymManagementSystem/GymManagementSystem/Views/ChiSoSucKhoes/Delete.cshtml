@@ -1,0 +1,72 @@
+﻿@model GymManagementSystem.Models.ChiSoSucKhoe
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>ChiSoSucKhoe</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.HoiVien.MucTieuTapLuyen)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HoiVien.MucTieuTapLuyen)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NgayCapNhat)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NgayCapNhat)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CanNang)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CanNang)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TyLeMo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TyLeMo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ChieuCao)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ChieuCao)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LoiKhuyenAI)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LoiKhuyenAI)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>
