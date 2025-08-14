@@ -1,0 +1,442 @@
+﻿<head>
+    <link href="@Url.Content("~/Content/CRUD/crud.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Admin/dashboard.css")" rel="stylesheet" type="text/css" />
+</head>
+
+@model GymManagementSystem.Models.ViewModels.DashboardViewModel
+@{
+    ViewBag.Title = "Analytics Dashboard";
+}
+
+<div class="dashboard-container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <!-- BỘ LỌC CHO BIỂU ĐỒ & THẺ STATS (AJAX) -->
+        <div class="filter-controls d-flex align-items-center gap-2">
+            <select id="yearChartFilter" class="form-select">
+                @foreach (var yearOption in Model.AvailableYears)
+                {
+                    <option value="@yearOption.Value"
+                            selected="@(yearOption.Value == Model.SelectedReportYear.ToString())">
+                        @yearOption.Text
+                    </option>
+                }
+            </select>
+            <select id="monthChartFilter" class="form-select">
+                <option value="">Tất cả các tháng</option>
+                @for (int i = 1; i <= 12; i++)
+                {
+                    <option value="@i" selected="@(i == Model.SelectedReportMonth)">Tháng @i</option>
+                }
+            </select>
+        </div>
+
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-primary chart-type-btn active"
+                    data-chart-type="visitors">
+                <i class="fas fa-users"></i> Lượt khách
+            </button>
+
+            <button type="button" class="btn btn-outline-primary chart-type-btn"
+                    data-chart-type="revenue">
+                <i class="fas fa-dollar-sign"></i> Doanh thu
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card chart-card">
+                <div id="viewTypeButtons" class="btn-group position-absolute top-0 end-0 p-2"
+                     role="group" style="display:none; z-index:10;">
+                    <button type="button" class="btn btn-sm btn-secondary view-type-btn active"
+                            data-type="daily">
+                        Từng Ngày
+                    </button>
+                    <button type="button" class="btn btn-sm btn-secondary view-type-btn"
+                            data-type="overview">
+                        Tổng Quan
+                    </button>
+                </div>
+                <canvas id="mainChart"></canvas>
+            </div>
+        </div>
+
+        <div class="col-lg-4 d-flex flex-column gap-4">
+            <div class="card stat-card">
+                <h5 id="visitors-label">Lượt khách trong năm @Model.SelectedReportYear</h5>
+                <h2 id="visitors-value">@Model.TotalVisitorsToday</h2>
+            </div>
+            <div class="card stat-card hehe">
+                <h5 id="revenue-label">Doanh thu trong năm @Model.SelectedReportYear</h5>
+                <h2 id="revenue-value">@Model.TotalRevenueToday.ToString("N0") đ</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="card table-card mt-4">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="chamcong-tab"
+                        data-bs-toggle="tab" data-bs-target="#chamcong" type="button">
+                    Chấm Công
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="goitap-tab"
+                        data-bs-toggle="tab" data-bs-target="#goitap" type="button">
+                    Top Gói Tập
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="kehoach-tab"
+                        data-bs-toggle="tab" data-bs-target="#kehoach" type="button">
+                    Top Kế Hoạch
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="toppt-tab" data-bs-toggle="tab" data-bs-target="#toppt" type="button">Top PT Tích Cực</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active p-3" id="chamcong" role="tabpanel">
+                @using (Html.BeginForm("Index", "Dashboard", FormMethod.Get, new { @class = "d-flex justify-content-between align-items-center mb-3" }))
+                {
+                    <!-- Nút chọn chế độ xem -->
+                    <div class="btn-group" role="group">
+                        <button type="submit" name="chamCongViewType" value="Ngay" class="btn @(Model.SelectedChamCongViewType == "Ngay" ? "btn-primary" : "btn-secondary")">Theo Ngày</button>
+                        <button type="submit" name="chamCongViewType" value="Tuan" class="btn @(Model.SelectedChamCongViewType == "Tuan" ? "btn-primary" : "btn-secondary")">Theo Tuần</button>
+                        <button type="submit" name="chamCongViewType" value="Thang" class="btn @(Model.SelectedChamCongViewType == "Thang" ? "btn-primary" : "btn-secondary")">Theo Tháng</button>
+                    </div>
+
+                    <!-- Ô chọn ngày (dùng chung cho cả 3 chế độ) -->
+                    <div>
+                        <input type="date" name="chamCongDate" class="form-control" value="@Model.SelectedChamCongDate.ToString("yyyy-MM-dd")" style="max-width: 200px;" onchange="this.form.submit()" />
+                    </div>
+                }
+
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>Nhân Viên</th>
+                            <th>Vai Trò</th>
+                            @if (Model.SelectedChamCongViewType == "Ngay")
+                            {
+                                <th>Giờ Vào</th>
+                                <th>Giờ Ra</th>
+                            }
+                            <th>Tổng Thời Gian Làm Việc</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.BangChamCong.OrderBy(c => c.HoTen))
+                        {
+                            <tr>
+                                <td>@item.HoTen</td>
+                                <td>@item.VaiTro</td>
+                                @if (Model.SelectedChamCongViewType == "Ngay")
+                                {
+                                    <td>@item.ThoiGianVao?.ToString("HH:mm")</td>
+                                    <td>@item.ThoiGianRa?.ToString("HH:mm")</td>
+                                }
+                                <td>@item.ThoiGianLamViec</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane fade p-3" id="goitap" role="tabpanel">
+                @Html.Partial("_ReportFilter", Model)
+                <div class="text-end mb-3">
+                    <button class="btn btn-sm btn-outline-secondary view-toggle-btn active" data-target-table="#goiTapTable" data-target-chart="#goiTapChart">Xem Bảng</button>
+                    <button class="btn btn-sm btn-outline-secondary view-toggle-btn" data-target-table="#goiTapTable" data-target-chart="#goiTapChart">Xem Biểu Đồ</button>
+                </div>
+
+                <table class="modern-table" id="goiTapTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Tên Gói Tập</th>
+                            <th>Giá Tiền</th>
+                            <th class="text-end">Lượt Đăng Ký</th>
+                            <th class="text-end">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.TopGoiTaps.Count; i++)
+                        {
+                            var topItem = Model.TopGoiTaps[i];
+                            <tr><td>@(i + 1)</td><td>@topItem.Item.TenGoi</td><td>@topItem.Item.GiaTien.ToString("N0") đ</td><td class="text-end">@topItem.SoLuotDangKy</td><td class="text-end"><a href="#" class="btn-crud js-open-offcanvas" data-url="@Url.Action("Details", "GoiTaps", new { id = topItem.Item.Id })" title="Xem chi tiết"><i class="fas fa-eye"></i></a></td></tr>
+                        }
+                    </tbody>
+                </table>
+                <div id="goiTapChart" style="display: none; position: relative; height: 400px;">
+                    <canvas id="goiTapPieChart"></canvas>
+                </div>
+            </div>
+            <div class="tab-pane fade p-3" id="kehoach" role="tabpanel">
+                @Html.Partial("_ReportFilter", Model)
+                <div class="text-end mb-3">
+                    <button class="btn btn-sm btn-outline-secondary view-toggle-btn active" data-target-table="#keHoachTable" data-target-chart="#keHoachChart">Xem Bảng</button>
+                    <button class="btn btn-sm btn-outline-secondary view-toggle-btn" data-target-table="#keHoachTable" data-target-chart="#keHoachChart">Xem Biểu Đồ</button>
+                </div>
+                <table class="modern-table"  id="keHoachTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Tên Kế Hoạch</th>
+                            <th>Số Ngày</th>
+                            <th class="text-end">Lượt Đăng Ký</th>
+                            <th class="text-end">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.TopKeHoachs.Count; i++)
+                        {
+                            var topItem = Model.TopKeHoachs[i];
+                            <tr><td>@(i + 1)</td><td>@topItem.Item.TenKeHoach</td><td>@topItem.Item.ThoiGianThucHien ngày</td><td class="text-end">@topItem.SoLuotDangKy</td><td class="text-end"><a href="#" class="btn-crud js-open-offcanvas" data-url="@Url.Action("Details", "KeHoachsAdmin", new { id = topItem.Item.Id })" title="Xem chi tiết"><i class="fas fa-eye"></i></a></td></tr>
+                        }
+                    </tbody>
+                </table>
+                <div id="keHoachChart" style="display: none; position: relative; height: 400px;">
+                    <canvas id="keHoachPieChart"></canvas>
+                </div>
+            </div>
+            <div class="tab-pane fade p-3" id="toppt" role="tabpanel">
+                <!-- Tái sử dụng form lọc của các báo cáo khác -->
+                @Html.Partial("_ReportFilter", Model)
+
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">#</th>
+                            <th colspan="2">Huấn Luyện Viên</th>
+                            <th class="text-center">Số Lịch Hoàn Thành</th>
+                            <th class="text-end">Đánh Giá Trung Bình</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.TopPts.Count; i++)
+                        {
+                            var pt = Model.TopPts[i];
+                            <tr>
+                                <td>@(i + 1)</td>
+                                <td style="width: 60px;">
+                                    <img src="@(pt.AvatarUrl ?? Url.Content("~/Content/Images/default-avatar.png"))" alt="@pt.HoTen" class="table-avatar" />
+                                </td>
+                                <td>@pt.HoTen</td>
+                                <td class="text-center">@pt.SoLichDaHoanThanh</td>
+                                <td class="text-end">
+                                    @if (pt.DiemDanhGiaTrungBinh.HasValue)
+                                    {
+                                        <span class="fw-bold">@pt.DiemDanhGiaTrungBinh.Value.ToString("F1")</span>
+                                        <i class="fas fa-star" style="color: #ffc107;"></i>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Chưa có</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+    $(document).ready(function() {
+        // --- KHAI BÁO BIẾN TOÀN CỤC CHO SCRIPT NÀY ---
+        let mainChart; // Biến để lưu instance của biểu đồ, giúp cập nhật thay vì vẽ lại
+        let currentChartType = 'visitors'; // Trạng thái mặc định của biểu đồ
+
+        // --- ĐỊNH NGHĨA CÁC HÀM ---
+        function renderChart(labels, data, newLabel) {
+            const dataConfig = {
+                labels: labels,
+                datasets: [{
+                    label: newLabel,
+                    data: data,
+                    borderColor: '#a5ff36',
+                    backgroundColor: 'rgba(165, 255, 54, 0.2)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            };
+
+            if (mainChart) {
+                // Nếu biểu đồ đã tồn tại, chỉ cần cập nhật dữ liệu và label
+                mainChart.data = dataConfig;
+                mainChart.update();
+            } else {
+                // Nếu chưa, tạo mới biểu đồ
+                const ctx = document.getElementById('mainChart').getContext('2d');
+                mainChart = new Chart(ctx, {
+                    type: 'line',
+                    data: dataConfig,
+                    options: {
+                        maintainAspectRatio: false, // Rất quan trọng để biểu đồ lấp đầy container
+                        responsive: true,
+                        scales: {
+                             y: { ticks: { color: '#888' } },
+                             x: { ticks: { color: '#888' } }
+                        },
+                        plugins: { legend: { labels: { color: '#fff' } } }
+                    }
+                });
+            }
+        }
+
+        /**
+         * Hàm chính để gọi các API và cập nhật các thành phần động (biểu đồ, thẻ thống kê).
+         */
+        function updateDynamicComponents() {
+            // Lấy các giá trị bộ lọc hiện tại
+            const year = $('#yearChartFilter').val();
+            const month = $('#monthChartFilter').val();
+            const viewType = $('.view-type-btn.active').data('type') || 'daily';
+
+            // Xác định API và nhãn sẽ sử dụng dựa trên trạng thái hiện tại
+            let chartApiUrl = (currentChartType === 'visitors')
+                ? '@Url.Action("GetChartData", "Dashboard")'
+                : '@Url.Action("GetRevenueChartData", "Dashboard")';
+
+            let newChartLabel = (currentChartType === 'visitors')
+                ? 'Lượt khách (Hội viên)'
+                : 'Doanh thu (VNĐ)';
+
+            // Gọi AJAX để cập nhật dữ liệu biểu đồ
+            $.getJSON(chartApiUrl, { year: year, month: month, viewType: viewType }, function (response) {
+                if (response && response.labels && response.data) {
+                    const labels = new Function('return [' + response.labels + ']')();
+                    const data = new Function('return [' + response.data + ']')();
+                    renderChart(labels, data, newChartLabel);
+                }
+            });
+
+            // Gọi AJAX để cập nhật dữ liệu các thẻ thống kê
+            $.getJSON('@Url.Action("GetStatCardData", "Dashboard")', { year: year, month: month }, function(response) {
+                if(response) {
+                    $('#visitors-value').text(response.totalVisitors);
+                    $('#revenue-value').text(response.totalRevenue + ' đ');
+                    $('#visitors-label').text('Lượt khách ' + response.periodLabel);
+                    $('#revenue-label').text('Doanh thu ' + response.periodLabel);
+                }
+            });
+        }
+
+        // --- GẮN CÁC SỰ KIỆN TƯƠNG TÁC ---
+
+        // Sự kiện cho bộ lọc Năm và Tháng của biểu đồ
+        $('#yearChartFilter, #monthChartFilter').on('change', function() {
+            // Khi thay đổi, ẩn/hiện nút "Từng ngày/Tổng quan"
+            if ($('#monthChartFilter').val()) {
+                $('#viewTypeButtons').show();
+            } else {
+                $('#viewTypeButtons').hide();
+            }
+            // Sau đó cập nhật lại dữ liệu
+            updateDynamicComponents();
+        });
+
+        // Sự kiện cho nút chuyển đổi loại xem (Từng ngày/Tổng quan)
+        $('.view-type-btn').on('click', function() {
+            $('.view-type-btn').removeClass('active');
+            $(this).addClass('active');
+            updateDynamicComponents();
+        });
+
+        // Sự kiện cho nút chuyển đổi loại biểu đồ (Lượt khách/Doanh thu)
+        $('.chart-type-btn').on('click', function() {
+            $('.chart-type-btn').removeClass('active btn-primary').addClass('btn-outline-primary');
+            $(this).removeClass('btn-outline-primary').addClass('active btn-primary');
+            currentChartType = $(this).data('chart-type');
+            updateDynamicComponents();
+        });
+
+        // --- KHỞI TẠO BAN ĐẦU KHI TẢI TRANG ---
+
+        // Vẽ biểu đồ với dữ liệu ban đầu được truyền từ Controller
+        const initialLabels = [@Html.Raw(Model.ChartLabels)];
+        const initialData = [@Html.Raw(Model.ChartData)];
+        renderChart(initialLabels, initialData, 'Lượt khách (Hội viên)');
+
+        // Kiểm tra và hiển thị nút "Từng ngày/Tổng quan" nếu cần
+        if ($('#monthChartFilter').val()) {
+            $('#viewTypeButtons').show();
+        }
+    });
+    </script>
+    <script>
+        $(document).ready(function () {
+        let goiTapPieChart = null; 
+        let keHoachPieChart = null;
+
+        function renderPieChart(ctx, labels, data, chartTitle) {
+            return new Chart(ctx, {
+                type: 'pie', // Loại biểu đồ là 'pie' (tròn)
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: chartTitle,
+                        data: data,
+                        // Tự động tạo màu ngẫu nhiên
+                        backgroundColor: data.map(() => `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.7)`),
+                        borderColor: '#1E1E1E',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: { color: '#fff' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- GẮN SỰ KIỆN ---
+
+        // Sự kiện cho các nút chuyển đổi chế độ xem (Bảng/Biểu đồ)
+        $('.view-toggle-btn').on('click', function() {
+            var $this = $(this);
+            var tableId = $this.data('target-table');
+            var chartId = $this.data('target-chart');
+
+            // Cập nhật trạng thái active cho nút
+            $this.siblings().removeClass('active');
+            $this.addClass('active');
+
+            if ($this.text().includes('Biểu Đồ')) {
+                $(tableId).hide();
+                $(chartId).show();
+
+                // Vẽ biểu đồ tương ứng
+                if (chartId === '#goiTapChart' && !goiTapPieChart) {
+                    const labels = @Html.Raw("['" + string.Join("','", Model.TopGoiTaps.Select(g => g.Item.TenGoi.Replace("'", "\\'"))) + "']");
+                    const data = [@Html.Raw(string.Join(",", Model.TopGoiTaps.Select(g => g.Item.GiaTien * g.SoLuotDangKy)))]; // Doanh thu = Giá * Lượt
+                    const ctx = document.getElementById('goiTapPieChart').getContext('2d');
+                    goiTapPieChart = renderPieChart(ctx, labels, data, 'Tỷ trọng Doanh thu');
+                }
+                else if (chartId === '#keHoachChart' && !keHoachPieChart) {
+                    const labels = @Html.Raw("['" + string.Join("','", Model.TopKeHoachs.Select(k => k.Item.TenKeHoach.Replace("'", "\\'"))) + "']");
+                    const data = [@Html.Raw(string.Join(",", Model.TopKeHoachs.Select(k => k.SoLuotDangKy)))];
+                    const ctx = document.getElementById('keHoachPieChart').getContext('2d');
+                    keHoachPieChart = renderPieChart(ctx, labels, data, 'Tỷ trọng Lượt đăng ký');
+                }
+            } else {
+                $(tableId).show();
+                $(chartId).hide();
+            }
+        });
+    });
+    </script>
+}

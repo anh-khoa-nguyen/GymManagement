@@ -24,6 +24,13 @@ namespace GymManagementSystem.Models
         [Display(Name = "Tỷ lệ mỡ (%)")]
         public double? TyLeMo { get; set; }
 
+        [Display(Name = "Chiều cao (cm)")]
+        public double? ChieuCao { get; set; }
+
+        [Display(Name = "Lời khuyên từ AI")]
+        [DataType(DataType.MultilineText)]
+        public string LoiKhuyenAI { get; set; }
+
         [ForeignKey("HoiVienId")]
         public virtual HoiVien HoiVien { get; set; }
     }

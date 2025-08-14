@@ -1,0 +1,66 @@
+﻿@model GymManagementSystem.Models.ChiSoSucKhoe
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>ChiSoSucKhoe</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.HoiVien.MucTieuTapLuyen)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HoiVien.MucTieuTapLuyen)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NgayCapNhat)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NgayCapNhat)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CanNang)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CanNang)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TyLeMo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TyLeMo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ChieuCao)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ChieuCao)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LoiKhuyenAI)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LoiKhuyenAI)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

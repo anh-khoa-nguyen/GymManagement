@@ -1,0 +1,134 @@
+﻿.calendar-wrapper {
+	background-color: #1c1c1c;
+	border: 1px solid #2c2c2c;
+	border-radius: 16px;
+	padding: 2rem;
+	box-shadow: 0 0 60px var(--glow-purple);
+}
+
+/* --- Header của lịch (Nút, Tiêu đề) --- */
+.fc .fc-toolbar.fc-header-toolbar {
+	margin-bottom: 1.5rem;
+	color: #fff;
+}
+
+.fc .fc-toolbar-title {
+	font-size: 1.8rem;
+	font-weight: 700;
+}
+
+/* Nút bấm (prev, next, today, month...) */
+.fc .fc-button {
+	background: #2c2c2c !important;
+	color: #ccc !important;
+	border: 1px solid #444 !important;
+	box-shadow: none !important;
+	transition: all 0.2s ease;
+}
+
+	.fc .fc-button:hover {
+		background: #333 !important;
+		color: #fff !important;
+	}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active,
+.fc .fc-button-primary:not(:disabled):active {
+	background: var(--neon-green) !important;
+	color: #000 !important;
+	border-color: var(--neon-green) !important;
+}
+
+/* --- Khung Lịch --- */
+.fc-theme-standard .fc-scrollgrid, .fc-theme-standard td, .fc-theme-standard th {
+	border-color: #2c2c2c; /* Đường kẻ mờ hơn */
+}
+
+.fc .fc-col-header-cell-cushion {
+	color: #888;
+	text-decoration: none;
+	font-weight: 600;
+	padding: 10px 4px;
+}
+
+.fc .fc-daygrid-day-number {
+	color: #ccc;
+	text-decoration: none;
+}
+
+.fc .fc-day-today {
+	background-color: rgba(165, 255, 54, 0.1) !important; /* Highlight ngày hôm nay */
+}
+
+/* --- Sự kiện trên lịch --- */
+.fc-event {
+	background-color: var(--mystic-purple) !important;
+	border-color: var(--mystic-purple) !important;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+	.fc-event:hover {
+		filter: brightness(1.2);
+	}
+
+	.fc-event .fc-event-main {
+		color: #fff;
+		font-weight: 500;
+	}
+
+/* --- FORM ĐẶT LỊCH TRONG OFFCANVAS --- */
+/* Khung chọn giờ trống */
+#availableSlotsContainer {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+	gap: 0.75rem;
+	margin-top: 1rem;
+}
+
+/* Nút chọn giờ */
+.time-slot-btn {
+	background-color: #2b2b2b;
+	border: 1px solid #444;
+	color: #ccc;
+	padding: 0.75rem;
+	border-radius: 8px;
+	transition: all 0.2s ease;
+	cursor: pointer;
+}
+
+	.time-slot-btn:hover {
+		background-color: #333;
+		color: #fff;
+	}
+
+	.time-slot-btn.active {
+		background-color: var(--neon-green);
+		color: #000;
+		font-weight: bold;
+		border-color: var(--neon-green);
+		box-shadow: 0 0 15px var(--glow-green);
+	}
+
+/* Nút Gửi Yêu Cầu */
+.btn-submit-booking {
+	background: var(--neon-green);
+	color: #000;
+	font-weight: 700;
+	border-radius: 8px;
+	padding: 12px 24px;
+	transition: all 0.2s ease;
+	border: none;
+	width: 100%;
+}
+
+	.btn-submit-booking:hover {
+		transform: scale(1.02);
+		filter: brightness(1.1);
+	}
+.text-muted {
+	color: #888 !important;
+	text-transform: uppercase;
+	font-size: 0.8rem;
+	font-weight: 500;
+	letter-spacing: 0.5px;
+}
