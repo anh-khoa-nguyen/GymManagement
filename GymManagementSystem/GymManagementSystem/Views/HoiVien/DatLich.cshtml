@@ -4,16 +4,18 @@
 
 
 
+
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="mb-0 text-white"><i class="fas fa-calendar-alt me-2"></i> @ViewBag.Title</h2>
+    <div class="page-header mb-4">
+        <h2 class="text-white"><i class="fas fa-calendar-alt me-2"></i> @ViewBag.Title</h2>
+        <p class="text-muted">Chọn một ngày trống trên lịch để đặt buổi tập, hoặc nhấp vào một buổi tập đã có để xem chi tiết.</p>
     </div>
-    <p class="text-muted">Chọn một ngày trống trên lịch để đặt buổi tập, hoặc nhấp vào một buổi tập đã có để xem chi tiết hoặc đánh giá.</p>
-    <hr style="border-color: #444;" />
-    <div id="calendar"></div>
+
+    <!-- Bọc lịch trong một container mới -->
+    <div class="calendar-wrapper">
+        <div id="calendar"></div>
+    </div>
 </div>
-
-
 
 @section Scripts {
     <script>
@@ -31,7 +33,7 @@
             locale: 'vi',
             headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,listWeek' },
             events: '@Url.Action("GetLichTapCuaHoiVien", "HoiVien")',
-
+      
             // === KHI CLICK VÀO NGÀY TRỐNG (ĐẶT LỊCH) ===
             dateClick: function(info) {
                 if (new Date(info.dateStr) < new Date(new Date().setHours(0,0,0,0))) {
@@ -85,6 +87,7 @@
         // --- CÁC HÀM XỬ LÝ SỰ KIỆN VÀ AJAX ---
 
         // Hàm tìm khung giờ trống
+
         function fetchAndDisplaySlots() {
             var ptId = $('#bookingPtId').val();
             var date = $('#bookingDate').val();
@@ -92,6 +95,7 @@
             var $loader = $('#slotsLoader'); // Dùng $
 
             $slotsContainer.html('<div class="alert alert-secondary w-100 p-2 text-center">Vui lòng chọn PT và ngày.</div>');
+
             $('#gioBatDau').val('');
 
             if (ptId && date) {
@@ -106,6 +110,7 @@
                             });
                         } else {
                             $slotsContainer.html('<div class="alert alert-warning w-100 p-2 text-center">Không có lịch trống.</div>');
+
                         }
                     }).always(function() { $loader.addClass('d-none'); });
             }
@@ -120,6 +125,7 @@
 
         // Submit form Đặt lịch
         $(document).on('submit', '#bookingFormAjax', function(e) { // Sửa ID form cho nhất quán
+
             e.preventDefault();
             var form = $(this);
             $.ajax({
@@ -128,6 +134,7 @@
                     if (response.success) {
                         crudOffcanvas.hide();
                         calendar.refetchEvents();
+                        // (Tùy chọn) Thay alert bằng một thông báo đẹp hơn
                         alert(response.message);
                     } else { alert('Lỗi: ' + response.message); }
                 },
@@ -198,3 +205,4 @@
     </script>
 }
  
+

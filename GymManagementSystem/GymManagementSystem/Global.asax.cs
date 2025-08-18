@@ -26,5 +26,13 @@ namespace GymManagementSystem
              //Kiểm tra và tạo các vai trò nếu chưa tồn tại
             IdentityConfig.SeedRoles();
         }
+
+        public override void Init()
+        {
+            this.PostAuthenticateRequest += (sender, e) => {
+                HttpContext.Current.SetSessionStateBehavior(System.Web.SessionState.SessionStateBehavior.Required);
+            };
+            base.Init();
+        }
     }
 }

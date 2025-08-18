@@ -43,7 +43,54 @@
                     <ul class="navbar-nav mx-auto">
                         <li class="nav-item">@Html.ActionLink("Trang Chủ", "Index", "Home", null, new { @class = "nav-link" })</li>
 
-                        @if (User.Identity.IsAuthenticated)
+                        @if (Request.IsAuthenticated && User.IsInRole("QuanLy"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="paymentDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Quản lý Dịch vụ
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="paymentDropdown">
+                                    <li>@Html.ActionLink("Quản lý Hóa đơn", "Index", "HoaDons", null, new { @class = "dropdown-item" })</li>
+                                    <li>@Html.ActionLink("Quản Lý Gói tập", "Index", "GoiTaps", null, new { @class = "dropdown-item" })</li>
+                                    <li>@Html.ActionLink("Quản lý Khuyến mãi", "Index", "KhuyenMais", null, new { @class = "dropdown-item" })</li>
+                                </ul>
+                            </li>
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="memberDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Quản lý Thành viên
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="paymentDropdown">
+                                    <!-- Đổi tên các mục cho rõ ràng hơn -->
+                                    <li>@Html.ActionLink("Quản lý Tài khoản", "Index", "UserManagement", null, new { @class = "dropdown-item" })</li>
+                                    <li>@Html.ActionLink("Quản Lý VIP", "Index", "HangHoiViens", null, new { @class = "dropdown-item" })</li>
+                                    <li>@Html.ActionLink("Quản Lý Đặc quyền ", "Index", "DacQuyens", null, new { @class = "dropdown-item" })</li>
+                                    <li>@Html.ActionLink("Quét mã QR", "Scan", "Checkin", null, new { @class = "dropdown-item" })</li>
+                                </ul>
+                            </li>
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="paymentDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Quản lý Phòng tập
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="paymentDropdown">
+                                    <li>@Html.ActionLink("Quản lý Phòng", "Index", "Phongs", null, new { @class = "dropdown-item" })</li>
+                                    <li>@Html.ActionLink("Quản Lý Thiết bị", "Index", "ThietBis", null, new { @class = "dropdown-item" })</li>
+                                    <li>@Html.ActionLink("Quản Lý Kế hoạch", "Index", "KeHoachsAdmin", null, new { @class = "dropdown-item" })</li>
+                                    <li>@Html.ActionLink("Quản Lý Bài tập", "Index", "BaiTaps", null, new { @class = "dropdown-item" })</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">@Html.ActionLink("Báo cáo thống kê", "Index", "Dashboard", null, new { @class = "nav-link" })</li>
+
+                        }
+                        @if (Request.IsAuthenticated && User.IsInRole("HoiVien"))
+                        {
+                            <li class="nav-item">@Html.ActionLink("Kế Hoạch Tập", "Index", "KeHoach", null, new { @class = "nav-link" })</li>
+                            <li class="nav-item">@Html.ActionLink("Các Gói Tập", "DanhSachGoiTap", "HoiVien", null, new { @class = "nav-link" })</li>
+                            <li class="nav-item">@Html.ActionLink("Đặt Lịch", "DatLich", "HoiVien", null, new { @class = "nav-link" })</li>
+                            <li class="nav-item">@Html.ActionLink("Xem Tiến Độ", "XemTienDo", "HoiVien", null, new { @class = "nav-link" })</li>
+                        }
+                        @if (Request.IsAuthenticated && User.IsInRole("PT"))
                         {
                             if (User.IsInRole("QuanLy"))
                             {
