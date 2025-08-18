@@ -1,61 +1,279 @@
-﻿/* Set padding to keep content from hitting the edges */
+﻿/* =================================================================== */
+/*                  GYM MANAGEMENT - MASTER STYLESHEET                 */
+/* =================================================================== */
+
+/* ----- 1. DESIGN SYSTEM (BIẾN MÀU SẮC & FONT) ----- */
+:root {
+    --primary-accent-color: #FF4500; /* Màu cam năng lượng */
+    --background-color: #0D0D0D;
+    --surface-color: #1A1A1A; /* Nền cho Card, Modal, Offcanvas */
+    --text-primary: #F5F5F5;
+    --text-secondary: #A9A9A9;
+    --border-color: #333333;
+}
+
+/* ----- 2. THIẾT LẬP CƠ BẢN & TYPOGRAPHY ----- */
+body {
+    background-color: var(--background-color) !important;
+    color: var(--text-primary);
+    font-family: 'Poppins', sans-serif;
+    padding-top: 70px; /* Bù lại cho Navbar fixed-top */
+}
+
+.text-muted {
+    color: #888 !important; /* Một màu xám đậm hơn, dễ đọc hơn */
+    text-transform: uppercase; /* VIẾT HOA TOÀN BỘ */
+    font-size: 0.8rem; /* Kích thước chữ nhỏ hơn một chút */
+    font-weight: 500; /* Hơi đậm hơn một chút */
+    letter-spacing: 0.5px; /* Tăng khoảng cách giữa các ký tự */
+}
+
 .body-content {
-    margin-top: 15px;
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
 
-/* Override the default bootstrap behavior where horizontal description lists 
-   will truncate terms that are too long to fit in the left column 
-*/
-.dl-horizontal dt {
-    white-space: normal;
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary);
+    font-weight: 600;
 }
 
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-textarea {
-    max-width: 280px;
+p {
+    color: var(--text-secondary);
 }
 
-/* CSS đánh giá cho các sao*/
+a {
+    color: var(--primary-accent-color);
+    transition: all 0.2s ease;
+}
+
+a:hover {
+    color: #ff7840;
+    text-decoration: none;
+}
+
+hr {
+    border-top: 1px solid var(--border-color);
+}
+
+/* ----- 3. TÙY CHỈNH CÁC THÀNH PHẦN BOOTSTRAP ----- */
+
+/* Navbar */
+.navbar.fixed-top {
+    background-color: transparent;
+    transition: background-color 0.4s ease-out;
+}
+
+.navbar.fixed-top.scrolled, .navbar:not(.navbar-transparent) {
+    background-color: rgba(13, 13, 13, 0.85) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-accent-color);
+    border-color: var(--primary-accent-color);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 12px 24px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #ff6a29;
+    border-color: #ff6a29;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 69, 0, 0.3);
+}
+
+/* Forms */
+.form-control, .form-select {
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: 4px;
+    padding: 12px 15px;
+    transition: all 0.2s ease-in-out;
+    max-width: 100%; /* Bỏ giới hạn 280px */
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: var(--surface-color);
+    color: var(--text-primary);
+    border-color: var(--primary-accent-color);
+    box-shadow: 0 0 0 0.2rem rgba(255, 69, 0, 0.25);
+}
+
+/* Cards */
+.card {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.card-header {
+    background-color: transparent;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Modals & Offcanvas */
+.modal-content, .offcanvas {
+    background-color: var(--surface-color) !important;
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.modal-header, .modal-footer, .offcanvas-header, .offcanvas-footer {
+    border-color: var(--border-color);
+}
+
+.btn-close-white {
+    filter: invert(1);
+}
+
+/* ----- 4. CSS CHO CÁC TÍNH NĂNG CỤ THỂ ----- */
+
+/* Sao Đánh giá */
 .rating-stars {
     display: inline-block;
-    direction: rtl; /* Đảo ngược thứ tự để hiệu ứng hover hoạt động đúng */
+    direction: rtl;
 }
 
 .rating-stars input[type=radio] {
-    display: none; /* Ẩn các nút radio mặc định */
+    display: none;
 }
 
 .rating-stars label {
-    color: #ddd; /* Màu sao mặc định */
+    color: #ddd;
     font-size: 2em;
     padding: 0 5px;
     cursor: pointer;
-    -webkit-transition: all .2s ease-in-out;
     transition: all .2s ease-in-out;
 }
 
 .rating-stars label:hover,
-.rating-stars label:hover ~ label, /* Các sao bên trái của sao được hover */
-.rating-stars input[type=radio]:checked ~ label { /* Các sao bên trái của sao được chọn */
-    color: #ffc107; /* Màu vàng khi hover hoặc được chọn */
+.rating-stars label:hover ~ label,
+.rating-stars input[type=radio]:checked ~ label {
+    color: #ffc107;
 }
 
-/* TÙY CHỈNH CHO FULLCALENDAR */
+/* FullCalendar */
+.fc .fc-toolbar-title {
+    color: var(--text-primary);
+}
+
+.fc th {
+    border-color: var(--border-color);
+}
+
+.fc-col-header-cell-cushion {
+    color: var(--text-secondary);
+    text-decoration: none;
+}
+
+.fc-daygrid-day {
+    border-color: var(--border-color);
+}
+
+.fc .fc-daygrid-day.fc-day-today {
+    background-color: rgba(255, 69, 0, 0.1);
+}
+
 .fc-event {
-    border: 1px solid #444 !important; /* Thêm viền nhẹ cho sự kiện */
-    color: #fff !important; /* Chữ luôn là màu trắng để nổi bật */
-    padding: 2px 4px;
-    font-size: 0.8em; /* Giảm kích thước chữ một chút */
-    overflow: hidden; /* Ẩn phần chữ bị tràn */
-    text-overflow: ellipsis; /* Hiển thị dấu ... nếu chữ quá dài */
-    white-space: nowrap; /* Ngăn không cho chữ xuống dòng */
+    border: none !important;
+    color: #fff !important;
+    padding: 2px 5px;
+    font-size: 0.8em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-/* Đảm bảo màu chữ của lịch cũng là màu sáng */
-.fc-daygrid-day-number, .fc-col-header-cell-cushion {
-    color: #ccc;
+.fc .fc-button-primary {
+    background-color: var(--surface-color) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.fc .fc-button-primary:hover, .fc .fc-button-active {
+    background-color: var(--primary-accent-color) !important;
+    border-color: var(--primary-accent-color) !important;
+}
+
+/* Chat Widget */
+#open-chat-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    font-size: 24px;
+    z-index: 999;
+    display: none;
+}
+
+#chat-container {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 370px;
+    height: 500px;
+    max-width: 90%;
+    z-index: 1000;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+}
+
+#chat-list-view, #chat-message-view {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#chat-list-users {
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+#chat-list-users .list-group-item {
+    cursor: pointer;
+    background-color: var(--surface-color);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+#chat-list-users .list-group-item:hover {
+    background-color: rgba(255, 69, 0, 0.1);
+}
+
+#chat-messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.message {
+    padding: 8px 12px;
+    border-radius: 18px;
+    margin-bottom: 8px;
+    max-width: 75%;
+    word-wrap: break-word;
+}
+
+.message.sent {
+    background-color: var(--primary-accent-color);
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+}
+
+.message.received {
+    background-color: #3a3a3a;
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
 }

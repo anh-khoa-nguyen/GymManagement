@@ -1,40 +1,41 @@
-﻿@model GymManagementSystem.Models.ViewModels.DatLichViewModel
+﻿@* File: Views/HoiVien/_BookingFormPartial.cshtml *@
+@model GymManagementSystem.Models.ViewModels.DatLichViewModel
 
-@using (Html.BeginForm("TaoLichTap", "HoiVien", FormMethod.Post, new { id = "offcanvasForm", @class = "booking-form-light" }))
+@using (Html.BeginForm("TaoLichTap", "HoiVien", FormMethod.Post, new { id = "bookingFormAjax" }))
 {
     @Html.AntiForgeryToken()
-
     @Html.HiddenFor(m => m.GioBatDau, new { id = "gioBatDau" })
 
     <div class="mb-3">
         @Html.LabelFor(m => m.HuanLuyenVienId, new { @class = "form-label fw-bold" })
-        @* SỬA LẠI ĐỂ DÙNG DropDownListFor *@
-        @Html.DropDownListFor(m => m.HuanLuyenVienId, Model.DanhSachPT, "--- Vui lòng chọn một PT ---", new { id = "bookingPtId", @class = "form-select" })
+        @Html.DropDownListFor(m => m.HuanLuyenVienId, Model.DanhSachPT, "--- Chọn một PT ---", new { id = "bookingPtId", @class = "form-select" })
         @Html.ValidationMessageFor(m => m.HuanLuyenVienId, "", new { @class = "text-danger small mt-1" })
     </div>
 
     <div class="mb-3">
         @Html.LabelFor(m => m.NgayDatLich, new { @class = "form-label fw-bold" })
-        @* SỬA LẠI ĐỂ DÙNG EditorFor *@
-        @Html.EditorFor(m => m.NgayDatLich, new { htmlAttributes = new { @class = "form-control", id = "bookingDate" } })
+        @Html.EditorFor(m => m.NgayDatLich, new { htmlAttributes = new { @class = "form-control", id = "bookingDate", type = "date" } })
         @Html.ValidationMessageFor(m => m.NgayDatLich, "", new { @class = "text-danger small mt-1" })
     </div>
 
     <div class="mb-3">
-        <label class="form-label fw-bold">Giờ bắt đầu</label>
-        <div id="availableSlotsContainer" class="d-flex flex-wrap" style="gap: 10px;">
-            <div class="alert alert-secondary w-100 p-2 text-center">Vui lòng chọn PT và ngày để xem các giờ hẹn có sẵn.</div>
-        </div>
+        <label class="form-label fw-bold">Chọn giờ bắt đầu</label>
         <div id="slotsLoader" class="d-none mt-2">
             <div class="spinner-border spinner-border-sm" role="status"></div>
-            <span class="ms-2">Đang tìm giờ trống...</span>
+            <span>Đang tìm giờ trống...</span>
+        </div>
+        <div id="availableSlotsContainer" class="d-flex flex-wrap" style="gap: 10px;">
+            <div class="alert alert-secondary w-100 p-2 text-center">Vui lòng chọn PT và ngày.</div>
         </div>
         @Html.ValidationMessageFor(m => m.GioBatDau, "", new { @class = "text-danger small mt-1" })
     </div>
 
     <div class="mb-4">
         @Html.LabelFor(m => m.GhiChu, new { @class = "form-label fw-bold" })
-        @* SỬA LẠI ĐỂ DÙNG TextAreaFor *@
-        @Html.TextAreaFor(m => m.GhiChu, new { @class = "form-control", rows = 3, placeholder = "Ví dụ: Tôi muốn tập trung vào các bài tập bụng..." })
+        @Html.TextAreaFor(m => m.GhiChu, new { @class = "form-control", rows = 3, placeholder = "Ví dụ: Tập trung vào cơ bụng..." })
+    </div>
+
+    <div class="d-grid gap-2 mt-4">
+        <button type="submit" class="btn btn-primary">Gửi Yêu Cầu</button>
     </div>
 }

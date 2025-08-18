@@ -1,0 +1,77 @@
+﻿@model GymManagementSystem.Models.LichTap
+
+@{
+    // Layout = null; vì đây là Partial View
+}
+
+<!-- Sử dụng các class tùy chỉnh từ Site.css -->
+<div class="details-container p-3">
+
+    <!-- Tiêu đề phụ, sử dụng class text-muted từ Site.css -->
+    <p class="text-muted mb-2">Huấn luyện viên</p>
+    <h5 class="mb-4">
+        <i class="fas fa-user-tie me-2"></i>
+        @(Model.HuanLuyenVien != null ? Model.HuanLuyenVien.ApplicationUser.HoTen : "Lịch tự tập")
+    </h5>
+
+    <p class="text-muted mb-2">Thời gian</p>
+    <h5 class="mb-4">
+        <i class="fas fa-clock me-2"></i>
+        @Model.ThoiGianBatDau.ToString("HH:mm, dd/MM/yyyy")
+    </h5>
+
+    <p class="text-muted mb-2">Trạng thái</p>
+    <div class="mb-4">
+        @if (Model.TrangThai == GymManagementSystem.Models.TrangThaiLichTap.DaDuyet)
+        {
+            <span class="status-badge status-active">Đã duyệt</span>
+        }
+        else if (Model.TrangThai == GymManagementSystem.Models.TrangThaiLichTap.ChoDuyet)
+        {
+            <span class="status-badge status-warning">Chờ duyệt</span>
+        }
+        else
+        {
+            <span class="status-badge status-inactive">@Model.TrangThai.ToString()</span>
+        }
+    </div>
+
+    <p class="text-muted mb-2">Ghi chú của bạn</p>
+    <p class="fst-italic">
+        @(string.IsNullOrEmpty(Model.GhiChuHoiVien) ? "Không có ghi chú nào." : Model.GhiChuHoiVien)
+    </p>
+
+</div>
+
+<div class="offcanvas-footer">
+    @{
+        var startTime = Model.ThoiGianBatDau;
+        var now = DateTime.Now;
+    }
+
+    @if (Model.TrangThai == GymManagementSystem.Models.TrangThaiLichTap.DaDuyet && startTime < now)
+    {
+        <!-- Trường hợp đã hoàn thành -> Hiển thị nút Đánh giá -->
+        <div class="d-grid">
+            <button type="button" class="btn btn-offcanvas-primary js-open-feedback"
+                    data-lichtapid="@Model.Id">
+                <i class="fas fa-star me-2"></i> Viết Đánh giá
+            </button>
+        </div>
+    }
+    else if (Model.TrangThai == GymManagementSystem.Models.TrangThaiLichTap.ChoDuyet || (Model.TrangThai == GymManagementSystem.Models.TrangThaiLichTap.DaDuyet && startTime > now))
+    {
+        <!-- Trường hợp sắp diễn ra -> Hiển thị nút Hủy lịch -->
+        <div class="d-grid">
+            <button type="button" class="btn btn-offcanvas-danger js-cancel-booking"
+                    data-lichtapid="@Model.Id">
+                <i class="fas fa-times-circle me-2"></i> Hủy Lịch
+            </button>
+        </div>
+    }
+    else
+    {
+        <!-- Các trường hợp khác (đã hủy, đã qua lâu...) không có hành động -->
+        <p class="text-center text-muted">Không có hành động nào cho lịch hẹn này.</p>
+    }
+</div>

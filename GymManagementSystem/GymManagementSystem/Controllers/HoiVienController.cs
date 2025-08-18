@@ -9,25 +9,25 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Globalization; 
 
 namespace GymManagementSystem.Controllers
 {
     [Authorize(Roles = "HoiVien")] 
     public class HoiVienController : Controller
     {
-        private ApplicationDbContext db;
+        private readonly ApplicationDbContext db;
         private readonly BookingService _bookingService; 
 
         public HoiVienController()
         {
-            this.db = new ApplicationDbContext();
+            db = new ApplicationDbContext(); 
             _bookingService = new BookingService(db);
         }
 
         // GET: HoiVien
         public ActionResult Index()
         {
-            // Đây sẽ là trang dashboard chính của hội viên sau này
             return View();
         }
 
@@ -38,48 +38,48 @@ namespace GymManagementSystem.Controllers
         //    return View(goiTaps);
         //}
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult ChonGoiTap(int goiTapId)
-        //{
-        //    // 1. Lấy ID của người dùng đang đăng nhập
-        //    var currentUserId = User.Identity.GetUserId();
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ChonGoiTap(int goiTapId)
+        {
+            var goiTap = await db.GoiTaps.FindAsync(goiTapId);
+            if (goiTap == null) return HttpNotFound();
 
-        //    // 2. Tìm hồ sơ Hội viên để lấy ID của bảng HoiVien (chứ không phải ApplicationUser)
-        //    var hoiVienProfile = db.HoiViens.FirstOrDefault(hv => hv.ApplicationUserId == currentUserId);
+            var currentUserId = User.Identity.GetUserId();
+            var hoiVienProfile = await db.HoiViens.FirstOrDefaultAsync(hv => hv.ApplicationUserId == currentUserId);
+            if (hoiVienProfile == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
-        //    // 3. Tìm thông tin gói tập để biết thời hạn (nếu có)
-        //    // Trong tương lai, bạn có thể thêm cột ThoiHan (số ngày) vào bảng GoiTap
-        //    var goiTap = db.GoiTaps.Find(goiTapId);
+            // 1. TẠO BẢN GHI ĐĂNG KÝ MỚI
+            var dangKyMoi = new DangKyGoiTap
+            {
+                HoiVienId = hoiVienProfile.Id,
+                GoiTapId = goiTapId,
+                NgayDangKy = DateTime.Now,
+                TrangThai = TrangThaiDangKy.ChoThanhToan, 
+                SoBuoiTapVoiPT = goiTap.SoBuoiTapVoiPT, 
+                SoBuoiPTDaSuDung = 0
+            };
+            db.DangKyGoiTaps.Add(dangKyMoi);
+            await db.SaveChangesAsync();
 
-        //    if (hoiVienProfile != null && goiTap != null)
-        //    {
-        //        // 4. Tạo một bản ghi Đăng ký mới
-        //        var dangKyMoi = new DangKyGoiTap
-        //        {
-        //            HoiVienId = hoiVienProfile.Id,
-        //            GoiTapId = goiTapId,
-        //            NgayDangKy = DateTime.Now,
-        //            NgayHetHan = DateTime.Now.AddDays(30), // Giả sử mặc định là 30 ngày
-        //            TrangThai = TrangThaiDangKy.HoatDong
-        //        };
+            // 2. TẠO HÓA ĐƠN TƯƠNG ỨNG
+            var hoaDon = new HoaDon
+            {
+                // Sửa: HoaDon cần ApplicationUserId (string), không phải HoiVienId (int)
+                HoiVienId = currentUserId,
+                GoiTapId = goiTap.Id,
+                NgayTao = DateTime.Now,
+                GiaGoc = goiTap.GiaTien,
+                SoTienGiam = 0,
+                ThanhTien = goiTap.GiaTien,
+                TrangThai = TrangThai.ChoThanhToan
+            };
+            db.HoaDons.Add(hoaDon);
+            await db.SaveChangesAsync();
 
-        //        // 5. Thêm bản ghi mới vào CSDL
-        //        db.DangKyGoiTaps.Add(dangKyMoi);
-        //        db.SaveChanges();
-
-        //        // 6. Gửi thông báo thành công về cho View
-        //        TempData["SuccessMessage"] = $"Bạn đã đăng ký thành công gói '{goiTap.TenGoi}'!";
-        //    }
-        //    else
-        //    {
-        //        TempData["ErrorMessage"] = "Đã có lỗi xảy ra. Vui lòng thử lại.";
-        //    }
-
-        //    // 7. Chuyển hướng người dùng trở lại trang danh sách gói tập
-        //    return RedirectToAction("DanhSachGoiTap");
-        //}
-
+            // 3. CHUYỂN HƯỚNG ĐẾN TRANG THANH TOÁN
+            return RedirectToAction("XacNhanThanhToan", new { hoaDonId = hoaDon.Id });
+        }
         // GET: HoiVien/DatLich
         public ActionResult DatLich()
         {
@@ -505,6 +505,42 @@ namespace GymManagementSystem.Controllers
             }
         }
 
+        // Action này trả về Partial View chứa thông tin chi tiết của một lịch hẹn
+        public ActionResult GetBookingDetails(int lichTapId)
+        {
+            var currentUserId = User.Identity.GetUserId();
+    
+            // Tách câu lệnh Include để làm cho nó an toàn hơn
+            var lichTap = db.LichTaps
+                            .Include(l => l.HoiVien.ApplicationUser) // Luôn cần thông tin hội viên
+                            .Include(l => l.HuanLuyenVien.ApplicationUser) // Vẫn include nhưng sẽ xử lý null ở View
+                            .FirstOrDefault(l => l.Id == lichTapId && l.HoiVien.ApplicationUserId == currentUserId);
+
+            if (lichTap == null)
+            {
+                return HttpNotFound();
+            }
+
+            return PartialView("_BookingDetailsPartial", lichTap);
+        }
+
+        // GET: HoiVien/GetFeedbackForm?lichTapId=5
+        public ActionResult GetFeedbackForm(int lichTapId)
+        {
+            var currentUserId = User.Identity.GetUserId();
+            // Tìm lịch tập và kiểm tra quyền sở hữu
+            var lichTap = db.LichTaps.FirstOrDefault(l => l.Id == lichTapId && l.HoiVien.ApplicationUserId == currentUserId);
+
+            if (lichTap == null)
+            {
+                // Trả về lỗi nếu không tìm thấy hoặc không có quyền
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.NotFound, "Không tìm thấy buổi tập.");
+            }
+
+            // Trả về PartialView, truyền model LichTap vào
+            return PartialView("_FeedbackFormPartial", lichTap);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public JsonResult GuiDanhGia(int lichTapId, int soSao, string phanHoi)
@@ -539,26 +575,21 @@ namespace GymManagementSystem.Controllers
         [HttpGet]
         public async Task<JsonResult> GetAvailableSlots(int ptId, string date)
         {
-            // GHI LOG: Đây là bước quan trọng để debug. 
-            // Khi bạn chạy, hãy xem cửa sổ Output của Visual Studio.
             System.Diagnostics.Debug.WriteLine($"--- API GetAvailableSlots called with ptId: {ptId}, date: {date} ---");
 
             try
             {
                 if (!DateTime.TryParse(date, out DateTime selectedDate))
                 {
-                    // Trả về lỗi nếu ngày không hợp lệ, thay vì danh sách rỗng
                     return Json(new { success = false, message = "Định dạng ngày không hợp lệ." }, JsonRequestBehavior.AllowGet);
                 }
 
-                // Gọi service (đảm bảo _bookingService đã được khởi tạo trong constructor)
                 var slots = await _bookingService.GetAvailableSlotsAsync(ptId, selectedDate);
-                var formattedSlots = slots.Select(s => s.ToString(@"hh\:mm")).ToList();
 
-                System.Diagnostics.Debug.WriteLine($"--- Found {formattedSlots.Count} available slots. ---");
 
-                // Trả về dữ liệu thành công
-                return Json(formattedSlots, JsonRequestBehavior.AllowGet);
+                System.Diagnostics.Debug.WriteLine($"--- Found {slots.Count} available slots. ---");
+
+                return Json(slots, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -592,5 +623,67 @@ namespace GymManagementSystem.Controllers
 
             return View(vouchers);
         }
+
+        [HttpGet] // Chỉ cho phép yêu cầu GET
+        public JsonResult GetPTListForChat()
+        {
+            var pts = db.HuanLuyenViens
+                        .Select(pt => new {
+                            Id = pt.ApplicationUser.Id, // Lấy ApplicationUserId để chat
+                            Name = pt.ApplicationUser.HoTen,
+                            Avatar = pt.ApplicationUser.AvatarUrl
+                        }).ToList();
+            return Json(pts, JsonRequestBehavior.AllowGet);
+        }
+
+        // POST: HoiVien/HuyLich
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult HuyLich(int lichTapId)
+        {
+            var currentUserId = User.Identity.GetUserId();
+            // Tìm lịch hẹn và đảm bảo nó thuộc về người dùng đang đăng nhập
+            var lichTap = db.LichTaps.FirstOrDefault(l => l.Id == lichTapId && l.HoiVien.ApplicationUserId == currentUserId);
+
+            if (lichTap == null)
+            {
+                return Json(new { success = false, message = "Không tìm thấy lịch hẹn." });
+            }
+
+            // Chỉ cho phép hủy lịch chưa diễn ra và chưa bị hủy
+            if (lichTap.ThoiGianBatDau <= DateTime.Now)
+            {
+                return Json(new { success = false, message = "Không thể hủy lịch hẹn đã hoặc đang diễn ra." });
+            }
+            if (lichTap.TrangThai == TrangThaiLichTap.DaHuy)
+            {
+                return Json(new { success = false, message = "Lịch hẹn này đã được hủy trước đó." });
+            }
+
+            lichTap.TrangThai = TrangThaiLichTap.DaHuy;
+
+            // Tùy chọn: Tạo thông báo cho PT biết rằng hội viên đã hủy lịch
+            if (lichTap.HuanLuyenVienId.HasValue)
+            {
+                var pt = db.HuanLuyenViens.Find(lichTap.HuanLuyenVienId.Value);
+                if (pt != null)
+                {
+                    var thongBaoChoPT = new ThongBao
+                    {
+                        ApplicationUserId = pt.ApplicationUserId,
+                        NoiDung = $"Hội viên {lichTap.HoiVien.ApplicationUser.HoTen} đã hủy lịch hẹn lúc {lichTap.ThoiGianBatDau:HH:mm dd/MM}.",
+                        URL = "#", // URL tạm thời
+                        NgayTao = DateTime.Now
+                    };
+                    db.ThongBaos.Add(thongBaoChoPT);
+                }
+            }
+
+            db.SaveChanges();
+
+            return Json(new { success = true });
+        }
+
+        
     }
 }

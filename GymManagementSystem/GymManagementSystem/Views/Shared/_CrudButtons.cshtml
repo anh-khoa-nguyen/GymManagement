@@ -1,17 +1,33 @@
-﻿@model int
+﻿@model int?
 @{
     // Tự động lấy tên Controller hiện tại để tạo link cho đúng
-    var controllerName = ViewContext.RouteData.Values["controller"].ToString();
+    var controllerName = ViewContext.RouteData.GetRequiredString("controller");
 }
 
-<div class="crud-button-group text-end">
-    <a href="#" class="btn-crud js-open-offcanvas" data-url="@Url.Action("Edit", controllerName, new { id = Model })" title="Sửa">
-        <i class="fas fa-pencil-alt"></i>
-    </a>
-    <a href="#" class="btn-crud js-open-offcanvas" data-url="@Url.Action("Details", controllerName, new { id = Model })" title="Chi tiết">
-        <i class="fas fa-eye"></i>
-    </a>
-    <a href="#" class="btn-crud js-open-offcanvas" data-url="@Url.Action("Delete", controllerName, new { id = Model })" title="Xóa">
-        <i class="fas fa-trash"></i>
-    </a>
-</div>
+@if (Model.HasValue)
+{
+    <div class="crud-button-group text-end">
+        <!-- Nút Edit/Sửa -->
+        <a href="#" class="btn-crud js-open-offcanvas"
+           data-url="@Url.Action("CreateOrEdit", controllerName, new { id = Model.Value })"
+           data-title="Chỉnh sửa"
+           title="Sửa">
+            <i class="fas fa-pencil-alt"></i>
+        </a>
+
+        <!-- Nút Details/Chi tiết -->
+        <a href="#" class="btn-crud js-open-offcanvas"
+           data-url="@Url.Action("Details", controllerName, new { id = Model.Value })"
+           data-title="Chi tiết"
+           title="Chi tiết">
+            <i class="fas fa-eye"></i>
+        </a>
+
+        <!-- Nút Delete/Xóa -->
+        <a href="#" class="btn-crud js-delete-item"
+           data-url="@Url.Action("Delete", controllerName, new { id = Model.Value })"
+           title="Xóa">
+            <i class="fas fa-trash"></i>
+        </a>
+    </div>
+}

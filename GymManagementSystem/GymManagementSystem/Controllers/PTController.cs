@@ -205,5 +205,32 @@ namespace GymManagementSystem.Controllers
                 default: return "#777777";
             }
         }
+
+        [HttpGet]
+        public JsonResult GetMemberListForChat()
+        {
+            var currentUserId = User.Identity.GetUserId();
+            var ptProfile = db.HuanLuyenViens.FirstOrDefault(pt => pt.ApplicationUserId == currentUserId);
+
+            if (ptProfile == null) { return Json(new List<object>(), JsonRequestBehavior.AllowGet); }
+
+            // Lấy danh sách ID của các hội viên đã từng đặt lịch với PT này
+            var memberIds = db.LichTaps
+                            .Where(l => l.HuanLuyenVienId == ptProfile.Id)
+                            .Select(l => l.HoiVien.ApplicationUserId)
+                            .Distinct()
+                            .ToList();
+
+            // Từ danh sách ID, lấy thông tin chi tiết
+            var members = db.Users
+                            .Where(u => memberIds.Contains(u.Id))
+                            .Select(u => new {
+                                Id = u.Id,
+                                Name = u.HoTen,
+                                Avatar = u.AvatarUrl
+                            }).ToList();
+
+            return Json(members, JsonRequestBehavior.AllowGet);
+        }
     }
 }
