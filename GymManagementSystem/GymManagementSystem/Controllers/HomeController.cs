@@ -35,45 +35,60 @@ namespace GymManagementSystem.Controllers
         [ChildActionOnly]
         public PartialViewResult NotificationBell()
         {
+            var notifications = new List<ThongBao>();
             if (User.Identity.IsAuthenticated)
             {
                 var currentUserId = User.Identity.GetUserId();
-                var notifications = db.ThongBaos
-                                      .Where(n => n.ApplicationUserId == currentUserId && !n.DaXem)
-                                      .OrderByDescending(n => n.NgayTao)
-                                      .ToList();
-                return PartialView("_NotificationBell", notifications);
+                notifications = db.ThongBaos
+                                  .Where(n => n.ApplicationUserId == currentUserId && !n.DaXem)
+                                  .OrderByDescending(n => n.NgayTao)
+                                  .ToList();
             }
-            return null;
+            return PartialView("_NotificationBell", notifications);
         }
 
-        [HttpPost]
-        [Authorize] // Chỉ người dùng đã đăng nhập mới được gọi
+        [HttpPost] // Chỉ chấp nhận yêu cầu POST
+        [Authorize] // Yêu cầu người dùng phải đăng nhập để thực hiện hành động này
+        [ValidateAntiForgeryToken] // Thêm bước bảo mật để chống tấn công CSRF
         public JsonResult MarkNotificationsAsRead()
         {
             try
             {
+                // 1. Lấy ID của người dùng đang đăng nhập
                 var currentUserId = User.Identity.GetUserId();
+
+                // 2. Tìm tất cả các thông báo CHƯA XEM của người dùng này
                 var notificationsToUpdate = db.ThongBaos
                                               .Where(n => n.ApplicationUserId == currentUserId && !n.DaXem)
                                               .ToList();
 
-                foreach (var notification in notificationsToUpdate)
+                // 3. Nếu có thông báo mới, duyệt qua và cập nhật trạng thái
+                if (notificationsToUpdate.Any())
                 {
-                    notification.DaXem = true;
+                    foreach (var notification in notificationsToUpdate)
+                    {
+                        notification.DaXem = true;
+                    }
+
+                    // 4. Lưu tất cả các thay đổi vào cơ sở dữ liệu
+                    db.SaveChanges();
                 }
 
-                db.SaveChanges();
-
+                // 5. Trả về kết quả thành công dưới dạng JSON
                 return Json(new { success = true });
             }
             catch (Exception ex)
             {
+                // Ghi lại lỗi để bạn có thể debug nếu có vấn đề
                 System.Diagnostics.Debug.WriteLine(ex.ToString());
-                return Json(new { success = false });
+
+                // Trả về lỗi nếu có sự cố xảy ra
+                Response.StatusCode = 500; // Báo lỗi Internal Server Error
+                return Json(new { success = false, message = "Đã có lỗi xảy ra." });
             }
         }
 
+        [Authorize]
         [Authorize]
         public ActionResult RedirectToNotificationUrl(int notificationId)
         {
@@ -82,20 +97,16 @@ namespace GymManagementSystem.Controllers
 
             if (notification != null)
             {
-                // Đánh dấu là đã xem
                 notification.DaXem = true;
                 db.SaveChanges();
-
-                // Nếu URL hợp lệ, chuyển hướng đến đó
-                if (Url.IsLocalUrl(notification.URL))
+                if (!string.IsNullOrEmpty(notification.URL) && Url.IsLocalUrl(notification.URL))
                 {
                     return Redirect(notification.URL);
                 }
             }
-
-            // Nếu có lỗi hoặc URL không hợp lệ, chuyển về trang chủ
             return RedirectToAction("Index", "Home");
         }
+
 
         [Authorize] // Quan trọng: Chỉ người đã đăng nhập mới gọi được
         [HttpGet]

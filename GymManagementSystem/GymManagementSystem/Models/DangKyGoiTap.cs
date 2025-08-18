@@ -6,8 +6,16 @@ namespace GymManagementSystem.Models
 {
     public enum TrangThaiDangKy
     {
+        [Display(Name = "Chờ thanh toán")]
+        ChoThanhToan,
+
+        [Display(Name = "Hoạt động")]
         HoatDong,
+
+        [Display(Name = "Đã hết hạn")]
         DaHetHan,
+
+        [Display(Name = "Đã hủy")]
         DaHuy
     }
 

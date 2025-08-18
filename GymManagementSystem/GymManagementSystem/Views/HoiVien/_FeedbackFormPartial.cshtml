@@ -1,0 +1,48 @@
+﻿@model GymManagementSystem.Models.LichTap
+
+@{
+    // Layout = null; vì đây là Partial View
+}
+
+<!-- Sử dụng id="offcanvasForm" để script crud.js có thể bắt sự kiện -->
+@using (Html.BeginForm("GuiDanhGia", "HoiVien", FormMethod.Post, new { id = "offcanvasForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.Id, new { Name = "lichTapId" })
+
+    <!-- Sử dụng các class của Bootstrap 5 để tạo khoảng cách và căn chỉnh -->
+    <div class="mb-3">
+        <p class="text-secondary">
+            Buổi tập ngày: @Model.ThoiGianBatDau.ToString("dd/MM/yyyy")
+        </p>
+        <p>
+            Vui lòng đánh giá chất lượng buổi tập của bạn với PT <strong>@Model.HuanLuyenVien.ApplicationUser.HoTen</strong>.
+        </p>
+    </div>
+
+    <!-- Hệ thống chọn sao -->
+    <div class="mb-4 text-center">
+        <div class="rating-stars">
+            <input type="radio" id="star5" name="soSao" value="5" /><label for="star5" title="5 sao - Tuyệt vời">★</label>
+            <input type="radio" id="star4" name="soSao" value="4" /><label for="star4" title="4 sao - Tốt">★</label>
+            <input type="radio" id="star3" name="soSao" value="3" /><label for="star3" title="3 sao - Khá">★</label>
+            <input type="radio" id="star2" name="soSao" value="2" /><label for="star2" title="2 sao - Tạm được">★</label>
+            <input type="radio" id="star1" name="soSao" value="1" /><label for="star1" title="1 sao - Tệ">★</label>
+        </div>
+    </div>
+
+    <!-- Ô nhập phản hồi -->
+    <div class="mb-3">
+        <!-- Sử dụng LabelFor để có label đúng chuẩn -->
+        @Html.Label("phanHoi", "Phản hồi chi tiết (tùy chọn):", new { @class = "form-label" })
+        @Html.TextArea("phanHoi", "", new { @class = "form-control", rows = 4, placeholder = "Hãy cho chúng tôi biết cảm nhận của bạn..." })
+    </div>
+
+    <!-- Footer của Offcanvas -->
+    <div class="offcanvas-footer">
+        <div class="d-grid gap-2">
+            <!-- Sử dụng class nút bấm tùy chỉnh từ Site.css -->
+            <button type="submit" class="btn btn-offcanvas-primary">Gửi Đánh giá</button>
+        </div>
+    </div>
+}

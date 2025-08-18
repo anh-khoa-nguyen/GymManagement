@@ -1,9 +1,9 @@
-﻿<link href="@Url.Content("~/Content/Calender/custom.css")" rel="stylesheet" type="text/css" />
-
-@{
+﻿@{
     ViewBag.Title = "Đặt Lịch & Lịch Trình Tập Luyện";
 }
-@* Bỏ section Styles vì đã chuyển CSS vào file chung/riêng *@
+
+
+
 
 <div class="container mt-4">
     <div class="page-header mb-4">
@@ -17,81 +17,102 @@
     </div>
 </div>
 
-@* Modal và Offcanvas giữ nguyên cấu trúc HTML, chúng sẽ tự động được style bởi CSS mới *@
-
 @section Scripts {
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    $(function() { // Sử dụng jQuery ready function cho an toàn
+        // --- KHAI BÁO BIẾN DÙNG CHUNG ---
         var calendarEl = document.getElementById('calendar');
         var crudOffcanvasEl = document.getElementById('crudOffcanvas');
         var crudOffcanvas = new bootstrap.Offcanvas(crudOffcanvasEl);
-        var offcanvasTitle = document.getElementById('offcanvasLabel');
-        var offcanvasBody = document.getElementById('offcanvas-body-content');
+        var $offcanvasTitle = $('#offcanvasLabel');
+        var $offcanvasBody = $('#offcanvas-body-content');
 
+        // --- KHỞI TẠO FULLCALENDAR ---
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             locale: 'vi',
             headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,listWeek' },
             events: '@Url.Action("GetLichTapCuaHoiVien", "HoiVien")',
-            displayEventTime: true,
-            displayEventEnd: false,
-            eventDisplay: 'block',
-            eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
-
-            eventMouseEnter: function (info) {
-                // (Optional) Có thể tùy chỉnh lại tooltip sau
-            },
-
+      
+            // === KHI CLICK VÀO NGÀY TRỐNG (ĐẶT LỊCH) ===
             dateClick: function(info) {
-                if (info.date < new Date(new Date().setHours(0,0,0,0))) {
-                    alert("Không thể đặt lịch cho một ngày trong quá khứ."); return;
+                if (new Date(info.dateStr) < new Date(new Date().setHours(0,0,0,0))) {
+                    alert("Không thể đặt lịch cho một ngày trong quá khứ.");
+                    return;
                 }
-
                 var url = '@Url.Action("GetBookingForm", "HoiVien")' + '?date=' + info.dateStr;
-
-                offcanvasTitle.textContent = 'Đặt Lịch Tập Mới';
-                offcanvasBody.innerHTML = '<div class="text-center p-5"><div class="spinner-border text-light" role="status"></div></div>';
+                $offcanvasTitle.text('Đặt Lịch Tập Mới');
+                $offcanvasBody.html('<div class="text-center p-5"><div class="spinner-border text-light" role="status"></div></div>');
                 crudOffcanvas.show();
 
-                fetch(url)
-                    .then(response => response.text())
-                    .then(html => {
-                        offcanvasBody.innerHTML = html;
-                        // Gắn nút submit đã được style vào form
-                        $('#offcanvasForm').append(`<div class="offcanvas-footer"><button type="submit" class="btn-submit-booking"><i class="fas fa-paper-plane me-2"></i> Gửi Yêu Cầu</button></div>`);
-                    });
+                $.get(url, function(data) {
+                    $offcanvasBody.html(data);
+                });
             },
 
-            eventClick: function(info) {
-                // Logic eventClick của bạn giữ nguyên
+            // === KHI CLICK VÀO SỰ KIỆN ĐÃ CÓ (XEM/ĐÁNH GIÁ) ===
+            eventClick: function (info) {
+            info.jsEvent.preventDefault();
+            var trangThai = info.event.extendedProps.trangThaiText;
+            var startTime = info.event.start;
+            var now = new Date();
+
+            // Lấy các element của Offcanvas
+            var crudOffcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('crudOffcanvas'));
+            var $offcanvasTitle = $('#offcanvasLabel');
+            var $offcanvasBody = $('#offcanvas-body-content');
+
+            $offcanvasBody.html('<div class="text-center p-5"><div class="spinner-border" role="status"></div></div>');
+            crudOffcanvas.show();
+
+            if (trangThai === 'DaDuyet' && startTime < now) {
+                $offcanvasTitle.text('Đánh giá Buổi tập');
+                var feedbackUrl = '@Url.Action("GetFeedbackForm", "HoiVien")?lichTapId=' + info.event.id;
+                // Dùng jQuery get cho nhất quán
+                $.get(feedbackUrl, function(html) {
+                    $offcanvasBody.html(html);
+                });
+            } else {
+                // Tải chi tiết buổi tập
+                $offcanvasTitle.text('Chi tiết Buổi tập');
+                var detailUrl = '@Url.Action("GetBookingDetails", "HoiVien")?lichTapId=' + info.event.id;
+                $.get(detailUrl, function(html) {
+                    $offcanvasBody.html(html);
+                });
             }
+        },
         });
         calendar.render();
 
-        // --- JavaScript cho form trong Offcanvas (giữ nguyên logic, chỉ thay đổi CSS) ---
+        // --- CÁC HÀM XỬ LÝ SỰ KIỆN VÀ AJAX ---
+
+        // Hàm tìm khung giờ trống
+
         function fetchAndDisplaySlots() {
             var ptId = $('#bookingPtId').val();
             var date = $('#bookingDate').val();
-            var slotsContainer = $('#availableSlotsContainer');
-            var loader = $('#slotsLoader');
+            var $slotsContainer = $('#availableSlotsContainer'); // Dùng $
+            var $loader = $('#slotsLoader'); // Dùng $
 
-            slotsContainer.html('<div class="alert alert-secondary w-100 p-2 text-center" style="background-color: #2b2b2b; border-color: #444; color: #ccc;">Vui lòng chọn PT và ngày.</div>');
+            $slotsContainer.html('<div class="alert alert-secondary w-100 p-2 text-center">Vui lòng chọn PT và ngày.</div>');
+
             $('#gioBatDau').val('');
 
             if (ptId && date) {
-                loader.removeClass('d-none');
+                $loader.removeClass('d-none');
                 $.get('@Url.Action("GetAvailableSlots", "HoiVien")', { ptId: ptId, date: date })
                     .done(function (slots) {
-                        slotsContainer.empty();
+                        $slotsContainer.empty();
                         if (slots && slots.length > 0) {
                             slots.forEach(function(slot) {
-                                var button = $('<button type="button" class="time-slot-btn"></button>').text(slot);
-                                slotsContainer.append(button);
+                                var button = $('<button type="button" class="btn btn-light time-slot-btn"></button>').text(slot);
+                                $slotsContainer.append(button);
                             });
                         } else {
-                            slotsContainer.html('<div class="alert alert-warning w-100 p-2 text-center" style="background-color: rgba(251, 146, 60, 0.15); border-color: rgba(251, 146, 60, 0.3); color: #fb923c;">Không có lịch trống cho ngày này.</div>');
+                            $slotsContainer.html('<div class="alert alert-warning w-100 p-2 text-center">Không có lịch trống.</div>');
+
                         }
-                    }).always(function() { loader.addClass('d-none'); });
+                    }).always(function() { $loader.addClass('d-none'); });
             }
         }
 
@@ -101,13 +122,14 @@
             $(this).addClass('active');
             $('#gioBatDau').val($(this).text());
         });
-        $(document).on('submit', '#offcanvasForm', function(e) {
+
+        // Submit form Đặt lịch
+        $(document).on('submit', '#bookingFormAjax', function(e) { // Sửa ID form cho nhất quán
+
             e.preventDefault();
             var form = $(this);
             $.ajax({
-                url: form.attr('action'),
-                method: form.attr('method'),
-                data: form.serialize(),
+                url: form.attr('action'), method: form.attr('method'), data: form.serialize(),
                 success: function(response) {
                     if (response.success) {
                         crudOffcanvas.hide();
@@ -116,9 +138,71 @@
                         alert(response.message);
                     } else { alert('Lỗi: ' + response.message); }
                 },
-                error: function() { alert("Đã có lỗi kết nối khi gửi yêu cầu."); }
+                error: function() { alert("Lỗi kết nối."); }
+            });
+        });
+
+        // Submit form Đánh giá bằng Event Delegation
+        $(document).on('submit', '#feedbackForm', function(e) {
+            e.preventDefault();
+            var form = $(this);
+            if ($('input[name=soSao]:checked').length === 0) {
+                alert('Vui lòng chọn số sao để đánh giá.');
+                return;
+            }
+            $.ajax({
+                url: '@Url.Action("GuiDanhGia", "HoiVien")',
+                method: 'POST',
+                data: form.serialize(),
+                success: function(response) {
+                    if (response.success) {
+                        // Tìm và đóng Offcanvas
+                        bootstrap.Offcanvas.getInstance(document.getElementById('crudOffcanvas')).hide();
+                        alert(response.message);
+                    } else {
+                        alert('Lỗi: ' + response.message);
+                    }
+                },
+                error: function() {
+                    alert("Đã có lỗi kết nối khi gửi đánh giá.");
+                }
+            });
+        });
+        $(document).on('click', '.js-open-feedback', function() {
+            const lichTapId = $(this).data('lichtapid');
+            $offcanvasTitle.text('Đánh giá Buổi tập');
+            var feedbackUrl = '@Url.Action("GetFeedbackForm", "HoiVien")?lichTapId=' + lichTapId;
+            $.get(feedbackUrl, function(html) { $offcanvasBody.html(html); });
+        });
+
+        // BỔ SUNG: Xử lý click nút "Hủy Lịch" (nằm trong _BookingDetailsPartial)
+        $(document).on('click', '.js-cancel-booking', function() {
+            const lichTapId = $(this).data('lichtapid');
+            const token = $('form[action="/Account/LogOff"] input[name="__RequestVerificationToken"]').val();
+            Swal.fire({
+                title: 'Bạn có chắc chắn?', text: "Bạn muốn hủy lịch hẹn này?", icon: 'warning',
+                showCancelButton: true, confirmButtonColor: '#d33', cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Vâng, hủy lịch!', cancelButtonText: 'Không'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("HuyLich", "HoiVien")',
+                        method: 'POST',
+                        data: { __RequestVerificationToken: token, lichTapId: lichTapId },
+                        success: function(response) {
+                            if (response.success) {
+                                crudOffcanvas.hide();
+                                calendar.refetchEvents();
+                                Swal.fire('Đã hủy!', 'Lịch hẹn của bạn đã được hủy.', 'success');
+                            } else { Swal.fire('Lỗi!', response.message, 'error'); }
+                        },
+                        error: function() { Swal.fire('Lỗi!', 'Đã có lỗi xảy ra.', 'error'); }
+                    });
+                }
             });
         });
     });
     </script>
-    }
+}
+ 
+

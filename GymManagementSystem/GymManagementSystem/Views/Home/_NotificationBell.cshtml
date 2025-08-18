@@ -1,20 +1,23 @@
-﻿
-@model List<GymManagementSystem.Models.ThongBao>
+﻿@model List<GymManagementSystem.Models.ThongBao>
 
 <li class="nav-item dropdown notification-dropdown">
-    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button">
         <i class="fas fa-bell"></i>
         @if (Model.Any())
         {
-            <span class="badge badge-pill badge-danger">@Model.Count</span>
+            <span class="badge rounded-pill bg-danger">@Model.Count</span>
         }
     </a>
-    <div class="dropdown-menu dropdown-menu-right">
+    <div class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
         @if (Model.Any())
         {
             foreach (var notification in Model)
             {
-                <a class="dropdown-item" href="@notification.URL">@notification.NoiDung</a>
+                <a class="dropdown-item" href="@notification.URL">
+                    <small>@notification.NgayTao.ToString("HH:mm dd/MM")</small>
+                    <p class="mb-0 text-wrap">@notification.NoiDung</p>
+                </a>
+                <div class="dropdown-divider"></div>
             }
         }
         else

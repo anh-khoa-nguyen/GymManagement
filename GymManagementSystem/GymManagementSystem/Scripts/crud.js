@@ -45,4 +45,36 @@
             offcanvasBody.html('<p class="text-danger">Không thể tải nội dung. Vui lòng thử lại.</p>');
         });
     });
+    // Xủ lý sự kiện click cho nút "Submit" trong Offcanvas
+    $(document).on('submit', '#offcanvasForm', function (e) {
+        e.preventDefault();
+        const form = $(this);
+
+        // Kiểm tra riêng cho form đánh giá
+        if (form.attr('action').toLowerCase().includes('guidanhgia')) {
+            if (form.find('input[name=soSao]:checked').length === 0) {
+                alert('Vui lòng chọn số sao để đánh giá.');
+                return;
+            }
+        }
+
+        $.ajax({
+            url: form.attr('action'),
+            method: form.attr('method'),
+            data: form.serialize(),
+            success: function (response) {
+                if (response.success) {
+                    bootstrap.Offcanvas.getInstance(document.getElementById('crudOffcanvas')).hide();
+                    alert(response.message);
+                    // Có thể cần tải lại lịch nếu là hành động đặt lịch
+                    if (form.attr('action').toLowerCase().includes('taolichtap')) {
+                        calendar.refetchEvents();
+                    }
+                } else {
+                    // Nếu có lỗi validation, server sẽ trả về lại PartialView với lỗi
+                    $('#offcanvas-body-content').html(response);
+                }
+            }
+        });
+    });
 });
